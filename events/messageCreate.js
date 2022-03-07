@@ -46,7 +46,7 @@ async function adminCommandHandler(bot, message) {
 async function catEmotes(bot, message) {
     // Constants for emote to check and emote to respond with
     const sadCatEmote = "<:AWsadcat:819859358187126814>";
-    const sadPettingEmote = "<a:CWsadPet:846784819077578773>'"
+    const sadPettingEmote = "<a:CWsadPet:846784819077578773>"
     if (message.content.includes(sadCatEmote)) return message.reply(sadPettingEmote);
     if (matchesCatAlias(message.content)) {
         // Fetch all emotes from a defined cat emote server
