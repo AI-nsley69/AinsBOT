@@ -1,5 +1,6 @@
 module.exports = {
     run: async (bot, message) => {
+        if (message.author === bot.client) return;
         commandHandler(bot, message);
         adminCommandHandler(bot, message);
         catEmotes(bot, message);
@@ -45,6 +46,8 @@ async function adminCommandHandler(bot, message) {
 }
 
 async function catEmotes(bot, message) {
+    // Check if it's in a guild, doesn't start with any prefix and is the target guild
+    if (!message.guild) return;
     if (message.content.startsWith(bot.config.prefix) || message.content.startsWith(bot.config.adminPrefix)) return;
     let targetGuild = "479713355767087115";
     if (message.guild.id !== targetGuild) return;
