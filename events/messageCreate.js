@@ -66,5 +66,6 @@ async function catEmotes(bot, message) {
 
 async function mentionReponse(bot, message) {
     if (message.author.bot) return;
-    if (message.mentions.has(bot.client.user.id)) message.reply(`My prefix is \`${bot.config.prefix}\` :)`)
+    let replyString = "My prefix is " + (Math.floor(Math.random() * 100) === 42 ? ">:(" : ":)");
+    if (message.mentions.has(bot.client.user.id)) message.reply(replyString);
 }
