@@ -1,16 +1,20 @@
+const { MessageEmbed } = require("discord.js");
+const tiktok = require("tiktok-scraper");
+const unshortener = require("unshorten.it");
+
 module.exports = {
     run: async (bot, message) => {
-        if (message.author === bot.client) return;
+        // Check if the author is a bot
+        if (message.author.bot) return;
         commandHandler(bot, message);
         adminCommandHandler(bot, message);
         catEmotes(bot, message);
         mentionReponse(bot, message);
+        getTiktok(bot, message);
     }
 }
 
 async function commandHandler(bot, message) {
-    // Check if the user is a bot
-    if (message.author.bot) return;
     // Only react to messages that start with our prefix
     if (message.content.startsWith(bot.config.prefix)) {
         const args = message.content.slice(bot.config.prefix.length).trim().split(/ +/);
@@ -28,8 +32,6 @@ async function commandHandler(bot, message) {
 }
 
 async function adminCommandHandler(bot, message) {
-    // Check if the user is a bot
-    if (message.author.bot) return;
     // Only react to messages that start with the admin prefix
     if (message.content.startsWith(bot.config.adminPrefix)) {
         // If the author is not in the array of admin ids, return a message letting them know they're not allowed to run this command
@@ -68,7 +70,20 @@ async function catEmotes(bot, message) {
 }
 
 async function mentionReponse(bot, message) {
-    if (message.author.bot) return;
     const replyString = `My prefix is \`${bot.config.prefix}\` ` + (Math.floor(Math.random() * 100) === 42 ? ">:(" : ":)");
     if (message.mentions.has(bot.client.user.id)) message.reply(replyString);
+}
+
+async function getTiktok(bot, message) {
+    let tiktokRegex = /https?:\/\/vm\.tiktok\.com\/\w+/;
+    let potentialUrl = message.content.match(tiktokRegex);
+    if (!potentialUrl) return;
+    const fullUrl = await unshortener(potentialUrl);
+    const req = await tiktok.getVideoMeta(fullUrl);
+    const tiktokUrl = req.collector[0].videoUrl;
+    message.reply({ files: [{
+        attachment: tiktokUrl,
+        name: "tiktok.mp4",
+        description: "Tiktok Video"
+    }] });
 }
