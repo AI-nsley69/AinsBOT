@@ -18,6 +18,18 @@ module.exports = {
         .setColor(member.displayHexColor)
         .setFields([
             {
+                name: "ID",
+                value: member.user.id
+            },
+            {
+                name: "Account Creation",
+                value: member.user.createdAt.toString()
+            },
+            {
+                name: "Bot Account",
+                value: member.user.bot.toString()
+            }
+            {
                 name: "Join date",
                 value: member.joinedAt.toString()
             },
