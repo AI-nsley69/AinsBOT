@@ -23,7 +23,7 @@ module.exports = {
             },
             {
                 name: "Uptime",
-                value: `${bot.client.uptime}ms`
+                value: require("pretty-ms")(bot.client.uptime)
             },
             {
                 name: "Memory (RAM)",
