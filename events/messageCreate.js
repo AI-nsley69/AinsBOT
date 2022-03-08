@@ -75,15 +75,19 @@ async function mentionReponse(bot, message) {
 }
 
 async function getTiktok(bot, message) {
+    // Setup regex to get a tiktok url, then check if url has been matched, otherwise return
     let tiktokRegex = /https?:\/\/vm\.tiktok\.com\/\w+/;
     let potentialUrl = message.content.match(tiktokRegex);
     if (!potentialUrl) return;
+    // Get the full url by unshortening it
     const fullUrl = await unshortener(potentialUrl);
+    // Use tiktok-scraper to get the video meta and then grab the videourl
     const req = await tiktok.getVideoMeta(fullUrl);
-    const tiktokUrl = req.collector[0].videoUrl;
+    const { id, text, videoUrl } = req.collector[0];
+    // Reply to the message, with the videoUrl, then use the tiktok id for the name and the caption for the description
     message.reply({ files: [{
-        attachment: tiktokUrl,
-        name: "tiktok.mp4",
-        description: "Tiktok Video"
+        attachment: videoUrl,
+        name: `${id}.mp4`,
+        description: text
     }] });
 }
