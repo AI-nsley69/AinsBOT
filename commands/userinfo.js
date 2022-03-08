@@ -28,7 +28,7 @@ module.exports = {
             {
                 name: "Bot Account",
                 value: member.user.bot.toString()
-            }
+            },:
             {
                 name: "Join date",
                 value: member.joinedAt.toString()
