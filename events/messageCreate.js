@@ -3,6 +3,7 @@ module.exports = {
         commandHandler(bot, message);
         adminCommandHandler(bot, message);
         catEmotes(bot, message);
+        mentionReponse(bot, message);
     }
 }
 
@@ -60,4 +61,8 @@ async function catEmotes(bot, message) {
     	message.react(catEmoteServer.emojis.cache.at(rand).id)
     }
     
+}
+
+async function mentionReponse(bot, message) {
+    if (message.mentions.has(bot.client.user.id)) message.reply(`My prefix is \`${bot.config.prefix}\` :)`)
 }
