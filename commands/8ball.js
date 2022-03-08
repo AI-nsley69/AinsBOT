@@ -13,12 +13,15 @@ module.exports = {
         // Check if the message ends with a question mark, otherwise classify it as not asking a question
         if (!question.endsWith("?")) return message.reply("You're not asking a question.").then(msg => setTimeout(() => msg.delete(), 5000));
         // 2d array to include a color with an answer
+       	const red = 0xff0000, green = 0x00ff00, blue = 0x0000ff
         const response = [
-            ["Yes", 0xff0000],
-            ["Probably", 0xb1ff00],
-            ["Maybe", 0xffff00],
-            ["Probably not", 0xff9f00],
-            ["No", 0xff0000]
+            ["Yes", green],
+            ["Probably", (red + 2*green)/2 ],
+            ["Maybe", (red + green)],
+            ["Probably not", (2*red + green)/2],
+            ["No", red],
+	    ["Kind of a sussy question", red],
+	    ["Perhaps", (red + green)]
         ];
         const [answer, color] = response[Math.floor(Math.random() * response.length)];
 	// Create a new embed with the question, author, color, answer and then add a timestamp
