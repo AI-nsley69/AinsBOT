@@ -44,11 +44,14 @@ async function adminCommandHandler(bot, message) {
 }
 
 async function catEmotes(bot, message) {
+    let targetGuild = "479713355767087115";
+    if (message.guild.id !== targetGuild) return;
     // Constants for emote to check and emote to respond with
     const sadCatEmote = "<:AWsadcat:819859358187126814>";
     const sadPettingEmote = "<a:CWsadPet:846784819077578773>"
     if (message.content.includes(sadCatEmote)) return message.reply(sadPettingEmote);
-    if (matchesCatAlias(message.content)) {
+    catAliases = /\b(cat|khat|pussy|kat|kitten|kitty|puss|pussies|kittens|katt)\b/
+    if (message.content.match(catAliases)) {
         // Fetch all emotes from a defined cat emote server
         const emoteServerId = "753906897509154907";
     	const catEmoteServer = await bot.client.guilds.fetch(emoteServerId);
@@ -57,14 +60,4 @@ async function catEmotes(bot, message) {
     	message.react(catEmoteServer.emojis.cache.at(rand).id)
     }
     
-}
-
-function matchesCatAlias(aliasToTry) {
-    var catAlias = ['cat', 'khat', 'pussy', 'kat', 'kitten', 'kitty', 'puss', 'pussies', 'kittens', 'katt']
-    aliasToTry = aliasToTry.toLowerCase().split(' ')
-    matches = false
-    for (var i = 0; i < catAlias.length; i++) {
-            if (aliasToTry.includes(catAlias[i])) matches = true
-    }
-    return matches
 }
