@@ -14,7 +14,7 @@ module.exports = {
         if (!question.endsWith("?")) return message.reply("You're not asking a question.").then(msg => setTimeout(() => msg.delete(), 5000));
         // 2d array to include a color with an answer
         const response = [
-            ["Yes", 0xff0000],
+            ["Yes", 0x00ff00],
             ["Probably", 0xb1ff00],
             ["Maybe", 0xffff00],
             ["Probably not", 0xff9f00],
