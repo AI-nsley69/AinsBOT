@@ -45,6 +45,7 @@ async function adminCommandHandler(bot, message) {
 }
 
 async function catEmotes(bot, message) {
+    if (message.content.startsWith(bot.config.prefix) || message.content.startsWith(bot.config.adminPrefix)) return;
     let targetGuild = "479713355767087115";
     if (message.guild.id !== targetGuild) return;
     // Constants for emote to check and emote to respond with
@@ -64,5 +65,6 @@ async function catEmotes(bot, message) {
 }
 
 async function mentionReponse(bot, message) {
+    if (message.author.bot) return;
     if (message.mentions.has(bot.client.user.id)) message.reply(`My prefix is \`${bot.config.prefix}\` :)`)
 }

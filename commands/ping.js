@@ -10,7 +10,7 @@ module.exports = {
         const ping = Date.now() - message.createdTimestamp;
         // Get the color by dividing ping by 1000 and multiplying it by 255 and then convert to hex
         const pingDivider = 250; // Modify this as needed, currently ping is usually 10-100ms in my situation
-	const color = ping / pingDivider * 255 < 256 ? parseInt(ping / pingDivider * 255, 16) : parseInt(255, 16);
+	const color = ping / pingDivider * 255 < 256 ? ping / pingDivider * 255 : 255;
 	// Create the message embed
         const embed = new MessageEmbed()
         .setTitle("Pong!")
