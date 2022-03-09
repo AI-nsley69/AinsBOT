@@ -16,17 +16,8 @@ module.exports = {
         .setDescription(cmds)
         .setTimestamp();
 
-        message.reply({embeds: [embed] })
+        bot.utils.replyEmbed(bot, message, [embed]);
     }
-}
-
-function fetchCommands(bot, message) {
-    // Setup an array for all the commands, then append the info as needed and join each command to a string
-    let cmds = [];
-    bot.commands.forEach((cmd, name) => {
-        cmds.push(`${bot.config.prefix}${name} ${cmd.usage} - ${cmd.description}`);
-    })
-    return cmds.join("\n");
 }
 
 function fetchAdminCommands(bot, message) {

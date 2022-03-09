@@ -45,6 +45,6 @@ module.exports = {
         })
         .setTimestamp()
 
-        message.reply({ embeds: [embed] })
+        bot.utils.replyEmbed(bot, message, [embed]);
     }
 }

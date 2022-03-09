@@ -42,7 +42,7 @@ module.exports = {
             text: member.user.id
         })
         .setTimestamp();
-	// Send the message        
-        message.reply({ embeds: [embed] });
+	// Send the message
+	bot.utils.replyEmbed(bot, message, [embed]);
     }
 }

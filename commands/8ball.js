@@ -32,6 +32,6 @@ module.exports = {
         .setDescription(answer)
         .setTimestamp();
 	// Send the message
-        message.reply({ embeds: [embed] })
+	bot.utils.replyEmbed(bot, message, [embed]);
     }
 }

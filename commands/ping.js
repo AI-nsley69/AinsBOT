@@ -20,6 +20,6 @@ module.exports = {
             text: "Note: the ping is between Discord API and the bot!"
         });
 
-        message.reply({ embeds: [embed] });
+        bot.utils.replyEmbed(bot, message, [embed]);
     }
 }
