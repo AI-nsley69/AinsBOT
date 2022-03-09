@@ -19,7 +19,7 @@ module.exports = {
             .setDescription("```" + output + "```")
             .setTimestamp();
             // Reply with the embed
-            message.reply({ embeds: [embed] });
+            message.reply({ embeds: [embed] }).catch(() => message.channel.send({ embeds: [embed]}));
         } catch (err) {
             // Error embed
             const embed = new MessageEmbed()
@@ -32,7 +32,7 @@ module.exports = {
             .setDescription("```" + err + "```")
             .setTimestamp();
 
-            message.reply({ embeds: [embed] });
+            message.reply({ embeds: [embed] }).catch(() => message.channel.send({ embeds: [embed]}));
         }
     }
 }
