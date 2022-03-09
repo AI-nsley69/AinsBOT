@@ -16,7 +16,7 @@ module.exports = {
         .setDescription(cmds)
         .setTimestamp();
 
-        bot.utils.replyEmbed(bot, messae, [embed]);
+        bot.utils.replyEmbed(bot, message, [embed]);
     }
 }
 

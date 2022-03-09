@@ -27,6 +27,6 @@ module.exports = {
         .setColor(0xff6961)
         .setTimestamp();
 	// Reply to the author with the embed
-	bot.utils.replyEmbed(bot, content [embed]);
+	bot.utils.replyEmbed(bot, message, [embed]);
     }
 }
