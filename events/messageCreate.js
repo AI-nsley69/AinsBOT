@@ -11,6 +11,7 @@ module.exports = {
         catEmotes(bot, message);
         mentionReponse(bot, message);
         getTiktok(bot, message);
+        previewMessage(bot, message);
     }
 }
 
@@ -90,4 +91,30 @@ async function getTiktok(bot, message) {
         name: `${id}.mp4`,
         description: text
     }] });
+}
+
+async function previewMessage(bot, message) {
+    let messageLinkRegex = /https?:\/\/discord\.com\/channels\/(\d+)\/(\d+)\/(\d+)/;
+    let messageInfo = message.content.match(messageLinkRegex);
+    if (!messageInfo) return;
+    // Create a constant for each information we need, then check if it works
+    const [fullUrl, guildId, channelId, messageId] = messageInfo;
+    const targetGuild = await bot.client.guilds.cache.get(guildId);
+    if (!targetGuild) return;
+    const targetChannel = await targetGuild.channels.fetch(channelId).catch();
+    if (!targetChannel || targetChannel.nsfw) return;
+    const targetMessage = await targetChannel.messages.fetch(messageId).catch();
+    if (!targetMessage) return;
+    // Create new embed
+    const embed = new MessageEmbed()
+    .setTitle("Message Link Preview!")
+    .setAuthor({
+        name: targetMessage.author.tag,
+        iconURL: targetMessage.author.displayAvatarURL()
+    })
+    .setDescription(targetMessage.content)
+    .setColor(targetMessage.member.displayHexColor)
+    .setTimestamp();
+
+    bot.utils.replyEmbed(bot, message, [embed]);
 }
