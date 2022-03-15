@@ -99,21 +99,25 @@ async function previewMessage(bot, message) {
     if (!messageInfo) return;
     // Create a constant for each information we need, then check if it works
     const [fullUrl, guildId, channelId, messageId] = messageInfo;
-    const targetGuild = await bot.client.guilds.cache.get(guildId);
+    const targetGuild = await bot.client.guilds.fetch(guildId).catch(err => {
+        if (err.httpStatus !== 403) console.log(err);
+    });
     if (!targetGuild) return;
-    const targetChannel = await targetGuild.channels.fetch(channelId).catch();
-    if (!targetChannel || targetChannel.nsfw) return;
-    const targetMessage = await targetChannel.messages.fetch(messageId).catch();
+    const targetChannel = await targetGuild.channels.fetch(channelId).catch(err => {
+        if (err.httpStatus !== 403) console.log(err);
+    });
+    if (!targetChannel) return;
+    const targetMessage = await targetChannel.messages.fetch(messageId);
     if (!targetMessage) return;
     // Create new embed
     const embed = new MessageEmbed()
-    .setTitle("Message Link Preview!")
+    .setTitle(`Message Link Preview!${targetChannel.nsfw ? " (⚠️ NSFW ⚠️)" : ""}`)
     .setURL(fullUrl)
     .setAuthor({
         name: targetMessage.author.tag,
         iconURL: targetMessage.author.displayAvatarURL()
     })
-    .setDescription(targetMessage.content)
+    .setDescription(targetChannel.nsfw ? `||${targetMessage.content}||` : targetMessage.content)
     .setColor(targetMessage.member ? targetMessage.member.displayHexColor : message.guild.me.displayHexColor)
     .setFooter({
         text: `In #${targetMessage.channel.name} (${targetMessage.guild.name})`
