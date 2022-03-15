@@ -111,6 +111,7 @@ async function previewMessage(bot, message) {
     if (!targetChannel) return;
     const targetMessage = await targetChannel.messages.fetch(messageId);
     if (!targetMessage) return;
+    const targetMember = await targetGuild.members.fetch(targetMessage.author.id);
     // Create new embed
     const embed = new MessageEmbed()
     .setTitle(`Message Link Preview! ${targetChannel.nsfw ? "(⚠️ NSFW ⚠️)" : ""}`)
@@ -119,7 +120,7 @@ async function previewMessage(bot, message) {
         name: targetMessage.author.tag,
         iconURL: targetMessage.author.displayAvatarURL()
     })
-    .setColor(targetMessage.member ? targetMessage.member.displayHexColor : message.guild.me.displayHexColor)
+    .setColor(targetMember ? targetMember.displayHexColor : message.guild.me.displayHexColor)
     .setFooter({
         text: `In #${targetMessage.channel.name} (${targetMessage.guild.name})`
     })
