@@ -8,7 +8,7 @@ module.exports = {
         if (message.author.bot) return;
         commandHandler(bot, message);
         adminCommandHandler(bot, message);
-        catEmotes(bot, message);
+        catEmotes(bot, message); // Hardcoded to work for my personal guild with my cat emote guild
         mentionReponse(bot, message);
         getTiktok(bot, message);
         previewMessage(bot, message);
@@ -113,18 +113,19 @@ async function previewMessage(bot, message) {
     if (!targetMessage) return;
     // Create new embed
     const embed = new MessageEmbed()
-    .setTitle(`Message Link Preview!${targetChannel.nsfw ? " (⚠️ NSFW ⚠️)" : ""}`)
+    .setTitle(`Message Link Preview! ${targetChannel.nsfw ? "(⚠️ NSFW ⚠️)" : ""}`)
     .setURL(fullUrl)
     .setAuthor({
         name: targetMessage.author.tag,
         iconURL: targetMessage.author.displayAvatarURL()
     })
-    .setDescription(targetChannel.nsfw ? `||${targetMessage.content}||` : targetMessage.content)
     .setColor(targetMessage.member ? targetMessage.member.displayHexColor : message.guild.me.displayHexColor)
     .setFooter({
         text: `In #${targetMessage.channel.name} (${targetMessage.guild.name})`
     })
     .setTimestamp();
+    // Check if there's any message content and include it if so
+    if (targetMessage.content) embed.setDescription(targetChannel.nsfw ? `||${targetMessage.content}||` : targetMessage.content);
     // Check if there's an image and include it if it isn't an nsfw channel
     if (targetMessage.attachments.size > 0 && !targetChannel.nsfw) embed.setImage(targetMessage.attachments.first().attachment);
     
