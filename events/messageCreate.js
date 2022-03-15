@@ -114,7 +114,7 @@ async function previewMessage(bot, message) {
     const targetMember = await targetGuild.members.fetch(targetMessage.author.id);
     // Create new embed
     const embed = new MessageEmbed()
-    .setTitle(`Message Link Preview! ${targetChannel.nsfw ? "(⚠️ NSFW ⚠️)" : ""}`)
+    .setTitle(`Message Link Preview! ${targetChannel.nsfw ? "(NSFW)" : ""}`)
     .setURL(fullUrl)
     .setAuthor({
         name: targetMessage.author.tag,
@@ -122,7 +122,8 @@ async function previewMessage(bot, message) {
     })
     .setColor(targetMember ? targetMember.displayHexColor : message.guild.me.displayHexColor)
     .setFooter({
-        text: `In #${targetMessage.channel.name} (${targetMessage.guild.name})`
+        text: `In #${targetMessage.channel.name} (${targetGuild.name})`,
+        iconURL: targetGuild.iconURL()
     })
     .setTimestamp(targetMessage.createdTimestamp);
     // Check if there's any message content and include it if so
