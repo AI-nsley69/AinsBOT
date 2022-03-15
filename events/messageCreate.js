@@ -71,8 +71,10 @@ async function catEmotes(bot, message) {
 }
 
 async function mentionReponse(bot, message) {
-    const replyString = `My prefix is \`${bot.config.prefix}\` ` + (Math.floor(Math.random() * 100) === 42 ? ">:(" : ":)");
-    if (message.mentions.has(bot.client.user.id)) message.reply(replyString);
+    if (message.mentions.member || !message.mentions.has(bot.client.user.id)) return;
+    const emoticon = Math.floor(Math.random() * 100) === 42 ? ">:(" : ":)";
+    const replyString = `My prefix is \`${bot.config.prefix}\` ${emoticon}`;
+    message.reply(replyString);
 }
 
 async function getTiktok(bot, message) {

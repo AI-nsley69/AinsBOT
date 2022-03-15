@@ -15,7 +15,7 @@ client.login(process.env.token);
 const bot = {
     client: client,
     fs: require("fs"),
-    utils: require("./modules/util.js")
+    utils: require("./modules/utils.js")
 }
 
 bot.config = JSON.parse(bot.fs.readFileSync("./config.json"));
