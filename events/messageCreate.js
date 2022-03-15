@@ -123,6 +123,8 @@ async function previewMessage(bot, message) {
         text: `In #${targetMessage.channel.name} (${targetMessage.guild.name})`
     })
     .setTimestamp();
-
+    // Check if there's an image and include it if it isn't an nsfw channel
+    if (targetMessage.attachments.size > 0 && !targetChannel.nsfw) embed.setImage(targetMessage.attachments.first().attachment);
+    
     bot.utils.replyEmbed(bot, message, [embed]);
 }
