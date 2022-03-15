@@ -108,12 +108,16 @@ async function previewMessage(bot, message) {
     // Create new embed
     const embed = new MessageEmbed()
     .setTitle("Message Link Preview!")
+    .setURL(fullUrl)
     .setAuthor({
         name: targetMessage.author.tag,
         iconURL: targetMessage.author.displayAvatarURL()
     })
     .setDescription(targetMessage.content)
-    .setColor(targetMessage.member.displayHexColor)
+    .setColor(targetMessage.member ? targetMessage.member.displayHexColor : message.guild.me.displayHexColor)
+    .setFooter({
+        text: `In #${targetMessage.channel.name} (${targetMessage.guild.name})`
+    })
     .setTimestamp();
 
     bot.utils.replyEmbed(bot, message, [embed]);
