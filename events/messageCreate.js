@@ -123,7 +123,7 @@ async function previewMessage(bot, message) {
     .setFooter({
         text: `In #${targetMessage.channel.name} (${targetMessage.guild.name})`
     })
-    .setTimestamp();
+    .setTimestamp(targetMessage.createdTimestamp);
     // Check if there's any message content and include it if so
     if (targetMessage.content) embed.setDescription(targetChannel.nsfw ? `||${targetMessage.content}||` : targetMessage.content);
     // Check if there's an image and include it if it isn't an nsfw channel
