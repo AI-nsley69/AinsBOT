@@ -11,9 +11,12 @@ module.exports = {
         const titles = ["Cat payload", "Meow meow meow", "Incoming kitty", "Detected cuteness"];
         const emoticons = [" :)", " :D", " <3", "!"];
         const randTitle = titles[Math.floor(Math.random() * titles.length)] + emoticons[Math.floor(Math.random() * emoticons.length)];
+        // Get a random cat fact as a footer
+        let footer = await axios.get("https://cat-fact.herokuapp.com/facts/random?animal_type=cat&amount=1")
+        footer = footer.data.text;
         // Fetch the cat images
-        cat = await axios.get("https://api.thecatapi.com/v1/images/search");
-        catImage = cat.data[0].url;
+        const cat = await axios.get("https://api.thecatapi.com/v1/images/search");
+        const catImage = cat.data[0].url;
         // Create a new embed
         const embed = new MessageEmbed()
         .setTitle(randTitle)
@@ -25,6 +28,9 @@ module.exports = {
         .setImage(catImage)
         .setURL(catImage)
         .setColor(0xff6961)
+        .setFooter({
+            text: footer
+        })
         .setTimestamp();
 	// Reply to the author with the embed
 	bot.utils.replyEmbed(bot, message, [embed]);

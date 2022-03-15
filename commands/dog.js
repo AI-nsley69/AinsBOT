@@ -11,6 +11,9 @@ module.exports = {
         const titles = ["Dog payload", "Woof woof woof", "Incoming puppy", "Detected cuteness"];
         const emoticons = [" :)", " :D", " <3", "!"];
         const randTitle = titles[Math.floor(Math.random() * titles.length)] + emoticons[Math.floor(Math.random() * emoticons.length)];
+        // Get a random dog fact as a footer
+        let footer = await axios.get("https://cat-fact.herokuapp.com/facts/random?animal_type=dog&amount=1")
+        footer = footer.data.text;
         // Fetch the dog images
         dog = await axios.get("https://api.thedogapi.com/v1/images/search");
         dogImage = dog.data[0].url;
@@ -25,6 +28,9 @@ module.exports = {
         .setImage(dogImage)
         .setURL(dogImage)
         .setColor(0xff6961)
+        .setFooter({
+            text: footer
+        })
         .setTimestamp();
 	// Reply to the author with the embed
 	bot.utils.replyEmbed(bot, message, [embed]);
