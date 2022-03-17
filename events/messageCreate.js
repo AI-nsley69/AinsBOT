@@ -71,7 +71,7 @@ async function catEmotes(bot, message) {
 }
 
 async function mentionReponse(bot, message) {
-    if (message.mentions.member || !message.mentions.has(bot.client.user.id)) return;
+    if (message.mentions.member || !(message.content === `<@!${bot.client.user.id}>`)) return;
     const emoticon = Math.floor(Math.random() * 100) === 42 ? ">:(" : ":)";
     const replyString = `My prefix is \`${bot.config.prefix}\` ${emoticon}`;
     message.reply(replyString);
