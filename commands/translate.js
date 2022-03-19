@@ -26,11 +26,11 @@ module.exports = {
         .addFields([
             {
                 name: "Original",
-                value: toTranslate
+                value: toTranslate.slice(0, 1023) // We slice to fit the field character limit
             },
             {
                 name: "Translated",
-                value: translated
+                value: translated.slice(0, 1023)
             }
         ])
         .setTimestamp();
