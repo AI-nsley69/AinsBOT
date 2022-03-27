@@ -9,6 +9,7 @@ Restart=always
 RestartSec=1
 User=YOUR-USER
 WorkingDirectory=/path/to/AinsBOT
+ExecStartPre=git pull
 ExecStart=node index.js
 
 [Install]
