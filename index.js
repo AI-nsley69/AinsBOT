@@ -43,6 +43,5 @@ bot.events.forEach((v, eventName, events) => {
     const event = bot.events.get(eventName);
     bot.client.on(eventName, async (...args) => {
         event.run(bot, ...args).catch(err => console.log(err));
-        console.log(eventName)
     })
 })

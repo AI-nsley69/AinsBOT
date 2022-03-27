@@ -85,14 +85,22 @@ async function getTiktok(bot, message) {
     // Get the full url by unshortening it
     const fullUrl = await unshortener(potentialUrl);
     // Use tiktok-scraper to get the video meta and then grab the videourl
-    const req = await tiktok.getVideoMeta(fullUrl);
+    const req = await tiktok.getVideoMeta(fullUrl).catch(err => {
+        bot.utils.reply(bot, message, "Failed to get tiktok!");
+        console.log(err);
+    });
     const { id, text, videoUrl } = req.collector[0];
     // Reply to the message, with the videoUrl, then use the tiktok id for the name and the caption for the description
-    message.reply({ files: [{
-        attachment: videoUrl,
-        name: `${id}.mp4`,
-        description: text
-    }] });
+    try {
+        await message.reply({ files: [{
+            attachment: videoUrl,
+            name: `${id}.mp4`,
+            description: text
+        }] })
+    } catch (err) {
+        bot.utils.reply(bot, message, "Video might be too large!");
+        console.log(err);
+    };
 }
 
 async function previewMessage(bot, message) {
