@@ -1,0 +1,15 @@
+[Unit]
+Description=AinsBOT Discord Bot
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=YOUR-USER
+WorkingDirectory=/path/to/AinsBOT
+ExecStart=node index.js
+
+[Install]
+WantedBy=multi-user.target

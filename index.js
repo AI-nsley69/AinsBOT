@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const intents = new Intents();
 intents.add(
     Intents.FLAGS.GUILDS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MEMBERS,
+    Intents.FLAGS.GUILD_MEMBERS
 )
 // Create a new client object, load the dotenv config and login as the bot
 const client = new Client({ intents: intents });
@@ -43,5 +43,6 @@ bot.events.forEach((v, eventName, events) => {
     const event = bot.events.get(eventName);
     bot.client.on(eventName, async (...args) => {
         event.run(bot, ...args).catch(err => console.log(err));
+        console.log(eventName)
     })
 })
