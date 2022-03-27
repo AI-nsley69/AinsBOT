@@ -119,15 +119,11 @@ async function previewMessage(bot, message) {
     if (!targetChannel) return;
     const targetMessage = await targetChannel.messages.fetch(messageId);
     if (!targetMessage) return;
-    const targetMember = await targetGuild.members.fetch(targetMessage.author.id);
+    const targetMember = !(targetMessage.author.bot && (targetMessage.author.discriminator === '0000')) ? await targetGuild.members.fetch(targetMessage.author.id) : null;
     // Create new embed
     const embed = new MessageEmbed()
     .setTitle(`Message Link Preview! ${targetChannel.nsfw ? "(NSFW)" : ""}`)
     .setURL(fullUrl)
-    .setAuthor({
-        name: targetMessage.author.tag,
-        iconURL: targetMessage.author.displayAvatarURL()
-    })
     .setColor(targetMember ? targetMember.displayHexColor : message.guild.me.displayHexColor)
     .setFooter({
         text: `In #${targetMessage.channel.name} (${targetGuild.name})`,
@@ -138,6 +134,11 @@ async function previewMessage(bot, message) {
     if (targetMessage.content) embed.setDescription(targetChannel.nsfw ? `||${targetMessage.content}||` : targetMessage.content);
     // Check if there's an image and include it if it isn't an nsfw channel
     if (targetMessage.attachments.size > 0 && !targetChannel.nsfw) embed.setImage(targetMessage.attachments.first().attachment);
+    // Check if the author is a potential webhook and if not, add an author field
+    if (targetMember) embed.setAuthor({
+        name: targetMessage.author.tag,
+        iconURL: targetMessage.author.displayAvatarURL()
+    });
     
     bot.utils.replyEmbed(bot, message, [embed]);
 }
