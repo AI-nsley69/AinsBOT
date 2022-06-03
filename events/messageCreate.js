@@ -84,21 +84,28 @@ async function getTiktok(bot, message) {
     if (!potentialUrl) return;
     // Get the full url by unshortening it
     const fullUrl = await unshortener(potentialUrl);
+    // Send a temporary message and delete the original message
+    let msg = await message.channel.send("<a:AWloading:580639697156702220> Getting tiktok..");
+    message.delete().catch(err => console.log(err));
     // Use tiktok-scraper to get the video meta and then grab the videourl
     const req = await tiktok.getVideoMeta(fullUrl).catch(err => {
-        bot.utils.reply(bot, message, "Failed to get tiktok!");
+        msg.edit("<:AWstab:532904244488044584> Failed to get tiktok!");
         console.log(err);
+        return;
     });
     const { id, text, videoUrl } = req.collector[0];
     // Reply to the message, with the videoUrl, then use the tiktok id for the name and the caption for the description
     try {
-        await message.reply({ files: [{
-            attachment: videoUrl,
-            name: `${id}.mp4`,
-            description: text
-        }] })
+        msg.edit({
+            files: [{
+                attachment: videoUrl,
+                name: `${id}.mp4`,
+                description: text
+            }],
+            content: `Requested by ${message.author}:`
+        });
     } catch (err) {
-        bot.utils.reply(bot, message, "Video might be too large!");
+        msg.edit("Video might be too large! <:AWsadcat:819859358187126814>");
         console.log(err);
     };
 }
