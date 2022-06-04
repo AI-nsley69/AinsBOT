@@ -1,6 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const tiktok = require("tiktok-scraper");
 const unshortener = require("unshorten.it");
+const axios = require("axios");
 
 module.exports = {
     run: async (bot, message) => {
@@ -12,6 +13,7 @@ module.exports = {
         mentionReponse(bot, message);
         getTiktok(bot, message);
         previewMessage(bot, message);
+        previewReddit(bot, message);
     }
 }
 
@@ -148,4 +150,34 @@ async function previewMessage(bot, message) {
     });
     
     bot.utils.replyEmbed(bot, message, [embed]);
+}
+
+async function previewReddit(bot, message) {
+    // Get reddit link
+    let redditLinkRegex = /https?:\/\/(www\.)?reddit\.com\/r\/[^?\s]+/;
+    let redditLink = message.content.match(redditLinkRegex);
+    // Return if null
+    if (!redditLink) return;
+    // Delete message and send placeholder message 
+    message.delete().catch(err => console.log(err));
+    let msg = await message.channel.send("<a:AWloading:580639697156702220> Getting reddit post..");
+    // Fetch post
+    let redditLinkJson = redditLink[0].slice(0, -1) + ".json";
+    let redditPost = await axios.get(redditLinkJson);
+    // Get the variables from the post
+    redditPost = redditPost.data[0].data.children[0].data;
+    const { title, subreddit_name_prefixed, url, selftext, ups, upvote_ratio, over_18 } = redditPost;
+
+    const embed = new MessageEmbed()
+    .setTitle(title)
+    .setAuthor(subreddit_name_prefixed)
+    .setColor(over_18 ? 0xff0000 : 0xffffff)
+    .setFooter(`${ups} upvotes, ${Math.floor(ups - (ups * upvote_ratio))} downvotes`);
+    if (url && (over_18 === message.channel.nsfw)) embed.setImage(url);
+    if (selftext) embed.setDescription(selftext);
+
+    msg.edit({
+        embeds: [embed],
+        content: `Requested by ${message.author}`
+    });
 }
