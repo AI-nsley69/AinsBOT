@@ -159,7 +159,7 @@ async function previewReddit(bot, message) {
     // Return if null
     if (!redditLink) return;
     // Delete message and send placeholder message 
-    message.delete().catch(err => console.log(err));
+    message.suppressEmbeds(true).catch(err => console.log(err));
     let msg = await message.channel.send("<a:AWloading:580639697156702220> Getting reddit post..");
     // Fetch post
     let redditLinkJson = redditLink[0].slice(0, -1) + ".json";
