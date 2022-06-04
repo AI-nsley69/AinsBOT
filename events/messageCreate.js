@@ -170,6 +170,7 @@ async function previewReddit(bot, message) {
 
     const embed = new MessageEmbed()
     .setTitle(title)
+    .setURL(redditLink[0])
     .setAuthor(subreddit_name_prefixed)
     .setColor(over_18 ? 0xff0000 : 0xffffff)
     .setFooter(`${ups} upvotes, ${Math.floor(ups - (ups * upvote_ratio))} downvotes`);
