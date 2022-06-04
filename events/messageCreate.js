@@ -174,7 +174,7 @@ async function previewReddit(bot, message) {
     .setAuthor(subreddit_name_prefixed)
     .setColor(over_18 ? 0xff0000 : 0xffffff)
     .setFooter(`${ups} upvotes, ${Math.floor(ups - (ups * upvote_ratio))} downvotes`);
-    if (url && (over_18 === message.channel.nsfw)) embed.setImage(url);
+    if (url) over_18 === message.channel.nsfw ? embed.setImage(url) : embed.setImage("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.drawception.com%2Fdrawings%2F61767P4Rqp.png&f=1&nofb=1");
     if (selftext) embed.setDescription(selftext);
 
     msg.edit({
