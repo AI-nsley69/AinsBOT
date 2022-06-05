@@ -98,7 +98,7 @@ async function getTiktok(bot, message) {
     const { id, text, videoUrl } = req.collector[0];
     // Reply to the message, with the videoUrl, then use the tiktok id for the name and the caption for the description
     try {
-        msg.edit({
+        await msg.edit({
             files: [{
                 attachment: videoUrl,
                 name: `${id}.mp4`,
@@ -108,7 +108,6 @@ async function getTiktok(bot, message) {
         });
     } catch (err) {
         msg.edit("Video might be too large! <:AWsadcat:819859358187126814>");
-        console.log(err);
     };
 }
 
