@@ -3,6 +3,22 @@ const tiktok = require("tiktok-scraper");
 const unshortener = require("unshorten.it");
 const axios = require("axios");
 
+// Hardcoded Values
+const hardValues = {
+    // Hardcoded emotes
+    emojis: {
+       sadCat: "<:AWsadcat:819859358187126814>",
+       sadPet: "<a:CWsadPet:846784819077578773>",
+       previewLoading: "<a:AWloading:580639697156702220>",
+       previewFail: "<:AWstab:532904244488044584>"
+   },
+   // Hardcoded guilds
+   guilds: {
+       emotionalCatport: ["479713355767087115", "898278965540704333"],
+       catEmote: "753906897509154907"
+   }
+}
+
 module.exports = {
     run: async (bot, message) => {
         // Check if the author is a bot
@@ -54,17 +70,13 @@ async function catEmotes(bot, message) {
     // Check if it's in a guild, doesn't start with any prefix and is the target guild
     if (!message.guild) return;
     if (message.content.startsWith(bot.config.prefix) || message.content.startsWith(bot.config.adminPrefix)) return;
-    let targetGuild = "479713355767087115";
-    if (message.guild.id !== targetGuild) return;
+    if (!hardValues.guilds.emotionalCatport.includes(message.guild.id)) return;
     // Constants for emote to check and emote to respond with
-    const sadCatEmote = "<:AWsadcat:819859358187126814>";
-    const sadPettingEmote = "<a:CWsadPet:846784819077578773>"
-    if (message.content.includes(sadCatEmote)) return message.reply(sadPettingEmote);
+    if (message.content.includes(hardValues.emojis.sadCat)) return message.reply(hardValues.emojis.sadPet);
     catAliases = /\b(cat|khat|pussy|kat|kitten|kitty|puss|pussies|kittens|katt)\b/
     if (message.content.match(catAliases)) {
         // Fetch all emotes from a defined cat emote server
-        const emoteServerId = "753906897509154907";
-    	const catEmoteServer = await bot.client.guilds.fetch(emoteServerId);
+    	const catEmoteServer = await bot.client.guilds.fetch(hardValues.guilds.catEmote);
     	// Get a random number for the cat emotes and react with it
     	const rand = Math.floor(Math.random() * catEmoteServer.emojis.cache.size);
     	message.react(catEmoteServer.emojis.cache.at(rand).id)
@@ -87,11 +99,11 @@ async function getTiktok(bot, message) {
     // Get the full url by unshortening it
     const fullUrl = await unshortener(potentialUrl);
     // Send a temporary message and delete the original message
-    let msg = await message.channel.send("<a:AWloading:580639697156702220> Getting tiktok..");
+    let msg = await message.channel.send(`${hardValues.emojis.previewLoading} Getting tiktok..`);
     message.delete().catch(err => console.log(err));
     // Use tiktok-scraper to get the video meta and then grab the videourl
     const req = await tiktok.getVideoMeta(fullUrl).catch(err => {
-        msg.edit("<:AWstab:532904244488044584> Failed to get tiktok!");
+        msg.edit(`${hardValues.emojis.previewFail} Failed to get tiktok!`);
         console.log(err);
         return;
     });
@@ -107,7 +119,7 @@ async function getTiktok(bot, message) {
             content: `Requested by ${message.author}:`
         });
     } catch (err) {
-        msg.edit("Video might be too large! <:AWsadcat:819859358187126814>");
+        msg.edit(`Video might be too large! ${hardValues.emojis.sadCat}`);
     };
 }
 
@@ -159,7 +171,7 @@ async function previewReddit(bot, message) {
     if (!redditLink) return;
     // Delete message and send placeholder message 
     message.suppressEmbeds(true).catch(err => console.log(err));
-    let msg = await message.channel.send("<a:AWloading:580639697156702220> Getting reddit post..");
+    let msg = await message.channel.send(`${hardValues.emojis.previewLoading} Getting reddit post..`);
     // Fetch post
     let redditLinkJson = redditLink[0].slice(0, -1) + ".json";
     let redditPost = await axios.get(redditLinkJson);
@@ -172,7 +184,7 @@ async function previewReddit(bot, message) {
     .setURL(redditLink[0])
     .setAuthor(subreddit_name_prefixed)
     .setColor(over_18 ? 0xff0000 : 0xffffff)
-    .setFooter(`${ups} upvotes, ${Math.floor(ups - (ups * upvote_ratio))} downvotes`);
+    .setFooter(`${ups} upvotes, ${Math.floor(ups / upvote_ratio - ups)} downvotes`);
     if (url) over_18 === message.channel.nsfw ? embed.setImage(url) : embed.setImage("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.drawception.com%2Fdrawings%2F61767P4Rqp.png&f=1&nofb=1");
     if (selftext) embed.setDescription(selftext);
 
