@@ -31,7 +31,6 @@ module.exports = {
         .setFooter({
             text: footer
         })
-        .setTimestamp();
 	// Reply to the author with the embed
 	bot.utils.replyEmbed(bot, message, [embed]);
     }

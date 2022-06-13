@@ -2,31 +2,30 @@ const { Permissions, MessageEmbed } = require("discord.js");
 const axios = require("axios")
 
 module.exports = {
-    description: "Get a random cat",
+    description: "Get a random fox",
     usage: "",
     permission: null,
     guild: false,
     run: async (bot, message, args) => {
         // Create a random title with a random ending
-        const titles = ["Cat payload", "Meow meow meow", "Incoming kitty", "Detected cuteness"];
+        const titles = ["Floof payload", "squeaky noises", "Incoming fox", "Detected cuteness"];
         const emoticons = [" :)", " :D", " <3", "!"];
         const randTitle = titles[Math.floor(Math.random() * titles.length)] + emoticons[Math.floor(Math.random() * emoticons.length)];
-        // Get a random cat fact as a footer
-        let footer = await axios.get("https://cat-fact.herokuapp.com/facts/random?animal_type=cat&amount=1")
-        footer = footer.data.text;
-        // Fetch the cat images
-        const cat = await axios.get("https://api.thecatapi.com/v1/images/search");
-        const catImage = cat.data[0].url;
+        let footer = await axios.get("https://some-random-api.ml/facts/fox");
+        footer = footer.data.fact;
+        // Fetch the fox images
+        fox = await axios.get("https://randomfox.ca/floof/");
+        foxImage = fox.data.image;
         // Create a new embed
         const embed = new MessageEmbed()
         .setTitle(randTitle)
         .setAuthor({
             name: message.author.tag,
-            url: catImage,
+            url: foxImage,
             iconURL: message.author.displayAvatarURL()
         })
-        .setImage(catImage)
-        .setURL(catImage)
+        .setImage(foxImage)
+        .setURL(foxImage)
         .setColor(0xff6961)
         .setFooter({
             text: footer
