@@ -2,6 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const tiktok = require("tiktok-scraper");
 const unshortener = require("unshorten.it");
 const axios = require("axios");
+const tinyurl = require("shefin-tinyurl");
 
 // Hardcoded Values
 const hardValues = {
@@ -119,7 +120,8 @@ async function getTiktok(bot, message) {
             content: `Requested by ${message.author}:`
         });
     } catch (err) {
-        msg.edit(`Video might be too large! ${hardValues.emojis.sadCat}`);
+        const newLink = await tinyurl.shorten(videoUrl).catch(err => console.log(err));
+        msg.edit(`Requsted by ${message.author}\n${newLink}`);
     };
 }
 
