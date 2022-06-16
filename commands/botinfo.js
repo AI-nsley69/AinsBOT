@@ -27,11 +27,11 @@ module.exports = {
             },
             {
                 name: "Memory (RAM)",
-                value: `${mem.usedMemMb}/${mem.totalMemMb}mb (${Math.round(100-mem.freeMemPercentage)}% used)}`
+                value: `${mem.usedMemMb}/${mem.totalMemMb}mb (${Math.round(100-mem.freeMemPercentage)}% used)`
             },
             {
                 name: "CPU Usage",
-                value: `${cpu}%`
+                value: `${cpu}% (${cpu.model()})`
             }
             /*
             {
