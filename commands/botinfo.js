@@ -32,7 +32,11 @@ module.exports = {
             },
             {
                 name: "CPU Usage",
-                value: `${cpu}% (${cpuModel})`
+                value: `${cpu}%`
+            },
+            {
+                name: "CPU Model",
+                value: cpuModel
             }
             /*
             {
