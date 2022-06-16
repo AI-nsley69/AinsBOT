@@ -7,7 +7,8 @@ module.exports = {
     permission: null,
     guild: false,
     run: async (bot, message, args) => {
-        const mem = await os.mem.info(), cpu = await os.cpu.usage(), osName = await os.os.oos(), osPlatform = await os.os.platform(), cpuArch = os.os.arch()//, drive = await os.drive.info();
+        const mem = await os.mem.info(), cpu = await os.cpu.usage(), osName = await os.os.oos(), osPlatform = await os.os.platform(), cpuArch = os.os.arch(), cpuModel = os.cpu.model()
+        //, drive = await os.drive.info();
 
         const embed = new MessageEmbed()
         .setTitle("Bot information!")
@@ -31,7 +32,7 @@ module.exports = {
             },
             {
                 name: "CPU Usage",
-                value: `${cpu}% (${cpu.model()})`
+                value: `${cpu}% (${cpuModel})`
             }
             /*
             {
