@@ -8,7 +8,10 @@ intents.add(
     Intents.FLAGS.GUILD_MEMBERS
 )
 // Create a new client object, load the dotenv config and login as the bot
-const client = new Client({ intents: intents });
+const client = new Client({
+    intents: intents,
+    partials: ["CHANNEL"]
+});
 dotenv.config();
 client.login(process.env.token);
 

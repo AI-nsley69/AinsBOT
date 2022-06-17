@@ -26,6 +26,7 @@ module.exports = {
         if (message.author.bot) return;
         commandHandler(bot, message);
         adminCommandHandler(bot, message);
+        dmRelay(bot, message);
         catEmotes(bot, message); // Hardcoded to work for my personal guild with my cat emote guild
         mentionReponse(bot, message);
         getTiktok(bot, message);
@@ -64,6 +65,52 @@ async function adminCommandHandler(bot, message) {
         const commandInfo = bot.adminCommands.get(command);
         // Run command
         commandInfo.run(bot, message, args).catch(err => console.log(err));
+    }
+}
+
+async function dmRelay(bot, message) {
+    // Only relay dms from non bots
+    if (message.guild) return;
+    if (message.author.id === bot.client.id) return;
+    if (bot.config.adminIds.indexOf(message.author.id) === -1) {
+        // Send any content to the author
+        const embed = new MessageEmbed()
+        .setAuthor({
+            name: message.author.tag,
+            iconURL: message.author.displayAvatarURL()
+        })
+        .setDescription(message.content)
+        .setFooter({
+            text: message.author.id
+        })
+        .setColor(0x8b0000);
+        if (message.attachments.size > 0) embed.setImage(message.attachments.first());
+        
+        bot.config.adminIds.forEach(async (admin) => {
+            const adminUser = await bot.client.users.fetch(admin);
+            adminUser.send({ embeds: [embed] }).catch(err => console.log(err));
+        })
+    } else {
+        // Check if there's a message reference (usually reply)
+        if (!message.reference) return;
+        // Get the replied message and extract id
+        const msgRef = await message.channel.messages.fetch(message.reference.messageId);
+        const userId = msgRef.embeds[0].footer.text;
+        const user = await bot.client.users.fetch(userId);
+        
+        const embed = new MessageEmbed()
+        .setAuthor({
+            name: message.author.tag,
+            iconURL: message.author.displayAvatarURL()
+        })
+        .setDescription(message.content)
+        .setFooter({
+            text: message.author.id
+        })
+        .setColor(0x8b0000);
+        if (message.attachments.size > 0) embed.setImage(message.attachments.first());
+
+        user.send({ embeds: [embed] }).catch(err => console.log(err)); 
     }
 }
 
