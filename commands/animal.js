@@ -1,28 +1,43 @@
 const { Permissions, MessageEmbed } = require("discord.js");
 const axios = require("axios")
 
+function apiFetch(url, mapper) {
+    return (http) => {
+        return http.get(url)
+            .then(mapper);
+    }
+}
+
 const animalApis = {
     // Cat apis for image + fact
     cat: {
-        image: "https://api.thecatapi.com/v1/images/search",
-        fact: "https://some-random-api.ml/facts/cat"
+        fetchImage: apiFetch("https://api.thecatapi.com/v1/images/search", r => r.data[0].url),
+        fetchFact: apiFetch("https://some-random-api.ml/facts/cat", r => r.data.fact),
+        title: "Cat payload :D"
     },
     // Capybara api
     capybara: {
-        image: "https://api.capybara-api.xyz/v1/image/random",
-        fact: "https://api.capybara-api.xyz/v1/facts/random"
+        fetchImage: apiFetch("https://api.capybara-api.xyz/v1/image/random", r => r.data.image_urls.original),
+        fetchFact: apiFetch("https://api.capybara-api.xyz/v1/facts/random", r => r.data.fact),
+        title: "Capybawa payload <33"
     },
     // Dog api, provides both fact and image
     dog: {
-        image: "https://some-random-api.ml/animal/dog"
+        fetchImage: apiFetch("https://some-random-api.ml/animal/dog", r => r.data.image),
+        fetchFact: apiFetch("https://some-random-api.ml/animal/dog", r => r.data.fact),
+        title: "Woof woof!"
     },
     // Fox api, provides both fact and image
     fox: {
-        image: "https://some-random-api.ml/animal/fox"
+        fetchImage: apiFetch("https://some-random-api.ml/animal/fox", r => r.data.image),     
+        fetchFact: apiFetch("https://some-random-api.ml/animal/fox", r => r.data.fact),
+        title: "Fox fox fox :D"
     },
     // Red panda api, provides both fact and image
     firefox: {
-        image: "https://some-random-api.ml/animal/red_panda"
+        fetchImage: apiFetch("https://some-random-api.ml/animal/red_panda", r => r.data.image),
+        fetchFact: apiFetch("https://some-random-api.ml/animal/red_panda", r => r.data.fact),
+        title: "RED PAAAANDA <333333"
     }
 }
 
@@ -32,83 +47,15 @@ module.exports = {
     permission: null,
     guild: false,
     run: async (bot, message, args) => {
-        switch (args[0]) {
-            // Send cat payload
-            case "cat": {
-                const image = await axios.get(animalApis.cat.image).then(res => res.data[0].url);
-                const fact = await axios.get(animalApis.cat.fact).then(res => res.data.fact);
-                const title = "Cat payload :D"
+        const api = animalApis[args[0]];
+        if (!api) return message.channel.send("**Available animals**\ncapybara, cat, dog, firefox, fox");
 
-                animalEmbed(bot, message, {
-                    image: image,
-                    fact: fact,
-                    title: title
-                });
-                break;
-            }
-            // Send capybawa payload
-            case "capybara": {
-                const image = await axios.get(animalApis.capybara.image).then(res => res.data.image_urls.original);
-                const fact = await axios.get(animalApis.capybara.fact).then(res => res.data.fact);
-                const title = "Capybawa payload <33";
-
-                animalEmbed(bot, message, {
-                    image: image,
-                    fact: fact,
-                    title: title
-                });
-                break;
-            }
-            // Send dog payload
-            case "dog": {
-               const { image, fact } = await axios.get(animalApis.dog.image).then(res => res.data);
-               const title = "Woof woof!";
-
-               animalEmbed(bot, message, {
-                   image: image,
-                   fact: fact,
-                   title: title
-               });
-               break;
-            }
-            // Send fox payload
-            case "fox": {
-               const { image, fact } = await axios.get(animalApis.fox.image).then(res => res.data);
-               const title = "Fox fox fox :D";
-
-               animalEmbed(bot, message, {
-                   image: image,
-                   fact: fact,
-                   title: title
-               });
-               break;
-            }
-            // Send red panda payload
-            case "firefox": {
-               const { image, fact } = await axios.get(animalApis.firefox.image).then(res => res.data);
-               const title = "RED PAAAANDA <333333";
-
-               animalEmbed(bot, message, {
-                   image: image,
-                   fact: fact,
-                   title: title
-               });
-               break;
-            }
-            // Send available animals if no animal is specified
-            default: {
-                const embed = new MessageEmbed()
-                .setTitle("Available animals!")
-                .setDescription(`
-                    capybara, cat, dog, firefox, fox,
-                    `)
-                .setTimestamp();
-                
-                bot.utils.replyEmbed(bot, message, [embed]);
-                break;
-            }
-        }
-    }
+        animalEmbed(bot, message, {
+            image: await api.fetchImage(axios),
+            fact: await api.fetchFact(axios),
+            title: api.title
+        })
+   }
 }
 
 async function animalEmbed(bot, message, animalInfo) {
