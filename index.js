@@ -1,6 +1,6 @@
 const { Client, Intents } = require("discord.js");
 const dotenv = require("dotenv");
-
+const Sequelize = require("sequelize");
 // Create intents for discord bot so library is satisfied"
 const intents = new Intents();
 intents.add(
@@ -18,8 +18,25 @@ client.login(process.env.token);
 const bot = {
     client: client,
     fs: require("fs"),
-    utils: require("./modules/utils.js")
+    utils: require("./modules/utils.js"),
+    sequelize: new Sequelize("database", "user", "password", {
+        host: "localhost",
+        dialect: "sqlite",
+        logging: false,
+        storage: "database.sqlite"
+    }),
+    db: {}
 }
+
+bot.db.features = bot.sequelize.define("features", {
+    guildId: {
+        type: Sequelize.STRING,
+        unique: true,
+    },
+    tiktokPreview: Sequelize.BOOLEAN,
+    messagePreview: Sequelize.BOOLEAN,
+    redditPreview: Sequelize.BOOLEAN
+});
 
 bot.config = JSON.parse(bot.fs.readFileSync("./config.json"));
 

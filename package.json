@@ -5,7 +5,9 @@
     "dotenv": "^16.0.0",
     "node-os-utils": "^1.3.6",
     "pretty-ms": "^7.0.1",
+    "sequelizer": "^1.1.4",
     "shefin-tinyurl": "^1.0.0",
+    "sqlite3": "^5.0.8",
     "tiktok-scraper": "^1.4.36",
     "translate-google": "^1.5.0",
     "unshorten.it": "^1.0.0"

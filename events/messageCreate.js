@@ -3,6 +3,7 @@ const tiktok = require("tiktok-scraper");
 const unshortener = require("unshorten.it");
 const axios = require("axios");
 const tinyurl = require("shefin-tinyurl");
+const { Op } = require("sequelize");
 
 // Hardcoded Values
 const hardValues = {
@@ -144,6 +145,14 @@ async function getTiktok(bot, message) {
     let tiktokRegex = /https?:\/\/vm\.tiktok\.com\/\w+/;
     let potentialUrl = message.content.match(tiktokRegex);
     if (!potentialUrl) return;
+    // Check if the guild has the command enabled, otherwise return early
+    const isEnabled = await bot.db.features.findAll({
+        where: {
+            guildId: message.guild.id,
+            tiktokPreview: true
+        }
+    })
+    if (isEnabled.length === 0) return;
     // Get the full url by unshortening it
     const fullUrl = await unshortener(potentialUrl);
     // Send a temporary message and delete the original message
@@ -176,6 +185,14 @@ async function previewMessage(bot, message) {
     let messageLinkRegex = /https?:\/\/discord\.com\/channels\/(\d+)\/(\d+)\/(\d+)/;
     let messageInfo = message.content.match(messageLinkRegex);
     if (!messageInfo) return;
+    // Check if the guild has the command enabled, otherwise return early
+    const isEnabled = await bot.db.features.findAll({
+        where: {
+            guildId: message.guild.id,
+            messagePreview: true
+        }
+    });
+    if (isEnabled.length === 0) return;
     // Create a constant for each information we need, then check if it works
     const [fullUrl, guildId, channelId, messageId] = messageInfo;
     const targetGuild = await bot.client.guilds.fetch(guildId).catch(err => {
@@ -218,6 +235,14 @@ async function previewReddit(bot, message) {
     let redditLink = message.content.match(redditLinkRegex);
     // Return if null
     if (!redditLink) return;
+    // Check if the guild has the command enabled, otherwise return early
+    const isEnabled = await bot.db.features.findAll({
+        where: {
+            guildId: message.guild.id,
+            redditPreview: true
+        }
+    })
+    if (isEnabled.length === 0) return;
     // Delete message and send placeholder message 
     message.suppressEmbeds(true).catch(err => console.log(err));
     let msg = await message.channel.send(`${hardValues.emojis.previewLoading} Getting reddit post..`);
