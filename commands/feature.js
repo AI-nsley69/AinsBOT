@@ -53,20 +53,26 @@ module.exports = {
             }
             
             default: {
+                const query = await bot.db.features.findAll({
+                    where: {
+                        guildId: message.guild.id
+                    }
+                });
+                const { tiktokPreview, messagePreview, redditPreview } = query[0].dataValues;
                 const embed = new MessageEmbed()
                 .setTitle("Available feature toggles")
                 .addFields([
                     {
                         name: "tiktokPreview",
-                        value: "Allows fetching tiktoks from tiktok links to preview them"
+                        value: `Allows fetching tiktoks from tiktok links to preview them. Currently set to \`${tiktokPreview}\``
                     },
                     {
                         name: "messagePreview",
-                        value: "Allows previewing messages from message links"
+                        value: `Allows previewing messages from message links. Currently set to \`${messagePreview}\``
                     },
                     {
                         name: "redditPreview",
-                        value: "Allows previewing reddit posts from reddit links"
+                        value: `Allows previewing reddit posts from reddit links. Currently set to: \`${redditPreview}\``
                     }
                 ])
                 .setAuthor({
