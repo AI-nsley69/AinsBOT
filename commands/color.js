@@ -33,7 +33,7 @@ async function parseColor(bot, message, color) {
     // Check for prefix
     const prefixes = ["0x", "#"];
     prefixes.forEach(p => {
-        if (color.startsWith(p)) color = color.slice(p.length, color.length).toString(16);
+        if (color.startsWith(p)) color = color.slice(p.length, color.length);
     });
     // Check if rgb
     const match = [...color.matchAll(",")];
