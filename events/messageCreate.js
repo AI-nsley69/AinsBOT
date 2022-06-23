@@ -85,7 +85,7 @@ async function dmRelay(bot, message) {
             text: message.author.id
         })
         .setColor(0x8b0000);
-        if (message.attachments.size > 0) embed.setImage(message.attachments.first());
+        if (message.attachments.size > 0) embed.setImage(message.attachments.first().url);
         
         bot.config.adminIds.forEach(async (admin) => {
             const adminUser = await bot.client.users.fetch(admin);
@@ -109,7 +109,7 @@ async function dmRelay(bot, message) {
             text: message.author.id
         })
         .setColor(0x8b0000);
-        if (message.attachments.size > 0) embed.setImage(message.attachments.first());
+        if (message.attachments.size > 0) embed.setImage(message.attachments.first().url);
 
         user.send({ embeds: [embed] }).catch(err => console.log(err)); 
     }
