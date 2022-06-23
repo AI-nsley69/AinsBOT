@@ -1,6 +1,6 @@
 const { Permissions, MessageEmbed } = require("discord.js");
 const axios = require("axios");
-const validFlags = ["lgbt", "pansexual", "nonbinary", "lesbian", "transgender"];
+const validFlags = ["lgbt", "pansexual", "nonbinary", "lesbian", "transgender", "bisexual"];
 
 module.exports = {
     description: "Create an lgbtq flag around an avatar",
