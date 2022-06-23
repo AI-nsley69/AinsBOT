@@ -44,7 +44,6 @@ async function parseColor(bot, message, color) {
         values.forEach(v => {
             if (v > 255) return null;
             color += Number(v).toString(16);
-            console.log(color)
         })
     }
     // Check if color is too big for a hex number
