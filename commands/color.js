@@ -42,7 +42,7 @@ async function parseColor(bot, message, color) {
         if (values.length !== 3) return null;
         color = "";
         values.forEach(v => {
-            if (v > 255) return null;
+            if (v > 255) v = 255;
             color += Number(v).toString(16);
         })
     }
