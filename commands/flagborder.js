@@ -17,7 +17,7 @@ module.exports = {
         // Request the image as an array buffer without encoding
         const newAvatar = await axios.request({
             method: "GET",
-            url: `https://some-random-api.ml/canvas/${flag}?avatar=${member.user.displayAvatarURL({ format: "png" })}`,
+            url: `https://some-random-api.ml/canvas/${flag}?avatar=${member.user.displayAvatarURL({ format: "png", size: 512 })}`,
             responseType: "arraybuffer",
             responseEncoding: "null"
         });
