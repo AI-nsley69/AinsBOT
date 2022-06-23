@@ -1,6 +1,6 @@
 const { Permissions, MessageEmbed } = require("discord.js");
 const axios = require("axios");
-const validFlags = ["lgbt", "pansexual", "nonbinary", "lesbian"];
+const validFlags = ["lgbt", "pansexual", "nonbinary", "lesbian", "transgender"];
 
 module.exports = {
     description: "Create an lgbtq flag around an avatar",
@@ -14,6 +14,8 @@ module.exports = {
         // Check if there's a mentioned user, else set it to the author
         let member = message.mentions.members.first();
         if (!member) member = message.member;
+        // Send temporary message to later be edited
+        const msg = await message.reply("Fetching..");
         // Request the image as an array buffer without encoding
         const newAvatar = await axios.request({
             method: "GET",
@@ -22,7 +24,7 @@ module.exports = {
             responseEncoding: "null"
         });
         
-        message.reply({
+        msg.edit({
             files: [{
                 name: `${flag}_border.png`,
                 attachment: newAvatar.data
