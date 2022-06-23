@@ -8,8 +8,9 @@ module.exports = {
     guild: false,
     run: async (bot, message, args) => {
         // Simple validation of color
-        const [color] = args;
-        if (!color || color.length > 6) return message.channel.send("Incorrect color, please use a 6 digit hexcode number!");
+        let [color] = args;
+        color = await parseColor(bot, message, color);
+        if (!color) return message.channel.send("Incorrect color, please use a valid hex code or rgb value!");
         // Get the color from the api
         const img = await axios.request({
             method: "GET",
@@ -26,3 +27,28 @@ module.exports = {
         }).catch(err => console.log(err));
     }
 }
+
+async function parseColor(bot, message, color) {
+    if (!color) return null;
+    // Check for prefix
+    const prefixes = ["0x", "#"];
+    prefixes.forEach(p => {
+        if (color.startsWith(p)) color = color.slice(p.length, color.length).toString(16);
+    });
+    // Check if rgb
+    const match = [...color.matchAll(",")];
+    if (match.length === 2) {
+        const values = color.split(",");
+        if (values.length !== 3) return null;
+        color = "";
+        values.forEach(v => {
+            if (v > 255) return null;
+            color += Number(v).toString(16);
+            console.log(color)
+        })
+    }
+    // Check if color is too big for a hex number
+    if (color.length > 6) return null;
+    return color;
+}
+
