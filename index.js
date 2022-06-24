@@ -19,6 +19,7 @@ const bot = {
     client: client,
     fs: require("fs"),
     utils: require("./modules/utils.js"),
+    consts: require("./modules/constants.js"),
     sequelize: new Sequelize("database", "user", "password", {
         host: "localhost",
         dialect: "sqlite",

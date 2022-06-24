@@ -14,6 +14,7 @@ module.exports = {
             iconURL: message.author.displayAvatarURL()
         })
         .setDescription(cmds)
+        .setColor(bot.consts.Colors.INFO)
         .setTimestamp();
 
         bot.utils.replyEmbed(bot, message, [embed]);

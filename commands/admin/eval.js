@@ -11,7 +11,7 @@ module.exports = {
             // Set up embed
             const embed = new MessageEmbed()
             .setTitle("🖥️ Eval response!")
-            .setColor(0x00ff00)
+            .setColor(bot.consts.Colors.SUCCESS)
             .setAuthor({
                 name: message.author.tag,
                 iconURL: message.author.displayAvatarURL()
@@ -24,7 +24,7 @@ module.exports = {
             // Error embed
             const embed = new MessageEmbed()
             .setTitle("❌ Eval failed!")
-            .setColor(0xff0000)
+            .setColor(bot.consts.Colors.ERR)
             .setAuthor({
                 name: message.author.tag,
                 iconURL: message.author.displayAvatarURL()

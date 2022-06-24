@@ -18,7 +18,7 @@ module.exports = {
 	// Create an embed with the translated message
 	const embed = new MessageEmbed()
 	.setTitle("Google Translate!")
-        .setColor(0x53adcb)
+        .setColor(bot.consts.Colors.TRANSLATE)
         .setAuthor({
             name: message.author.tag,
             iconURL: message.author.displayAvatarURL()

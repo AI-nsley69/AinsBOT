@@ -79,6 +79,7 @@ module.exports = {
                     name: message.author.tag,
                     iconURL: message.author.displayAvatarURL()
                 })
+                .setColor(bot.consts.Colors.INFO)
                 .setTimestamp();
 
                 bot.utils.replyEmbed(bot, message, [embed]);
@@ -93,7 +94,7 @@ async function sendEmbed(bot, message, feature, futureBoolean) {
     const embed = new MessageEmbed()
     .setTitle(`Updated ${feature}!`)
     .setDescription(`Set to: \`${futureBoolean}\``)
-    .setColor(futureBoolean ? 0x00ff00 : 0xff0000)
+    .setColor(futureBoolean ? bot.consts.Colors.SOFT_ERR : bot.consts.Colors.SUCCESS)
     .setAuthor({
         name: message.author.tag,
         iconURL: message.author.displayAvatarURL()

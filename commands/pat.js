@@ -16,7 +16,7 @@ module.exports = {
         const embed = new MessageEmbed()
         .setTitle(`${message.author.tag} gave ${member.user.tag} a pat!`)
         .setThumbnail(icon.data.link)
-        .setColor(0xccccff)
+        .setColor(bot.consts.Colors.INFO)
         .setImage(hug.data.link)
         .setTimestamp()
 

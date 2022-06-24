@@ -67,7 +67,7 @@ async function animalEmbed(bot, message, animalInfo) {
         })
         .setImage(animalInfo.image)
         .setURL(animalInfo.image)
-        .setColor(0xff6961)
+        .setColor(bot.consts.Color.SUCCESS)
 
         animalInfo.fact ? embed.setFooter({ text: animalInfo.fact }) : embed.setTimestamp();
 	// Reply to the author with the embed
