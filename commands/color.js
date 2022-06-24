@@ -42,12 +42,16 @@ async function parseColor(bot, message, color) {
         if (values.length !== 3) return null;
         color = "";
         values.forEach(v => {
-            if (v > 255) v = 255;
-            color += Number(v).toString(16);
+            if (v > 255) color += 255.toString(16);
+            else color += Number(v).toString(16);
         })
     }
     // Check if color is too big for a hex number
     if (color.length > 6) return null;
+    // Verify that we have the correct characters
+    const validChars = /[0-9,a-f]+$/;
+    if (!validChars.test(color)) return null;
+    // If all checks pass, return the color
     return color;
 }
 
