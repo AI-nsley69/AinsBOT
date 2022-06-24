@@ -49,7 +49,7 @@ async function parseColor(bot, message, color) {
     // Check if color is too big for a hex number
     if (color.length > 6) return null;
     // Verify that we have the correct characters
-    const validChars = /[0-9,a-f]+$/;
+    const validChars = /[0-9a-f]+$/;
     if (!validChars.test(color)) return null;
     // If all checks pass, return the color
     return color;
