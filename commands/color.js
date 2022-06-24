@@ -11,6 +11,7 @@ module.exports = {
         let [color] = args;
         color = await parseColor(bot, message, color);
         if (!color) return bot.utils.softErr(bot, message, "Incorrect color, please use a valid hex code or rgb value!");
+        const msg = await bot.utils.cmdLoadingMsg(bot, message);
         // Get the color from the api
         const img = await axios.request({
             method: "GET",
@@ -31,7 +32,7 @@ module.exports = {
         })
         .setTimestamp();
 
-        bot.utils.replyEmbed(bot, message, [embed]);
+        msg.edit({ embeds: [embed] });
     }
 }
 

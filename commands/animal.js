@@ -49,8 +49,10 @@ module.exports = {
     run: async (bot, message, args) => {
         const api = animalApis[args[0]];
         if (!api) return message.channel.send("**Available animals**\ncapybara, cat, dog, firefox, fox");
-
-        animalEmbed(bot, message, {
+        // Temporary loading msg
+        const msg = await bot.utils.cmdLoadingMsg(bot, message);
+        // Create the embed
+        animalEmbed(bot, message, msg, {
             image: await api.fetchImage(axios),
             fact: await api.fetchFact(axios),
             title: api.title
@@ -58,7 +60,7 @@ module.exports = {
    }
 }
 
-async function animalEmbed(bot, message, animalInfo) {
+async function animalEmbed(bot, message, msg, animalInfo) {
         const embed = new MessageEmbed()
         .setTitle(animalInfo.title)
         .setAuthor({
@@ -67,9 +69,9 @@ async function animalEmbed(bot, message, animalInfo) {
         })
         .setImage(animalInfo.image)
         .setURL(animalInfo.image)
-        .setColor(bot.consts.Color.SUCCESS)
+        .setColor(bot.consts.Colors.SUCCESS)
 
         animalInfo.fact ? embed.setFooter({ text: animalInfo.fact }) : embed.setTimestamp();
-	// Reply to the author with the embed
-	bot.utils.replyEmbed(bot, message, [embed]);
+        // Edit to add the new embed
+        msg.edit({ embeds: [embed] });
 }

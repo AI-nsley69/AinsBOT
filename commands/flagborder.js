@@ -11,11 +11,11 @@ module.exports = {
         // Verify that we have a flag argument
         const [flag] = args;
         if (!validFlags.includes(flag)) return message.channel.send(`Please choose one of the available flags:\n${validFlags.join(", ")}`);
+	// Temporary message that'll get edited later on
+        const msg = await bot.utils.cmdLoadingMsg(bot, message);
         // Check if there's a mentioned user, else set it to the author
         let member = message.mentions.members.first();
         if (!member) member = message.member;
-        // Send temporary message to later be edited
-        const msg = await message.reply("Fetching..");
         // Request the image as an array buffer without encoding
         const newAvatar = await axios.request({
             method: "GET",

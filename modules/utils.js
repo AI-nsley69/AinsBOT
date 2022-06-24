@@ -24,6 +24,23 @@ module.exports = {
 
         bot.utils.replyEmbed(bot, message, [embed]);
     },
+    // Temporary embed to showcase that the bot is just working on a command
+    cmdLoadingMsg: async (bot, message) => {
+        const embed = new MessageEmbed()
+        .setTitle("Command is processing..")
+        .setImage("https://c.tenor.com/XasjKGMk_wAAAAAC/load-loading.gif")
+        .setFooter( {
+            text: "Please be patient!"
+        })
+        .setColor(bot.consts.Colors.PROMPT)
+        .setAuthor({
+            name: message.author.tag,
+            iconURL: message.author.displayAvatarURL()
+        });
+
+        const msg = await message.channel.send({ embeds: [embed] });
+        return msg;
+    },
     // Convert buffer into imgur url
     bufToImgurURL: async (bot, buffer) => {
         const imgStream = Readable.from(buffer);
