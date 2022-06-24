@@ -49,7 +49,9 @@ async function commandHandler(bot, message) {
 	// Check if the message is from a guild, if wanted
         if (commandInfo.guild && !message.guild) return;
 	// Run the command and catch any error to not crash bot
-        commandInfo.run(bot, message, args).catch(err => console.log(err));
+        await commandInfo.run(bot, message, args).catch(err => {
+            bot.utils.softErr(bot, message, err);
+        });
     }
 }
 
@@ -65,7 +67,9 @@ async function adminCommandHandler(bot, message) {
         if (!bot.adminCommands.has(command)) return;
         const commandInfo = bot.adminCommands.get(command);
         // Run command
-        commandInfo.run(bot, message, args).catch(err => console.log(err));
+        commandInfo.run(bot, message, args).catch(err => {
+            bot.utils.softErr(bot, message, err);
+        }
     }
 }
 

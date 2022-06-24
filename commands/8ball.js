@@ -7,11 +7,11 @@ module.exports = {
     guild: false,
     run: async (bot, message, args) => {
         // Check if the argument array exists, if not let the user know they're missing the question
-        if (!args) return message.reply("Missing a question..").then(msg => setTimeout(() => msg.delete(), 5000));
+        if (!args) return bot.utils.softErr(bot, message, "Missing a question..")
         // Join the array to turn it into a string
         const question = args.join(" ");
         // Check if the message ends with a question mark, otherwise classify it as not asking a question
-        if (!question.endsWith("?")) return message.reply("You're not asking a question.").then(msg => setTimeout(() => msg.delete(), 5000));
+        if (!question.endsWith("?")) return bot.utils.softErr(bot, message, "You're not asking a question.")
         // 2d array to include a color with an answer
         const response = [
             ["Yes", 0x00ff00],

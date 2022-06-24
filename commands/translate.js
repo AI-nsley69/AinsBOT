@@ -8,7 +8,7 @@ module.exports = {
     guild: false,
     run: async (bot, message, args) => {
         // Check if there's a message reference or any string to translate
-        if (!message.reference && !args) return;
+        if (!message.reference && !args) return bot.utils.softErr(bot, message, "Please reply to a message or give text to translate!");
         // Send temporary loading message
         const tmpMsg = await bot.utils.cmdLoadingMsg(bot, message);
         // Get message object if it exists, otherwise make it null

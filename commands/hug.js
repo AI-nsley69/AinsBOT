@@ -9,8 +9,8 @@ module.exports = {
     run: async (bot, message, args) => {
         // Verify that we have a user to hug and if it is valid
         const member = message.mentions.members.first();
-        if (!member) return message.channel.send("Awh.. got no one to hug? ):");
-        if (member.user.id === message.author.id) return message.channel.send("You can't hug yourself silly!");
+        if (!member) return bot.utils.softErr(bot, message, "Awh.. got no one to hug? ):");
+        if (member.user.id === message.author.id) return bot.utils.softErr(bot, message, "You can't hug yourself silly!");
         // Temporary loading message
         const msg = await bot.utils.cmdLoadingMsg(bot, message);
         // Fetch the media

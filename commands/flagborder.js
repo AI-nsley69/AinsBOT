@@ -10,7 +10,7 @@ module.exports = {
     run: async (bot, message, args) => {
         // Verify that we have a flag argument
         const [flag] = args;
-        if (!validFlags.includes(flag)) return message.channel.send(`Please choose one of the available flags:\n${validFlags.join(", ")}`);
+        if (!validFlags.includes(flag)) return bot.utils.softErr(bot, message, `Please choose one of the available flags:\n${validFlags.join(", ")}`);
 	// Temporary message that'll get edited later on
         const msg = await bot.utils.cmdLoadingMsg(bot, message);
         // Check if there's a mentioned user, else set it to the author

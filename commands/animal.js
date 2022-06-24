@@ -48,7 +48,7 @@ module.exports = {
     guild: false,
     run: async (bot, message, args) => {
         const api = animalApis[args[0]];
-        if (!api) return message.channel.send("**Available animals**\ncapybara, cat, dog, firefox, fox");
+        if (!api) return bot.utils.softErr(bot, message, "**Available animals**\ncapybara, cat, dog, firefox, fox");
         // Temporary loading msg
         const msg = await bot.utils.cmdLoadingMsg(bot, message);
         // Create the embed
