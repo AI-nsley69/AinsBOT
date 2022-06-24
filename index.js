@@ -19,6 +19,7 @@ client.login(process.env.token);
 const bot = {
     client: client,
     fs: require("fs"),
+    logger: require("./modules/logger.js"),
     utils: require("./modules/utils.js"),
     consts: require("./modules/constants.js"),
     sequelize: new Sequelize("database", "user", "password", {

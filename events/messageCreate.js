@@ -49,8 +49,10 @@ async function commandHandler(bot, message) {
 	// Check if the message is from a guild, if wanted
         if (commandInfo.guild && !message.guild) return;
 	// Run the command and catch any error to not crash bot
+	bot.logger.verbose(bot, `${message.author.tag} ran ${command} command with ${args.length > 0 ? args.join(" ") : "no"} arguments!`)
         await commandInfo.run(bot, message, args).catch(err => {
             bot.utils.softErr(bot, message, err);
+            bot.logger.err(bot, err);
         });
     }
 }
@@ -69,7 +71,8 @@ async function adminCommandHandler(bot, message) {
         // Run command
         commandInfo.run(bot, message, args).catch(err => {
             bot.utils.softErr(bot, message, err);
-        }
+            bot.logger.err(bot, err);
+        })
     }
 }
 

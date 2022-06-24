@@ -9,8 +9,8 @@ module.exports = {
     run: async (bot, message, args) => {
         // Verify user
         const member = message.mentions.members.first();
-        if (!member) return message.channel.send("Awh.. got no one to pat? ):");
-        if (member.user.id === message.author.id) return message.channel.send("You can't pat yourself silly!");
+        if (!member) return bot.utils.softErr(bot, message, "Awh.. got no one to pat? ):");
+        if (member.user.id === message.author.id) return bot.utils.softErr(bot, message, "You can't pat yourself silly!");
 	// Send temporary message
 	const msg = await bot.utils.cmdLoadingMsg(bot, message);
 	// Fetch from api
