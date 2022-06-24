@@ -1,6 +1,7 @@
 const { Client, Intents } = require("discord.js");
 const dotenv = require("dotenv");
 const Sequelize = require("sequelize");
+const { ImgurClient } = require("imgur");
 // Create intents for discord bot so library is satisfied"
 const intents = new Intents();
 intents.add(
@@ -26,7 +27,8 @@ const bot = {
         logging: false,
         storage: "database.sqlite"
     }),
-    db: {}
+    db: {},
+    imgur: new ImgurClient({ clientId: process.env.imgurId })
 }
 
 bot.db.features = bot.sequelize.define("features", {

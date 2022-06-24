@@ -23,13 +23,16 @@ module.exports = {
             responseType: "arraybuffer",
             responseEncoding: "null"
         });
-        
-        msg.edit({
-            files: [{
-                name: `${flag}_border.png`,
-                attachment: newAvatar.data
-            }],
-            content: `Requested by ${message.author}`
-        });
+
+        const img = await bot.utils.bufToImgurURL(bot, newAvatar.data);
+
+        const embed = new MessageEmbed()
+        .setTitle(`Profile pictured transformed into ${flag}`)
+        .setImage(img)
+        .setThumbnail(message.author.displayAvatarURL({ size: 256 }))
+        .setColor(bot.consts.Colors.SUCCESS)
+        .setTimestamp();
+
+        msg.edit({ embeds: [embed] }).catch(err => console.log(err));
     }
 }

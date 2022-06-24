@@ -10,7 +10,7 @@ module.exports = {
         // Simple validation of color
         let [color] = args;
         color = await parseColor(bot, message, color);
-        if (!color) return message.channel.send("Incorrect color, please use a valid hex code or rgb value!");
+        if (!color) return bot.utils.softErr(bot, message, "Incorrect color, please use a valid hex code or rgb value!");
         // Get the color from the api
         const img = await axios.request({
             method: "GET",
@@ -18,18 +18,26 @@ module.exports = {
             responseType: "arraybuffer",
             responseEncoding: "null"
         });
+        
+        const imgLink = await bot.utils.bufToImgurURL(bot, img.data);
         // Send the color
-        message.channel.send({
-            files: [{
-                attachment: img.data,
-                name: `${color}.png`
-            }]
-        }).catch(err => console.log(err));
+        const embed = new MessageEmbed()
+        .setTitle(`0x${color}`)
+        .setColor(color)
+        .setImage(imgLink)
+        .setAuthor({
+            name: message.author.tag,
+            iconURL: message.author.displayAvatarURL()
+        })
+        .setTimestamp();
+
+        bot.utils.replyEmbed(bot, message, [embed]);
     }
 }
 
 async function parseColor(bot, message, color) {
     if (!color) return null;
+    color = color.toLowerCase();
     // Check for prefix
     const prefixes = ["0x", "#"];
     prefixes.forEach(p => {

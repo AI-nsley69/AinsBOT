@@ -3,7 +3,7 @@ module.exports = {
         // Command colors
         SUCCESS: 0x00ff00,
         ERR: 0xff0000,
-        SOFT_ERR: 0xcc0f16,
+        SOFT_ERR: 0xe34234,
         INVALID: 0xffff00,
         PROMPT: 0x0000ff,
         LOADING: 0xb19cd9,
@@ -12,5 +12,9 @@ module.exports = {
 
         REDDIT: 0xff4500,
         TRANSLATE: 0x53adcb
+    },
+    
+    Text: {
+        SOFT_ERR_TITLE: "Oh no! Something went wrong running this command"
     }
 }
