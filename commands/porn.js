@@ -25,6 +25,7 @@ module.exports = {
             .setColor(bot.consts.Colors.INFO);
 
             bot.utils.replyEmbed(bot, message, [embed]);
+            return;
        };
        // Remove lolis from this fuckfest
        if (category === "hentai") category = "hentai-no-loli";
