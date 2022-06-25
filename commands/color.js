@@ -15,13 +15,6 @@ module.exports = {
         const msg = await bot.utils.cmdLoadingMsg(bot, message);
         // Create the image from the hexcode
         const img = createImage(color);
-        /* Get the color from the api
-        const img = await axios.request({
-            method: "GET",
-            url: `https://some-random-api.ml/canvas/colorviewer?hex=${color}`,
-            responseType: "arraybuffer",
-            responseEncoding: "null"
-        }); */
         
         const imgLink = await bot.utils.bufToImgurURL(bot, img);
         // Send the color
