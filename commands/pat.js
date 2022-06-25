@@ -5,7 +5,7 @@ module.exports = {
     description: "Pat a user!",
     usage: "[user]",
     permission: null,
-    guild: false,
+    guild: true,
     run: async (bot, message, args) => {
         // Verify user
         const member = message.mentions.members.first();

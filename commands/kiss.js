@@ -5,7 +5,7 @@ module.exports = {
     description: "Kiss a user!",
     usage: "[user]",
     permission: null,
-    guild: false,
+    guild: true,
     run: async (bot, message, args) => {
         // Verify that we have a user to hug and if it is valid
         const member = message.mentions.members.first();
