@@ -17,7 +17,7 @@ module.exports = {
 	const cuddle = await axios.get("https://api.otakugifs.xyz/gif?reaction=cuddle&format=gif");
 	// Embed to send
         const embed = new MessageEmbed()
-        .setTitle(`${member.user.tag} cuddled ${message.author.tag}!`)
+        .setTitle(`${member.user.tag} got cuddled by ${message.author.tag}!`)
         .setColor(bot.consts.Colors.INFO)
         .setImage(cuddle.data.url)
         .setTimestamp()
