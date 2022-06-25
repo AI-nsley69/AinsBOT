@@ -52,7 +52,7 @@ async function parseColor(bot, message, color) {
         color = "";
         values.forEach(v => {
             if (v > 255) color += Number(255).toString(16);
-            else color += Number(v).toString(16);
+            else color += Number(v).toString(16).padStart(2, "0")
         })
     }
     // Check if color is too big for a hex number
@@ -60,7 +60,7 @@ async function parseColor(bot, message, color) {
     // Verify that we have the correct characters
     const validChars = /^[0-9a-f]+$/;
     if (!validChars.test(color)) return null;
-    // If all checks pass, return the color
-    return color;
+    // If all checks pass, return the color padded to 6 digits
+    return color.padStart(6, "0");
 }
 
