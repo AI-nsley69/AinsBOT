@@ -8,7 +8,7 @@ module.exports = {
     },
     // Reply with embed to message, fallback to sending if fail
     replyEmbed: async (bot, message, embeds) => {
-        message.reply({ embeds: embeds}).catch(() => message.channel.send({ embeds: embeds}).catch(err => console.log(err)));
+        message.reply({ embeds: embeds}).catch(() => message.channel.send({ embeds: embeds}).catch(err => bot.logger.err(bot, err)));
     },
     // Send soft error embed i.e incorrect command usage
     softErr: async (bot, message, err) => {
@@ -47,7 +47,7 @@ module.exports = {
         const res = await bot.imgur.upload({
             image: imgStream,
             type: "stream"
-        }).catch(err => console.log(err));
+        }).catch(err => bot.logger.err(bot, err));
 
         return res.data.link;
     }

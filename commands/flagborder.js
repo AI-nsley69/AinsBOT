@@ -22,7 +22,7 @@ module.exports = {
             url: `https://some-random-api.ml/canvas/${flag}?avatar=${member.user.displayAvatarURL({ format: "png", size: 512 })}`,
             responseType: "arraybuffer",
             responseEncoding: "null"
-        });
+        }).catch(err => bot.logger.err(bot, err));
 
         const img = await bot.utils.bufToImgurURL(bot, newAvatar.data);
 
@@ -33,6 +33,6 @@ module.exports = {
         .setColor(bot.consts.Colors.SUCCESS)
         .setTimestamp();
 
-        msg.edit({ embeds: [embed] }).catch(err => console.log(err));
+        msg.edit({ embeds: [embed] }).catch(err => bot.logger.err(bot, err));
     }
 }

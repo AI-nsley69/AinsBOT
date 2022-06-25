@@ -24,6 +24,6 @@ module.exports = {
         .setImage(hug.data.link)
         .setTimestamp()
         // Edit message to include the new embed
-        msg.edit({ embeds: [embed] });
+        msg.edit({ embeds: [embed] }).catch(err => bot.logger.err(bot, err));
     }
 }

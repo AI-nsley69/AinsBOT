@@ -14,7 +14,7 @@ module.exports = {
         // Temporary loading message
         const msg = await bot.utils.cmdLoadingMsg(bot, message);
         // Fetch the media
-	const cuddle = await axios.get("https://api.otakugifs.xyz/gif?reaction=cuddle&format=gif");
+	const cuddle = await axios.get("https://api.otakugifs.xyz/gif?reaction=cuddle&format=gif").catch(err => bot.logger.err(bot, err));
 	// Embed to send
         const embed = new MessageEmbed()
         .setTitle(`${member.user.tag} got cuddled by ${message.author.tag}!`)

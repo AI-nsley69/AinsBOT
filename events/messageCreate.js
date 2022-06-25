@@ -47,11 +47,11 @@ async function commandHandler(bot, message) {
 	// Check if the user has the required permission, if wanted
         if (commandInfo.permission && !message.member.permissions.has(commandInfo.permission)) return;
 	// Check if the message is from a guild, if wanted
-        if (commandInfo.guild && !message.guild) return;
+        if (commandInfo.guild && !message.guild) return bot.utils.softErr(bot, message, "This command is only available in guilds 🌧");
 	// Run the command and catch any error to not crash bot
 	bot.logger.verbose(bot, `${message.author.tag} ran ${command} command with ${args.length > 0 ? args.join(" ") : "no"} arguments!`)
         await commandInfo.run(bot, message, args).catch(err => {
-            bot.utils.softErr(bot, message, err);
+            bot.utils.softErr(bot, message, `${err}`);
             bot.logger.err(bot, err);
         });
     }
@@ -61,7 +61,11 @@ async function adminCommandHandler(bot, message) {
     // Only react to messages that start with the admin prefix
     if (message.content.startsWith(bot.config.adminPrefix)) {
         // If the author is not in the array of admin ids, return a message letting them know they're not allowed to run this command
-        if (!bot.config.adminIds.includes(message.author.id)) return message.channel.send("doas: Operation not permitted");
+        if (!bot.config.adminIds.includes(message.author.id)) {
+            bot.utils.softErr(bot, message, "doas: Operation not permitted");
+            bot.logger.warn(bot, `${message.author.tag} tried to run an admin command!`);
+            return;
+        }
         // Get the arguments and attempted command
         const args = message.content.slice(bot.config.adminPrefix.length).trim().split(/ +/);
         const command = args.shift().toLowerCase();
@@ -70,7 +74,7 @@ async function adminCommandHandler(bot, message) {
         const commandInfo = bot.adminCommands.get(command);
         // Run command
         commandInfo.run(bot, message, args).catch(err => {
-            bot.utils.softErr(bot, message, err);
+            bot.utils.softErr(bot, message, `${err}`);
             bot.logger.err(bot, err);
         })
     }
@@ -96,7 +100,7 @@ async function dmRelay(bot, message) {
         
         bot.config.adminIds.forEach(async (admin) => {
             const adminUser = await bot.client.users.fetch(admin);
-            adminUser.send({ embeds: [embed] }).catch(err => console.log(err));
+            adminUser.send({ embeds: [embed] }).catch(err => bot.logger.warn(bot, err));
         })
     } else {
         // Check if there's a message reference (usually reply)
@@ -118,7 +122,7 @@ async function dmRelay(bot, message) {
         .setColor(0x8b0000);
         if (message.attachments.size > 0) embed.setImage(message.attachments.first().url);
 
-        user.send({ embeds: [embed] }).catch(err => console.log(err)); 
+        user.send({ embeds: [embed] }).catch(err => bot.logger.warn(bot, err)); 
     }
 }
 
@@ -187,7 +191,7 @@ async function getTiktok(bot, message) {
             content: `Requested by ${message.author}:`
         });
     } catch (err) {
-        const newLink = await tinyurl.shorten(videoUrl).catch(err => console.log(err));
+        const newLink = await tinyurl.shorten(videoUrl).catch(err => bot.logger.err(bot, err));
         msg.edit(`Requsted by ${message.author}\n${newLink}`);
     };
 }
@@ -201,11 +205,11 @@ async function previewMessage(bot, message) {
     // Create a constant for each information we need, then check if it works
     const [fullUrl, guildId, channelId, messageId] = messageInfo;
     const targetGuild = await bot.client.guilds.fetch(guildId).catch(err => {
-        if (err.httpStatus !== 403) console.log(err);
+        if (err.httpStatus !== 403) bot.logger.err(bot, err);
     });
     if (!targetGuild) return;
     const targetChannel = await targetGuild.channels.fetch(channelId).catch(err => {
-        if (err.httpStatus !== 403) console.log(err);
+        if (err.httpStatus !== 403) bot.logger.err(bot, err);
     });
     if (!targetChannel) return;
     const targetMessage = await targetChannel.messages.fetch(messageId);
@@ -250,7 +254,7 @@ async function previewReddit(bot, message) {
     let redditPost = await axios.get(redditLinkJson);
     // Get the variables from the post
     redditPost = redditPost.data[0].data.children[0].data;
-    const { title, subreddit_name_prefixed, url, selftext, ups, upvote_ratio, over_18 } = redditPost;
+    const { title, subreddit_name_prefixed, url, selftext, ups, upvote_ratio, over_18 } = redditPost.catch(err => bot.logger.err(bot, err));
 
     const embed = new MessageEmbed()
     .setTitle(title)

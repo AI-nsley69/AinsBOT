@@ -19,6 +19,6 @@ module.exports = {
         msg.edit({ files: [{
             attachment: gayAvatar,
             name: `${user.user.username}.png`
-        }] });
+        }] }).catch(err => bot.logger.err(bot, err));
     }
 }
