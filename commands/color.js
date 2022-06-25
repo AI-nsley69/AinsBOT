@@ -1,4 +1,5 @@
 const { Permissions, MessageEmbed } = require("discord.js");
+const { createCanvas } = require("canvas");
 const axios = require("axios");
 
 module.exports = {
@@ -12,15 +13,17 @@ module.exports = {
         color = await parseColor(bot, message, color);
         if (!color) return bot.utils.softErr(bot, message, "Incorrect color, please use a valid hex code or rgb value!");
         const msg = await bot.utils.cmdLoadingMsg(bot, message);
-        // Get the color from the api
+        // Create the image from the hexcode
+        const img = createImage(color);
+        /* Get the color from the api
         const img = await axios.request({
             method: "GET",
             url: `https://some-random-api.ml/canvas/colorviewer?hex=${color}`,
             responseType: "arraybuffer",
             responseEncoding: "null"
-        });
+        }); */
         
-        const imgLink = await bot.utils.bufToImgurURL(bot, img.data);
+        const imgLink = await bot.utils.bufToImgurURL(bot, img);
         // Send the color
         const embed = new MessageEmbed()
         .setTitle(`0x${color}`)
@@ -64,3 +67,17 @@ async function parseColor(bot, message, color) {
     return color.padStart(6, "0");
 }
 
+function createImage(color) {
+    // Height & width
+    const width = 128;
+    const height = 128;
+    // Create a new 2d canvas with height and width
+    const canvas = createCanvas(width, height);
+    const context = canvas.getContext("2d");
+    // Fill the canvas with the color given
+    context.fillStyle = `#${color}`;
+    context.fillRect(0, 0, width, height);
+    // Create a buffer and return it
+    const buffer = canvas.toBuffer("image/png");
+    return buffer;
+}
