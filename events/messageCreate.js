@@ -44,12 +44,12 @@ async function commandHandler(bot, message) {
 	// Ignore if command doesn't exist, otherwise grab it in a constant
         if (!bot.commands.has(command)) return;
         const commandInfo = bot.commands.get(command);
+        // Check if the command is ran in the bot channel
+        const botChannel = await bot.db.botChannels.findAll({ where: { guildId: message.guild ? message.guild.id : null } });
+        const correctChannel = botChannel[0] ? botChannel[0].dataValues.bot_channel : null;
+        if (correctChannel && correctChannel !== message.channel.id) return;
         // Check if the command is enabled
-        const query = await bot.db.commands.findAll({
-            where: {
-                guildId: message.guild ? message.guild.id : null
-            }
-        })
+        const query = await bot.db.commands.findAll({ where: { guildId: message.guild ? message.guild.id : null } });
         const disabledArr = query[0] ? bot.utils.csvToArr(query[0].dataValues.disabled) : [];
         if (disabledArr.includes(command)) return bot.utils.softErr(bot, message, "This command is not enabled in this guild!");
 	// Check if the user has the required permission, if wanted

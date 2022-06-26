@@ -3,6 +3,8 @@ module.exports = {
         // Sync databases
 	bot.db.features.sync();
 	bot.db.commands.sync();
+	bot.db.botChannels.sync();
+
 	checkServersInDB(bot);
 	// Set bot activity
         bot.client.user.setActivity(`with cats in ${bot.client.guilds.cache.size} guilds!`, {

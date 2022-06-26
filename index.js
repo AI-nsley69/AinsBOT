@@ -42,12 +42,20 @@ bot.db.features = bot.sequelize.define("features", {
     redditPreview: Sequelize.BOOLEAN
 });
 // Database for toggling commands
-bot.db.commands = bot.sequelize.define("", {
+bot.db.commands = bot.sequelize.define("commands", {
     guildId: {
         type: Sequelize.STRING,
         unique: true,
     },
     disabled: Sequelize.STRING    
+});
+// Database for bot channel
+bot.db.botChannels = bot.sequelize.define("bot_channels", {
+    guildId: {
+        type: Sequelize.STRING,
+        unique: true
+    },
+    bot_channel: Sequelize.STRING
 });
 
 bot.config = JSON.parse(bot.fs.readFileSync("./config.json"));
