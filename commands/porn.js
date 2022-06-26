@@ -12,9 +12,8 @@ module.exports = {
     run: async (bot, message, args) => {
         // Check if the channel is nsfw
         if (!message.channel.nsfw) return bot.utils.softErr(bot, message, "This command is only available in NSFW channels! 😡");
-        const [category] = args;
-        if (!category) {
-            
+        let [category] = args;
+        if (!category) {           
             const embed = new MessageEmbed()
             .setTitle("Available adult content categories!")
             .setDescription(nsfw.categories.join(", "))
@@ -31,11 +30,14 @@ module.exports = {
        if (category === "hentai") category = "hentai-no-loli";
        // If the category is not in the list, throw a soft error to the user
        if (!categories.includes(category)) return bot.utils.softErr(bot, message, "Invalid content category!");
+       // Check if media supports gif
+       const type = nsfw.verifyTypeInCategory("gif", category) ? Math.random() < 0.3 ? "gif" : "png" : "png";
        // Get the link
-       const link = nsfw.getRandomInCategory(category, "gif").url;
+       const link = nsfw.getRandomInCategory(category, type).url;
+       console.log(nsfw.getRandomInCategory(category, type))
        
        const embed = new MessageEmbed()
-       .setTitle(`${category} gif!`)
+       .setTitle(`${category} media!`)
        .setImage(link)
        .setColor(bot.consts.Colors.SUCCESS)
        .setAuthor({
