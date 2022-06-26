@@ -22,7 +22,7 @@ module.exports = {
         }] }).catch(err => {
             bot.logger.err(bot, err);
             msg.delete();
-            bot.utils.softErr(bot, err.toString());
+            bot.utils.softErr(bot, message, err.toString());
         });
     }
 }
