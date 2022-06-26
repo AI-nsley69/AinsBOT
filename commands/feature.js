@@ -10,7 +10,7 @@ module.exports = {
         let [ action, targetFeature ] = args;
         // Check if the action exists and if it is enable or disable
         if (!action) targetFeature = null;
-        else if (!(action === "enable" || action === "disable")) return bot.utils.softErr("Incorrect disable/enable argument!");
+        else if (!(action === "enable" || action === "disable")) return bot.utils.softErr(bot, message, "Incorrect disable/enable argument!");
         // Create a boolean based on the action
         const futureBoolean = action === "enable" ? true : false;
         // Switch case for editing previews

@@ -50,5 +50,14 @@ module.exports = {
         }).catch(err => bot.logger.err(bot, err));
 
         return res.data.link;
+    },
+    // next 2 are for sqlite
+    // Convert array to csv
+    arrToCsv: (arr) => {
+        return arr.join(",");
+    },
+    // Convert csv to array
+    csvToArr: (csv) => {
+        return csv.split(",");
     }
 }

@@ -6,7 +6,7 @@ module.exports = {
     permission: null,
     guild: false,
     run: async (bot, message, args) => {
-        let cmds = fetchCommands(bot, message);
+        let cmds = await fetchCommands(bot, message);
         const embed = new MessageEmbed()
         .setTitle("List of commands!")
         .setAuthor({
@@ -21,11 +21,18 @@ module.exports = {
     }
 }
 
-function fetchCommands(bot, message) {
+async function fetchCommands(bot, message) {
+    // Query all disabled commands for this guild
+    const disabled = message.guild ? await bot.db.commands.findAll({
+        where: {
+            guildId: message.guild.id
+        }
+    }).then(q => bot.utils.csvToArr(q[0].dataValues.disabled)) : [];
     // Setup an array for all the commands, then append the info as needed and join each command to a string
     let cmds = [];
     bot.commands.forEach((cmd, name) => {
-        cmds.push(`${bot.config.prefix}${name} ${cmd.usage} - ${cmd.description}`);
+        // Only push enabled commands
+        if (!disabled.includes(name)) cmds.push(`${bot.config.prefix}${name} ${cmd.usage} - ${cmd.description}`);
     })
     return cmds.join("\n");
 }

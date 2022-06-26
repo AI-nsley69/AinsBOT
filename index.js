@@ -31,7 +31,7 @@ const bot = {
     db: {},
     imgur: new ImgurClient({ clientId: process.env.imgurId })
 }
-
+// Database for toggling features
 bot.db.features = bot.sequelize.define("features", {
     guildId: {
         type: Sequelize.STRING,
@@ -40,6 +40,14 @@ bot.db.features = bot.sequelize.define("features", {
     tiktokPreview: Sequelize.BOOLEAN,
     messagePreview: Sequelize.BOOLEAN,
     redditPreview: Sequelize.BOOLEAN
+});
+// Database for toggling commands
+bot.db.commands = bot.sequelize.define("", {
+    guildId: {
+        type: Sequelize.STRING,
+        unique: true,
+    },
+    disabled: Sequelize.STRING    
 });
 
 bot.config = JSON.parse(bot.fs.readFileSync("./config.json"));
