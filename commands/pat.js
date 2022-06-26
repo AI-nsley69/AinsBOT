@@ -24,6 +24,6 @@ module.exports = {
         .setImage(pat.data.link)
         .setTimestamp()
 
-        msg.edit({ embeds: [embed] }).catch(err => bot.logger.err(bot, err));
+        msg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, msg, err));
     }
 }

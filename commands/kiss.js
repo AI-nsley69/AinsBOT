@@ -22,6 +22,6 @@ module.exports = {
         .setImage(kiss.data.url)
         .setTimestamp()
         // Edit message to include the new embed
-        msg.edit({ embeds: [embed] }).catch(err => bot.logger.err(bot, err));
+        msg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, msg, err));
     }
 }

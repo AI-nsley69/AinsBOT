@@ -37,6 +37,6 @@ module.exports = {
         ])
         .setTimestamp();
         // Edit the temp message
-        tmpMsg.edit({ embeds: [embed] });
+        tmpMsg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, tmpMsg, err));
     }
 }

@@ -24,6 +24,17 @@ module.exports = {
 
         bot.utils.replyEmbed(bot, message, [embed]);
     },
+    // Handle errors from command
+    handleCmdError: async (bot, message, tmpMsg, err) => {
+        // Make the error a string
+        err = err.toString();
+        // Warn with the error
+        bot.logger.warn(bot, err);
+        // Delete the temporary loading message
+        tmpMsg.delete();
+        // Soft error with the error
+        bot.utils.softErr(bot, message, err);
+    },
     // Temporary embed to showcase that the bot is just working on a command
     cmdLoadingMsg: async (bot, message) => {
         const embed = new MessageEmbed()
