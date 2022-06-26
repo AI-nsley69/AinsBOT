@@ -14,7 +14,12 @@ module.exports = {
         const msg = await bot.utils.cmdLoadingMsg(bot, message);
         // Get the avatar and request it
         const userAvatar = user.user.displayAvatarURL({ format: "png" });
-        let gayAvatar = `https://some-random-api.ml/canvas/gay/?avatar=${userAvatar}`
+        let gayAvatar = `https://some-random-api.ml/canvas/gay/?avatar=${userAvatar}`.catch(err => {
+            msg.delete();
+            bot.utils.softErr(bot, message, err.toString());
+            bot.logger.warn(bot, err.toString());
+            return;
+        })
         // Turn the return into an attachment and add it to an embed
         msg.edit({ files: [{
             attachment: gayAvatar,

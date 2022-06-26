@@ -29,7 +29,7 @@ module.exports = {
             };
             // Sort all commands into an enabled or disabled array
             const disabled = allCmds.filter(cmd => query.includes(cmd));
-            const enabled = allCmds.filter((value, cmd) => !query.includes(cmd));
+            const enabled = allCmds.filter(cmd => !query.includes(cmd));
             
             const embed = new MessageEmbed()
             .setTitle("Available command toggles!")
