@@ -56,6 +56,9 @@ module.exports = {
             image: await api.fetchImage(axios),
             fact: await api.fetchFact(axios),
             title: api.title
+        }).catch(err => {
+            msg.delete();
+            bot.utils.softErr(bot, message, err.toString());
         })
    }
 }

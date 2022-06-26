@@ -35,7 +35,7 @@ async function checkServersInDB(bot) {
     });
     // Do the same for commands
     guildIds = await bot.db.commands.findAll();
-    guilds = []
+    guilds = [];
     guildIds.every(guild => guilds.push(guild.dataValues.guildId));
     bot.client.guilds.cache.forEach(async (guild) => {
         if (!guilds.includes(guild.id)) await bot.db.commands.create({
