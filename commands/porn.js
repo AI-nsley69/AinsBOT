@@ -9,9 +9,9 @@ module.exports = {
     usage: "[category]",
     permission: null,
     guild: true,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Check if the channel is nsfw
-        if (!message.channel.nsfw) return bot.utils.softErr(bot, message, "This command is only available in NSFW channels! 😡");
+        if (!message.channel.nsfw) return bot.utils.softErr(bot, message, "This command is only available in NSFW channels! 😡", loadingMsg);
         let [category] = args;
         if (!category) {           
             const embed = new MessageEmbed()
@@ -23,18 +23,17 @@ module.exports = {
             })
             .setColor(bot.consts.Colors.INFO);
 
-            bot.utils.replyEmbed(bot, message, [embed]);
+            loadingMsg.edit({ embeds: [embed] });
             return;
        };
        // Remove lolis from this fuckfest
        if (category === "hentai") category = "hentai-no-loli";
        // If the category is not in the list, throw a soft error to the user
-       if (!categories.includes(category)) return bot.utils.softErr(bot, message, "Invalid content category!");
+       if (!categories.includes(category)) return bot.utils.softErr(bot, message, "Invalid content category!", loadingMsg);
        // Check if media supports gif
        const type = nsfw.verifyTypeInCategory("gif", category) ? Math.random() < 0.3 ? "gif" : "png" : "png";
        // Get the link
        const link = nsfw.getRandomInCategory(category, type).url;
-       console.log(nsfw.getRandomInCategory(category, type))
        
        const embed = new MessageEmbed()
        .setTitle(`${category} media!`)
@@ -45,6 +44,6 @@ module.exports = {
            iconURL: message.author.displayAvatarURL()
        });
 
-       bot.utils.replyEmbed(bot, message, [embed]);
+       loadingMsg.edit({ embeds: [embed] });
     }
 }

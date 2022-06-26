@@ -11,7 +11,7 @@ module.exports = {
         message.reply({ embeds: embeds}).catch(() => message.channel.send({ embeds: embeds}).catch(err => bot.logger.err(bot, err)));
     },
     // Send soft error embed i.e incorrect command usage
-    softErr: async (bot, message, err) => {
+    softErr: async (bot, message, err, loadingMsg=null) => {
         const embed = new MessageEmbed()
         .setTitle(bot.consts.Text.SOFT_ERR_TITLE)
         .setColor(bot.consts.Colors.SOFT_ERR)
@@ -22,18 +22,16 @@ module.exports = {
         })
         .setTimestamp();
 
-        bot.utils.replyEmbed(bot, message, [embed]);
+        loadingMsg ? loadingMsg.edit({ embeds: [embed] }) : bot.utils.replyEmbed(bot, message, [embed]);
     },
     // Handle errors from command
-    handleCmdError: async (bot, message, tmpMsg, err) => {
+    handleCmdError: async (bot, message, loadingMsg, err) => {
         // Make the error a string
         err = err.toString();
         // Warn with the error
         bot.logger.warn(bot, err);
-        // Delete the temporary loading message
-        tmpMsg.delete();
         // Soft error with the error
-        bot.utils.softErr(bot, message, err);
+        bot.utils.softErr(bot, message, err, loadingMsg);
     },
     // Temporary embed to showcase that the bot is just working on a command
     cmdLoadingMsg: async (bot, message) => {

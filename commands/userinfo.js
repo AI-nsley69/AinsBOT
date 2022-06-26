@@ -5,7 +5,7 @@ module.exports = {
     usage: "[mention|user id]",
     permission: null,
     guild: false,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Fetch the user, either with the first mentioned member or user id, then check if we have a member object
         let member = message.mentions.members.first() || await message.guild.members.fetch(args[0]);
         if (!member.user) member = message.member;
@@ -43,6 +43,6 @@ module.exports = {
         })
         .setTimestamp();
 	// Send the message
-	bot.utils.replyEmbed(bot, message, [embed]);
+	loadingMsg.edit({ embeds: [embed] });
     }
 }

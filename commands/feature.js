@@ -5,12 +5,12 @@ module.exports = {
     usage: "[disable|enable] (feature)",
     permission: "MANAGE_GUILD",
     guild: true,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Deconstruct array into appropiate vars
         let [ action, targetFeature ] = args;
         // Check if the action exists and if it is enable or disable
         if (!action) targetFeature = null;
-        else if (!(action === "enable" || action === "disable")) return bot.utils.softErr(bot, message, "Incorrect disable/enable argument!");
+        else if (!(action === "enable" || action === "disable")) return bot.utils.softErr(bot, message, "Incorrect disable/enable argument!", loadingMsg);
         // Create a boolean based on the action
         const futureBoolean = action === "enable" ? true : false;
         // Switch case for editing previews
@@ -24,7 +24,7 @@ module.exports = {
                     }
                 });
                 // Send the embed
-                sendEmbed(bot, message, "tiktokPreview", futureBoolean);
+                sendEmbed(bot, message, "tiktokPreview", futureBoolean, loadingMsg);
                 break;
             }
             // Message preview
@@ -36,7 +36,7 @@ module.exports = {
                     }
                 });
                 // Send the embed
-                sendEmbed(bot, message, "messagePreview", futureBoolean);
+                sendEmbed(bot, message, "messagePreview", futureBoolean, loadingMsg);
                 break;
             }
             // Reddit preview
@@ -48,7 +48,7 @@ module.exports = {
                     }
                 });
                 // Send the embed
-                sendEmbed(bot, message, "redditPreview", futureBoolean);
+                sendEmbed(bot, message, "redditPreview", futureBoolean, loadingMsg);
                 break;
             }
             
@@ -82,7 +82,7 @@ module.exports = {
                 .setColor(bot.consts.Colors.INFO)
                 .setTimestamp();
 
-                bot.utils.replyEmbed(bot, message, [embed]);
+                loadingMsg.edit({ embeds: embed });
                 break;
             }
         }
@@ -90,16 +90,16 @@ module.exports = {
 }
 
 // Send embed
-async function sendEmbed(bot, message, feature, futureBoolean) {
+async function sendEmbed(bot, message, feature, futureBoolean, loadingMsg) {
     const embed = new MessageEmbed()
     .setTitle(`Updated ${feature}!`)
     .setDescription(`Set to: \`${futureBoolean}\``)
-    .setColor(futureBoolean ? bot.consts.Colors.SOFT_ERR : bot.consts.Colors.SUCCESS)
+    .setColor(!futureBoolean ? bot.consts.Colors.SOFT_ERR : bot.consts.Colors.SUCCESS)
     .setAuthor({
         name: message.author.tag,
         iconURL: message.author.displayAvatarURL()
     })
     .setTimestamp();
 
-    bot.utils.replyEmbed(bot, message, [embed]);
+    loadingMsg.edit({ embeds: [embed] });
 }

@@ -6,13 +6,11 @@ module.exports = {
     usage: "[user]",
     permission: null,
     guild: true,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Verify that we have a user to hug and if it is valid
         const member = message.mentions.members.first();
-        if (!member) return bot.utils.softErr(bot, message, "Awh.. got no one to hug? ):");
-        if (member.user.id === message.author.id) return bot.utils.softErr(bot, message, "You can't hug yourself silly!");
-        // Temporary loading message
-        const msg = await bot.utils.cmdLoadingMsg(bot, message);
+        if (!member) return bot.utils.softErr(bot, message, "Awh.. got no one to hug? ):", loadingMsg);
+        if (member.user.id === message.author.id) return bot.utils.softErr(bot, message, "You can't hug yourself silly!", loadingMsg);
         // Fetch the media
 	const hug = await axios.get("https://some-random-api.ml/animu/hug");
 	const icon = await axios.get("https://some-random-api.ml/img/red_panda");
@@ -24,6 +22,6 @@ module.exports = {
         .setImage(hug.data.link)
         .setTimestamp()
         // Edit message to include the new embed
-        msg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, msg, err));
+        loadingMsg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, msg, err, loadingMsg));
     }
 }

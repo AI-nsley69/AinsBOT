@@ -2,11 +2,11 @@ const { Permissions, MessageEmbed } = require("discord.js");
 const os = require("node-os-utils");
 
 module.exports = {
-    description: "Ping pong!",
+    description: "Get information about the bot!",
     usage: "",
     permission: null,
     guild: false,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         const mem = await os.mem.info(), cpu = await os.cpu.usage(), osName = await os.os.oos(), osPlatform = await os.os.platform(), cpuArch = os.os.arch(), cpuModel = os.cpu.model()
         //, drive = await os.drive.info();
 
@@ -50,6 +50,6 @@ module.exports = {
         })
         .setTimestamp()
 
-        bot.utils.replyEmbed(bot, message, [embed]);
+        loadingMsg.edit({ embeds: [embed] });
     }
 }

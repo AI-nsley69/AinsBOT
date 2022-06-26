@@ -7,12 +7,11 @@ module.exports = {
     usage: "[color]",
     permission: null,
     guild: false,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Simple validation of color
         let [color] = args;
         color = await parseColor(bot, message, color);
-        if (!color) return bot.utils.softErr(bot, message, "Incorrect color, please use a valid hex code or rgb value!");
-        const msg = await bot.utils.cmdLoadingMsg(bot, message);
+        if (!color) return bot.utils.softErr(bot, message, "Incorrect color, please use a valid hex code or rgb value!", loadingMsg);
         // Create the image from the hexcode
         const img = createImage(color);
         
@@ -28,7 +27,7 @@ module.exports = {
         })
         .setTimestamp();
 
-        msg.edit({ embeds: [embed] });
+        loadingMsg.edit({ embeds: [embed] });
     }
 }
 

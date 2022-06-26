@@ -7,12 +7,10 @@ module.exports = {
     usage: "[flag] (user)",
     permission: null,
     guild: false,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Verify that we have a flag argument
         const [flag] = args;
-        if (!validFlags.includes(flag)) return bot.utils.softErr(bot, message, `Please choose one of the available flags:\n${validFlags.join(", ")}`);
-	// Temporary message that'll get edited later on
-        const msg = await bot.utils.cmdLoadingMsg(bot, message);
+        if (!validFlags.includes(flag)) return bot.utils.softErr(bot, message, `Please choose one of the available flags:\n${validFlags.join(", ")}`, loadingMsg);
         // Check if there's a mentioned user, else set it to the author
         let member = message.mentions.members.first();
         if (!member) member = message.member;
@@ -33,6 +31,6 @@ module.exports = {
         .setColor(bot.consts.Colors.SUCCESS)
         .setTimestamp();
 
-        msg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, msg, err));
+        loadingMsg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, msg, err, loadingMsg));
     }
 }

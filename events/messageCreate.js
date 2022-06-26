@@ -57,9 +57,10 @@ async function commandHandler(bot, message) {
 	// Check if the message is from a guild, if wanted
         if (commandInfo.guild && !message.guild) return bot.utils.softErr(bot, message, "This command is only available in guilds 🌧");
 	// Run the command and catch any error to not crash bot
+	const loadingMsg = await bot.utils.cmdLoadingMsg(bot, message);
 	bot.logger.verbose(bot, `${message.author.tag} ran ${command} command with ${args.length > 0 ? args.join(" ") : "no"} arguments!`)
-        await commandInfo.run(bot, message, args).catch(err => {
-            bot.utils.softErr(bot, message, `${err}`);
+        await commandInfo.run(bot, message, loadingMsg, args).catch(err => {
+            bot.utils.handleCmdError(bot, message, loadingMsg, `${err}`);
             bot.logger.err(bot, err);
         });
     }

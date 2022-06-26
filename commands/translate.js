@@ -6,11 +6,9 @@ module.exports = {
     usage: "[text, works by replying to a message too]",
     permission: null,
     guild: false,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Check if there's a message reference or any string to translate
-        if (!message.reference && !args) return bot.utils.softErr(bot, message, "Please reply to a message or give text to translate!");
-        // Send temporary loading message
-        const tmpMsg = await bot.utils.cmdLoadingMsg(bot, message);
+        if (!message.reference && !args) return bot.utils.softErr(bot, message, "Please reply to a message or give text to translate!", loadingMsg);
         // Get message object if it exists, otherwise make it null
         const msg = message.reference ? (await message.channel.messages.fetch(message.reference.messageId)) : null;
         // Check the referenced msg content if it exists, otherwise just join the arguments to a string
@@ -37,6 +35,6 @@ module.exports = {
         ])
         .setTimestamp();
         // Edit the temp message
-        tmpMsg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, tmpMsg, err));
+        loadingMsg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, loadingMsg, err));
     }
 }

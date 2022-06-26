@@ -5,13 +5,13 @@ module.exports = {
     usage: "[disable|enable] [command]",
     permission: "MANAGE_GUILD",
     guild: true,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Setup variables and verify them
         let [ action, targetCmd ] = args;
         if (!action) targetCmd = null;
-        else if (!(action === "enable" || action === "disable")) return bot.utils.softErr(bot, message, "Incorrect enable/disable argument");
-        else if (!bot.commands.has(targetCmd)) return bot.utils.softErr(bot, message, "Missing target command argument");
-        else if (targetCmd === "command" || targetCmd === "feature") return bot.utils.softErr(bot, message, "You cannot toggle the command/feature command!");
+        else if (!(action === "enable" || action === "disable")) return bot.utils.softErr(bot, message, "Incorrect enable/disable argument", loadingMsg);
+        else if (!bot.commands.has(targetCmd)) return bot.utils.softErr(bot, message, "Missing target command argument", loadingMsg);
+        else if (targetCmd === "command" || targetCmd === "feature") return bot.utils.softErr(bot, message, "You cannot toggle the command/feature command!", loadingMsg);
         // Create boolean based on action
         const futureBool = action === "enable" ? true : false;
         // Get array of current commands
@@ -50,11 +50,11 @@ module.exports = {
             })
             .setTimestamp();
 
-            bot.utils.replyEmbed(bot, message, [embed]);
+            loadingMsg.edit({ embeds: [embed] });
             return;
         }
         // Soft error if already disabled.
-        if (query.includes(targetCmd) && !action) return bot.utils.softErr(bot, message, `This command is already ${action}`);
+        if (query.includes(targetCmd) && !action) return bot.utils.softErr(bot, message, `This command is already ${action}`, loadingMsg);
         // Remove command if enabled, otherwise disable it
         if (futureBool) query = query.filter(cmd => cmd !== targetCmd);
         else query.push(targetCmd);
@@ -76,6 +76,6 @@ module.exports = {
         })
         .setTimestamp();
 
-        bot.utils.replyEmbed(bot, message, [embed]);
+        loadingMsg.edit({ embeds: [embed] });
     }
 }

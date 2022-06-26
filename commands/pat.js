@@ -6,13 +6,11 @@ module.exports = {
     usage: "[user]",
     permission: null,
     guild: true,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Verify user
         const member = message.mentions.members.first();
-        if (!member) return bot.utils.softErr(bot, message, "Awh.. got no one to pat? ):");
-        if (member.user.id === message.author.id) return bot.utils.softErr(bot, message, "You can't pat yourself silly!");
-	// Send temporary message
-	const msg = await bot.utils.cmdLoadingMsg(bot, message);
+        if (!member) return bot.utils.softErr(bot, message, "Awh.. got no one to pat? ):", loadingMsg);
+        if (member.user.id === message.author.id) return bot.utils.softErr(bot, message, "You can't pat yourself silly!", loadingMsg);
 	// Fetch from api
 	const pat = await axios.get("https://some-random-api.ml/animu/pat");
 	const icon = await axios.get("https://some-random-api.ml/img/koala");
@@ -24,6 +22,6 @@ module.exports = {
         .setImage(pat.data.link)
         .setTimestamp()
 
-        msg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, msg, err));
+        loadingMsg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, msg, err, loadingMsg));
     }
 }

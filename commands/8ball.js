@@ -5,13 +5,13 @@ module.exports = {
     usage: "[question]",
     permission: null,
     guild: false,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Check if the argument array exists, if not let the user know they're missing the question
-        if (!args) return bot.utils.softErr(bot, message, "Missing a question..")
+        if (!args) return bot.utils.softErr(bot, message, "Missing a question..", loadingMsg)
         // Join the array to turn it into a string
         const question = args.join(" ");
         // Check if the message ends with a question mark, otherwise classify it as not asking a question
-        if (!question.endsWith("?")) return bot.utils.softErr(bot, message, "You're not asking a question.")
+        if (!question.endsWith("?")) return bot.utils.softErr(bot, message, "You're not asking a question.", loadingMsg)
         // 2d array to include a color with an answer
         const response = [
             ["Yes", 0x00ff00],
@@ -32,6 +32,6 @@ module.exports = {
         .setDescription(answer)
         .setTimestamp();
 	// Send the message
-	bot.utils.replyEmbed(bot, message, [embed]);
+	loadingMsg.edit({ embeds: [embed] });
     }
 }

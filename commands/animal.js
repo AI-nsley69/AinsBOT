@@ -46,17 +46,15 @@ module.exports = {
     usage: "(animal)",
     permission: null,
     guild: false,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         const api = animalApis[args[0]];
-        if (!api) return bot.utils.softErr(bot, message, "**Available animals**\ncapybara, cat, dog, firefox, fox");
-        // Temporary loading msg
-        const msg = await bot.utils.cmdLoadingMsg(bot, message);
+        if (!api) return bot.utils.softErr(bot, message, "**Available animals**\ncapybara, cat, dog, firefox, fox", loadingMsg);
         // Create the embed
-        animalEmbed(bot, message, msg, {
+        animalEmbed(bot, message, loadingMsg, {
             image: await api.fetchImage(axios),
             fact: await api.fetchFact(axios),
             title: api.title
-        }).catch(err => bot.utils.handleCmdError(bot, message, msg, err));
+        }).catch(err => bot.utils.handleCmdError(bot, message, loadingMsg, err));
    }
 }
 

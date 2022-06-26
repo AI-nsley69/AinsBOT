@@ -5,7 +5,7 @@ module.exports = {
     usage: "",
     permission: null,
     guild: false,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         let cmds = await fetchCommands(bot, message);
         const embed = new MessageEmbed()
         .setTitle("List of commands!")
@@ -17,7 +17,7 @@ module.exports = {
         .setColor(bot.consts.Colors.INFO)
         .setTimestamp();
 
-        bot.utils.replyEmbed(bot, message, [embed]);
+        loadingMsg.edit({ embeds: [embed] });
     }
 }
 

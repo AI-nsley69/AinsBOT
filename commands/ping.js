@@ -5,7 +5,7 @@ module.exports = {
     usage: "",
     permission: null,
     guild: false,
-    run: async (bot, message, args) => {
+    run: async (bot, message, loadingMsg, args) => {
         // Get ping by subtracting the created timestamp from the current timestamp
         const ping = Date.now() - message.createdTimestamp;
         // Get the color by dividing ping by 1000 and multiplying it by 255 and then convert to hex
@@ -20,6 +20,6 @@ module.exports = {
             text: "Note: the ping is between Discord API and the bot!"
         });
 
-        bot.utils.replyEmbed(bot, message, [embed]);
+        loadingMsg.edit({ embeds: [embed] });
     }
 }
