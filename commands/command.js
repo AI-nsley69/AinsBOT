@@ -11,7 +11,7 @@ module.exports = {
         if (!action) targetCmd = null;
         else if (!(action === "enable" || action === "disable")) return bot.utils.softErr(bot, message, "Incorrect enable/disable argument");
         else if (!bot.commands.has(targetCmd)) return bot.utils.softErr(bot, message, "Missing target command argument");
-        else if (targetCmd === "command") return bot.utils.softErr(bot, message, "You cannot disable the command to toggle commands!");
+        else if (targetCmd === "command" || targetCmd === "feature") return bot.utils.softErr(bot, message, "You cannot toggle the command/feature command!");
         // Create boolean based on action
         const futureBool = action === "enable" ? true : false;
         // Get array of current commands
