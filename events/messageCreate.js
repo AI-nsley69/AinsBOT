@@ -263,7 +263,7 @@ async function previewReddit(bot, message) {
     let redditPost = await axios.get(redditLinkJson);
     // Get the variables from the post
     redditPost = redditPost.data[0].data.children[0].data;
-    const { title, subreddit_name_prefixed, url, selftext, ups, upvote_ratio, over_18 } = redditPost.catch(err => bot.logger.err(bot, err));
+    const { title, subreddit_name_prefixed, url, selftext, ups, upvote_ratio, over_18 } = redditPost;
 
     const embed = new MessageEmbed()
     .setTitle(title)
