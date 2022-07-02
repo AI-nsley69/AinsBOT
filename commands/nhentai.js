@@ -2,7 +2,7 @@ const { Permissions, MessageEmbed } = require("discord.js");
 const ikyy = require("nhentai-ikyy");
 const nhentai = new ikyy();
 
-const bannedTags = ["lolicon", "loli-fan", "daughter", "incest", "suicide", "necrophilia"]
+const bannedTags = ["lolicon", "loli-fan", "daughter", "incest", "suicide", "necrophilia", "rape"]
 
 module.exports = {
     description: "Fetches (cartoon) information about adult comics",
