@@ -29,7 +29,8 @@ const bot = {
         storage: "database.sqlite"
     }),
     db: {},
-    imgur: new ImgurClient({ clientId: process.env.imgurId })
+    imgur: new ImgurClient({ clientId: process.env.imgurId }),
+    passthroughs: []
 }
 // Database for toggling features
 bot.db.features = bot.sequelize.define("features", {

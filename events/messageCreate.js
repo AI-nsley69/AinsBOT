@@ -33,6 +33,7 @@ module.exports = {
         getTiktok(bot, message);
         previewMessage(bot, message);
         previewReddit(bot, message);
+        channelPassthrough(bot, message);
     }
 }
 
@@ -279,3 +280,27 @@ async function previewReddit(bot, message) {
         content: `Requested by ${message.author}`
     });
 }
+
+async function channelPassthrough(bot, message) {
+    bot.passthroughs.forEach(async (obj) => {
+        if (message.channel.id !== obj.src) return;
+        const target = await bot.client.channels.fetch(obj.dest);
+
+        const embed = new MessageEmbed()
+        .setAuthor({
+            name: message.author.tag,
+            iconURL: message.author.displayAvatarURL()
+        })
+        .setColor(bot.consts.Colors.INFO)
+        .setFooter({
+            text: `${message.guild.name}, #${message.channel.name}`,
+            iconURL: message.guild.iconURL()
+        })
+        .setDescription(message.content)
+
+        if (message.attachments.size > 0) embed.setImage(message.attachments.first().url);
+
+        target.send({ embeds: [embed, ...message.embeds] }).catch(err => bot.logger.err(bot, err.toString()));
+    })
+}
+
