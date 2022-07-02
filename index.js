@@ -30,7 +30,8 @@ const bot = {
     }),
     db: {},
     imgur: new ImgurClient({ clientId: process.env.imgurId }),
-    passthroughs: []
+    passthroughs: [],
+    bridges: []
 }
 // Database for toggling features
 bot.db.features = bot.sequelize.define("features", {

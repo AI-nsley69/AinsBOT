@@ -25,15 +25,21 @@ module.exports = {
     run: async (bot, message) => {
         // Check if the author is a bot
         if (message.author.bot) return;
+        // Command handlers
         commandHandler(bot, message);
         adminCommandHandler(bot, message);
+        // Dm relay
         dmRelay(bot, message);
+        // Misc
         catEmotes(bot, message); // Hardcoded to work for my personal guild with my cat emote guild
         mentionReponse(bot, message);
+        // Features
         getTiktok(bot, message);
         previewMessage(bot, message);
         previewReddit(bot, message);
+        // Channel bridge & passthrough
         channelPassthrough(bot, message);
+        channelBridging(bot, message);
     }
 }
 
@@ -282,6 +288,8 @@ async function previewReddit(bot, message) {
 }
 
 async function channelPassthrough(bot, message) {
+    if (message.content.startsWith("doas")) return;
+
     bot.passthroughs.forEach(async (obj) => {
         if (message.channel.id !== obj.src) return;
         const target = await bot.client.channels.fetch(obj.dest);
@@ -304,3 +312,27 @@ async function channelPassthrough(bot, message) {
     })
 }
 
+async function channelBridging(bot, message) {
+    if (message.content.startsWith("doas")) return;
+    bot.bridges.forEach(async (pair) => {
+        if (!pair.includes(message.channel.id)) return;
+        const targetId = pair[0] === message.channel.id ? pair[1] : pair[0];
+        const target = await bot.client.channels.fetch(targetId);
+        
+        const embed = new MessageEmbed()
+        .setAuthor({
+            name: message.author.tag,
+            iconURL: message.author.displayAvatarURL()
+        })
+        .setColor(bot.consts.Colors.INFO)
+        .setFooter({
+            text: `${message.guild.name}, #${message.channel.name}`,
+            iconURL: message.guild.iconURL()
+        })
+        .setDescription(message.content)
+
+        if (message.attachments.size > 0) embed.setImage(message.attachments.first().url);
+
+        target.send({ embeds: [embed, ...message.embeds] }).catch(err => bot.logger.err(bot, err.toString()));
+    })
+}
