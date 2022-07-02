@@ -300,12 +300,12 @@ async function channelPassthrough(bot, message) {
             iconURL: message.author.displayAvatarURL()
         })
         .setColor(bot.consts.Colors.INFO)
-        .setFooter({
-            text: `${message.guild.name}, #${message.channel.name}`,
-            iconURL: message.guild.iconURL()
-        })
         .setDescription(message.content)
 
+        if (message.guild) embed.setFooter({
+            text: `${message.guild.name}, #${message.channel.name}`,
+            iconURL: message.guild.iconURL()
+        });
         if (message.attachments.size > 0) embed.setImage(message.attachments.first().url);
 
         target.send({ embeds: [embed, ...message.embeds] }).catch(err => bot.logger.err(bot, err.toString()));
@@ -325,12 +325,12 @@ async function channelBridging(bot, message) {
             iconURL: message.author.displayAvatarURL()
         })
         .setColor(bot.consts.Colors.INFO)
-        .setFooter({
-            text: `${message.guild.name}, #${message.channel.name}`,
-            iconURL: message.guild.iconURL()
-        })
         .setDescription(message.content)
 
+        if (message.guild ) embed.setFooter({
+            text: `${message.guild.name}, #${message.channel.name}`,
+            iconURL: message.guild.iconURL()
+        });
         if (message.attachments.size > 0) embed.setImage(message.attachments.first().url);
 
         target.send({ embeds: [embed, ...message.embeds] }).catch(err => bot.logger.err(bot, err.toString()));
