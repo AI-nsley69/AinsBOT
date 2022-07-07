@@ -87,17 +87,18 @@ async function commandHandler(bot, message) {
 async function adminCommandHandler(bot, message) {
     // Only react to messages that start with the admin prefix
     if (message.content.startsWith(bot.config.adminPrefix)) {
+        // Get the arguments and attempted command
+        const args = message.content.slice(bot.config.adminPrefix.length).trim().split(/ +/);
+        const command = args.shift().toLowerCase();
+        // Check if command exists
+        if (!bot.adminCommands.has(command)) return;
         // If the author is not in the array of admin ids, return a message letting them know they're not allowed to run this command
         if (!bot.config.adminIds.includes(message.author.id)) {
             bot.utils.softErr(bot, message, "doas: Operation not permitted");
             bot.logger.warn(bot, `${message.author.tag} tried to run an admin command!`);
             return;
         }
-        // Get the arguments and attempted command
-        const args = message.content.slice(bot.config.adminPrefix.length).trim().split(/ +/);
-        const command = args.shift().toLowerCase();
-        // Check if command exists, if so, get it from the map
-        if (!bot.adminCommands.has(command)) return;
+        // Get the command from the map
         const commandInfo = bot.adminCommands.get(command);
         // Run command
         commandInfo.run(bot, message, args).catch(err => {
