@@ -4,6 +4,7 @@ module.exports = {
     description: "Get some information about a user",
     usage: "[mention|user id]",
     permission: null,
+    botPermissions: [],
     guild: false,
     run: async (bot, message, loadingMsg, args) => {
         // Fetch the user, either with the first mentioned member or user id, then check if we have a member object

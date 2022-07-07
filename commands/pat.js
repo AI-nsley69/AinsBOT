@@ -5,6 +5,7 @@ module.exports = {
     description: "Pat a user!",
     usage: "[user]",
     permission: null,
+    botPermissions: [],
     guild: true,
     run: async (bot, message, loadingMsg, args) => {
         // Verify user

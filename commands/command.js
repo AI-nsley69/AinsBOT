@@ -4,6 +4,7 @@ module.exports = {
     description: "Disable/enable commands",
     usage: "[disable|enable] [command]",
     permission: "MANAGE_GUILD",
+    botPermissions: [],
     guild: true,
     run: async (bot, message, loadingMsg, args) => {
         // Setup variables and verify them

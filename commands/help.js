@@ -4,6 +4,7 @@ module.exports = {
     description: "List all commands with their usages",
     usage: "",
     permission: null,
+    botPermissions: [],
     guild: false,
     run: async (bot, message, loadingMsg, args) => {
         let cmds = await fetchCommands(bot, message);

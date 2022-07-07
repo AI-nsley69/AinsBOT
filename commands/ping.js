@@ -4,6 +4,7 @@ module.exports = {
     description: "Ping pong!",
     usage: "",
     permission: null,
+    botPermissions: [],    
     guild: false,
     run: async (bot, message, loadingMsg, args) => {
         // Get ping by subtracting the created timestamp from the current timestamp

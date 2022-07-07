@@ -5,6 +5,7 @@ module.exports = {
     description: "Translates a message to english",
     usage: "[text, works by replying to a message too]",
     permission: null,
+    botPermissions: [],
     guild: false,
     run: async (bot, message, loadingMsg, args) => {
         // Check if there's a message reference or any string to translate

@@ -5,6 +5,7 @@ module.exports = {
     description: "Cuddle a user!",
     usage: "[user]",
     permission: null,
+    botPermissions: [],
     guild: true,
     run: async (bot, message, loadingMsg, args) => {
         // Verify that we have a user to hug and if it is valid

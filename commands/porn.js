@@ -10,6 +10,7 @@ module.exports = {
     description: "Fetches adult content from whitelisted subreddits",
     usage: "[subreddit]",
     permission: null,
+    botPermissions: [],    
     guild: true,
     run: async (bot, message, loadingMsg, args) => {
         // Check if the channel is nsfw

@@ -6,6 +6,7 @@ module.exports = {
     description: "Create an lgbtq flag around an avatar",
     usage: "[flag] (user)",
     permission: null,
+    botPermissions: [],
     guild: false,
     run: async (bot, message, loadingMsg, args) => {
         // Verify that we have a flag argument

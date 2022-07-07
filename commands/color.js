@@ -6,6 +6,7 @@ module.exports = {
     description: "Get color of an image",
     usage: "[color]",
     permission: null,
+    botPermissions: [],
     guild: false,
     run: async (bot, message, loadingMsg, args) => {
         // Simple validation of color

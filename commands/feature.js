@@ -4,6 +4,7 @@ module.exports = {
     description: "Disable certain bot features",
     usage: "[disable|enable] (feature)",
     permission: "MANAGE_GUILD",
+    botPermissions: [],
     guild: true,
     run: async (bot, message, loadingMsg, args) => {
         // Deconstruct array into appropiate vars

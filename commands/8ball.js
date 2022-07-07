@@ -4,6 +4,7 @@ module.exports = {
     description: "8ball command",
     usage: "[question]",
     permission: null,
+    botPermissions: [],
     guild: false,
     run: async (bot, message, loadingMsg, args) => {
         // Check if the argument array exists, if not let the user know they're missing the question

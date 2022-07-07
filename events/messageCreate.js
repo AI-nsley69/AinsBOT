@@ -61,6 +61,9 @@ async function commandHandler(bot, message) {
         if (disabledArr.includes(command)) return bot.utils.softErr(bot, message, "This command is not enabled in this guild!");
 	// Check if the user has the required permission, if wanted
         if (commandInfo.permission && !message.member.permissions.has(commandInfo.permission)) return bot.utils.softErr(bot, message, "You do not have the permission to run this command!");
+        // Check if bot has the required permissions for the command
+        const missingPerms = commandInfo.botPermissions.filter(perm => message.guild ? !message.guild.me.permissions.has(perm) : false);
+        if (missingPerms.length > 0) return bot.utils.softErr(bot, message, `I am missing the needed commands to run this command ):\nPlease give me the following permissions:\`${missingPerms.join(", ")}\``);
 	// Check if the message is from a guild, if wanted
         if (commandInfo.guild && !message.guild) return bot.utils.softErr(bot, message, "This command is only available in guilds 🌧");
 	// Run the command and catch any error to not crash bot

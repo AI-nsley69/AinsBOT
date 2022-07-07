@@ -45,6 +45,7 @@ module.exports = {
     description: "Get a random animal",
     usage: "(animal)",
     permission: null,
+    botPermissions: [],
     guild: false,
     run: async (bot, message, loadingMsg, args) => {
         const api = animalApis[args[0]];

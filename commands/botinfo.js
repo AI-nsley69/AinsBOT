@@ -5,6 +5,7 @@ module.exports = {
     description: "Get information about the bot!",
     usage: "",
     permission: null,
+    botPermissions: [],
     guild: false,
     run: async (bot, message, loadingMsg, args) => {
         const mem = await os.mem.info(), cpu = await os.cpu.usage(), osName = await os.os.oos(), osPlatform = await os.os.platform(), cpuArch = os.os.arch(), cpuModel = os.cpu.model()

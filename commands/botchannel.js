@@ -4,6 +4,7 @@ module.exports = {
     description: "Limit the bot to a specific channel!",
     usage: "(channel id|channel mention|reset)",
     permission: "MANAGE_GUILD",
+    botPermissions: [],
     guild: true,
     run: async (bot, message, loadingMsg, args) => {
         let arg = args[0] === "reset" ? args[0] : (message.mentions.channels.first() || await message.guild.channels.fetch(args[0]));
