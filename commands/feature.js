@@ -6,6 +6,7 @@ module.exports = {
     permission: "MANAGE_GUILD",
     botPermissions: [],
     guild: true,
+    cooldown: 15,
     run: async (bot, message, loadingMsg, args) => {
         // Deconstruct array into appropiate vars
         let [ action, targetFeature ] = args;

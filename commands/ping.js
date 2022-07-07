@@ -6,6 +6,7 @@ module.exports = {
     permission: null,
     botPermissions: [],    
     guild: false,
+    cooldown: 0,
     run: async (bot, message, loadingMsg, args) => {
         // Get ping by subtracting the created timestamp from the current timestamp
         const ping = Date.now() - message.createdTimestamp;

@@ -47,6 +47,7 @@ module.exports = {
     permission: null,
     botPermissions: [],
     guild: false,
+    cooldown: 15,
     run: async (bot, message, loadingMsg, args) => {
         const api = animalApis[args[0]];
         if (!api) return bot.utils.softErr(bot, message, "**Available animals**\ncapybara, cat, dog, firefox, fox", loadingMsg);

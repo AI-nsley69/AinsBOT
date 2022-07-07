@@ -6,6 +6,7 @@ module.exports = {
     permission: null,
     botPermissions: [],
     guild: false,
+    cooldown: 0,
     run: async (bot, message, loadingMsg, args) => {
         // Fetch the user, either with the first mentioned member or user id, then check if we have a member object
         let member = message.mentions.members.first() || await message.guild.members.fetch(args[0]);

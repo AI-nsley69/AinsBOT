@@ -12,6 +12,7 @@ module.exports = {
     permission: null,
     botPermissions: [],    
     guild: true,
+    cooldown: 3,
     run: async (bot, message, loadingMsg, args) => {
         // Check if the channel is nsfw
         if (!message.channel.nsfw) return bot.utils.softErr(bot, message, "This command is only available in NSFW channels! 😡", loadingMsg);

@@ -6,6 +6,7 @@ module.exports = {
     permission: "MANAGE_GUILD",
     botPermissions: [],
     guild: true,
+    cooldown: 15,
     run: async (bot, message, loadingMsg, args) => {
         let arg = args[0] === "reset" ? args[0] : (message.mentions.channels.first() || await message.guild.channels.fetch(args[0]));
         if (arg !== "reset") arg = arg.id;

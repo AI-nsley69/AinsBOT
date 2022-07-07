@@ -4,6 +4,8 @@ const unshortener = require("unshorten.it");
 const axios = require("axios");
 const tinyurl = require("shefin-tinyurl");
 const { Op } = require("sequelize");
+// Add cooldown for commands
+const cmdCooldown = new Set();
 
 // Hardcoded Values
 const hardValues = {
@@ -59,6 +61,8 @@ async function commandHandler(bot, message) {
         const query = await bot.db.commands.findAll({ where: { guildId: message.guild ? message.guild.id : null } });
         const disabledArr = query[0] ? bot.utils.csvToArr(query[0].dataValues.disabled) : [];
         if (disabledArr.includes(command)) return bot.utils.softErr(bot, message, "This command is not enabled in this guild!");
+        // Check if user has cooldown on said command
+        if (cmdCooldown.has(message.author.id)) return bot.utils.softErr(bot, message, "Slow down there cowboy! You're on cooldown 😅")
 	// Check if the user has the required permission, if wanted
         if (commandInfo.permission && !message.member.permissions.has(commandInfo.permission)) return bot.utils.softErr(bot, message, "You do not have the permission to run this command!");
         // Check if bot has the required permissions for the command
@@ -73,6 +77,10 @@ async function commandHandler(bot, message) {
             bot.utils.handleCmdError(bot, message, loadingMsg, `${err}`);
             bot.logger.err(bot, err);
         });
+        // Add user to cooldown if enabled
+        if (commandInfo.cooldown < 0) return;
+        cmdCooldown.add(message.author.id);
+        setTimeout(() => { cmdCooldown.delete(message.author.id) }, commandInfo.cooldown * 1000); // Cooldown is specified in seconds
     }
 }
 

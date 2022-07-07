@@ -8,6 +8,7 @@ module.exports = {
     permission: null,
     botPermissions: [],
     guild: false,
+    cooldown: 5,
     run: async (bot, message, loadingMsg, args) => {
         // Simple validation of color
         let [color] = args;

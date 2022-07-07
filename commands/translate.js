@@ -7,6 +7,7 @@ module.exports = {
     permission: null,
     botPermissions: [],
     guild: false,
+    cooldown: 3,
     run: async (bot, message, loadingMsg, args) => {
         // Check if there's a message reference or any string to translate
         if (!message.reference && !args) return bot.utils.softErr(bot, message, "Please reply to a message or give text to translate!", loadingMsg);

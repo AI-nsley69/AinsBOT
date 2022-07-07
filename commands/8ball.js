@@ -6,6 +6,7 @@ module.exports = {
     permission: null,
     botPermissions: [],
     guild: false,
+    cooldown: 0,
     run: async (bot, message, loadingMsg, args) => {
         // Check if the argument array exists, if not let the user know they're missing the question
         if (!args) return bot.utils.softErr(bot, message, "Missing a question..", loadingMsg)

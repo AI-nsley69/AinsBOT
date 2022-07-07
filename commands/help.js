@@ -6,6 +6,7 @@ module.exports = {
     permission: null,
     botPermissions: [],
     guild: false,
+    cooldown: 0,
     run: async (bot, message, loadingMsg, args) => {
         let cmds = await fetchCommands(bot, message);
         const embed = new MessageEmbed()

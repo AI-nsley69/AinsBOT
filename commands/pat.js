@@ -7,6 +7,7 @@ module.exports = {
     permission: null,
     botPermissions: [],
     guild: true,
+    cooldown: 5,
     run: async (bot, message, loadingMsg, args) => {
         // Verify user
         const member = message.mentions.members.first();

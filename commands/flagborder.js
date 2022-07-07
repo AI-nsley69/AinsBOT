@@ -8,6 +8,7 @@ module.exports = {
     permission: null,
     botPermissions: [],
     guild: false,
+    cooldown: 30,
     run: async (bot, message, loadingMsg, args) => {
         // Verify that we have a flag argument
         const [flag] = args;
