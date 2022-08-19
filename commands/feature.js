@@ -84,7 +84,7 @@ module.exports = {
                 .setColor(bot.consts.Colors.INFO)
                 .setTimestamp();
 
-                loadingMsg.edit({ embeds: embed });
+                loadingMsg.edit({ embeds: [embed] });
                 break;
             }
         }
