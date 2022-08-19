@@ -191,11 +191,12 @@ async function isFeatureEnabled(bot, message, feature) {
 
 async function getTiktok(bot, message) {
     // Setup regex to get a tiktok url, then check if url has been matched, otherwise return
-    let tiktokRegex = /https?:\/\/(?:vm\.tiktok\.com|www\.tiktok\.com\/t)\/\w+(?:\/?\?k=1)?$/;
+    let tiktokRegex = /^https?:\/\/(?:vm|www)\.tiktok\.com\/(?:t\/)?\w+\/?(?:\?.*)?$/;
     let potentialUrl = message.content.match(tiktokRegex);
     if (!potentialUrl) return;
     // Check if the guild has the command enabled, otherwise return early
-    if (!(await isFeatureEnabled(bot, message, "tiktokPreview"))) return;
+    const isEnabled = message.guild ? await isFeatureEnabled(bot, message, "tiktokPreview") : true;
+    if (!isEnabled) return;
     // Get the full url by unshortening it
     const fullUrl = await unshortener(potentialUrl);
     // Send a temporary message and delete the original message
