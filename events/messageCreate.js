@@ -200,7 +200,7 @@ async function getTiktok(bot, message) {
     const fullUrl = await unshortener(potentialUrl);
     // Send a temporary message and delete the original message
     let msg = await message.channel.send(`${hardValues.emojis.previewLoading} Getting tiktok..`);
-    message.delete().catch(err => console.log(err));
+    try message.delete();
     // Use tiktok-scraper to get the video meta and then grab the videourl
     const req = await tiktok.getVideoMeta(fullUrl).catch(err => {
         msg.edit(`${hardValues.emojis.previewFail} Failed to get tiktok!`);
