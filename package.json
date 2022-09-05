@@ -13,6 +13,7 @@
     "sqlite3": "^5.0.8",
     "tiktok-scraper": "^1.4.36",
     "translate-google": "^1.5.0",
-    "unshorten.it": "^1.0.0"
+    "unshorten.it": "^1.0.0",
+    "wikijs": "^6.3.3"
   }
 }
