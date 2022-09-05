@@ -17,18 +17,18 @@ module.exports = {
     run: async (bot, message, loadingMsg, args) => {
         const esper = args.join(" ");
         if (!esper) return bot.utils.softErr(bot, message, "Missing an esper!", loadingMsg);
-
-        const esperPage = await wiki.search(esper).then(async r => await wiki.page(r.results[0]));
+        const search = await wiki.search(esper);
+        const esperPage = await wiki.page(search.results[0]);
         if (!esperPage) return bot.utils.softErr(bot, message, "Unfortunately, this Esper was not found!", loadingMsg);
 
         const pageInfo = await esperPage.fullInfo();
         let rarity = raw.match(/rarity=\{\{Icon\|([a-zA-Z]+)\}/)[1];
         let role = raw.match(/role=([a-zA-Z]+)/)[1];
         let attribute = raw.match(/attribute=\{\{Icon\|([a-zA-Z]+)\}/)[1];
-        let affiliation = raw.match(/affiliation=\{\{Icon\|([a-zA-Z]+ [a-zA-Z]+)\}\}/)[1];
+        let affiliation = raw.match(/affiliation=\{\{Icon\|([a-z A-Z]+)\}\}/)[1];
 
         const embed = new MessageEmbed()
-        .setTitle(esper)
+        .setTitle(search.results[0])
         .setColor(bot.constants.COLORS.SUCCESS)
         .setImage(await esperPage.mainImage())
         .addFields([
