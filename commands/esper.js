@@ -7,11 +7,19 @@ var wiki = wikijs({
     origin: null
 });
 
-const icons = {
-    Shimmer: "https://static.wikia.nocookie.net/dislyte/images/b/b4/Shimmer-icon.png",
-    Inferno: "https://static.wikia.nocookie.net/dislyte/images/5/5a/Inferno-icon.png",
-    Flow: "https://static.wikia.nocookie.net/dislyte/images/3/33/Flow-icon.png",
-    Wind: "https://static.wikia.nocookie.net/dislyte/images/0/06/Wind-icon.png",
+const attributes = {
+    icons: {
+        Shimmer: "https://static.wikia.nocookie.net/dislyte/images/b/b4/Shimmer-icon.png",
+        Inferno: "https://static.wikia.nocookie.net/dislyte/images/5/5a/Inferno-icon.png",
+        Flow: "https://static.wikia.nocookie.net/dislyte/images/3/33/Flow-icon.png",
+        Wind: "https://static.wikia.nocookie.net/dislyte/images/0/06/Wind-icon.png",
+    },
+    colors: {
+        Shimmer: 0xacefed,
+        Inferno: 0xfc8c04,
+        Flow: 0xdb7bfb,
+        Wind: 0x1cf3c3
+    }
 }
 
 module.exports = {
@@ -25,51 +33,66 @@ module.exports = {
         const esper = args.join(" ");
         if (!esper) return bot.utils.softErr(bot, message, "Missing an esper!", loadingMsg);
         const search = await wiki.search(esper);
+        if (!search) return bot.utils.softErr(bot, message, "Unfortunately, this Esper was not found!", loadingMsg);
         const esperPage = await wiki.page(search.results[0]);
-        if (!esperPage) return bot.utils.softErr(bot, message, "Unfortunately, this Esper was not found!", loadingMsg);
 
         const pageInfo = await esperPage.fullInfo();
         const raw = await esperPage.rawInfo();
-        let rarity = raw.match(/rarity=\{\{Icon\|([a-zA-Z]+)\}/)[1];
-        let role = raw.match(/role=([a-zA-Z]+)/)[1];
-        let attribute = raw.match(/attribute=\{\{Icon\|([a-zA-Z]+)\}/)[1];
-        let affiliation = raw.match(/affiliation=\{\{Icon\|([a-z A-Z]+)\}\}/)[1];
+        const attribute = raw.match(/attribute=\{\{Icon\|([a-zA-Z]+)\}/)[1];
 
         const { age, height, preference, identity } = pageInfo.general;
 
+        const esperInfo = {
+            name: search.result[0],
+            rarity: raw.match(/rarity=\{\{Icon\|([a-zA-Z]+)\}/)[1],
+            role: raw.match(/role=([a-zA-Z]+)/)[1],
+            attribute: {
+                name: attribute,
+                icon: attributes.icons[attribute],
+                color: attribute.colors[attribute]
+            },
+            artwork: await esperPage.mainImage(),
+            age: age ? age : "Unknown",
+            height: height ? height : "Unknown",
+            affiliation: raw.match(/affiliation=\{\{Icon\|([a-z A-Z]+)\}\}/)[1],
+            identity: identity ? identity : "Unknown",
+            preference: preference ? preference : "Unknown"
+        }
+
         const embed = new MessageEmbed()
         .setAuthor({
-            name: `${attribute} ${role}`,
-            url: icons[attribute],
-            iconURL: icons[attribute],
+            name: `${esperInfo.rarity} ${esperInfo.role}`,
+            url: esperInfo.attribute.icon,
+            iconURL: esperInfo.attribute.icon,
         })
-        .setTitle(search.results[0])
-        .setColor(bot.consts.Colors.INFO)
-        .setImage(await esperPage.mainImage())
+        .setTitle(esperInfo.name)
+        .setURL(esperPage.url)
+        .setColor(esperInfo.attribute.color)
+        .setImage(esperInfo.artwork)
         .addFields([
             {
                 name: "Age",
-                value: age ? age : "Unknown",
+                value: esperInfo.age,
                 inline: true
             },
             {
                 name: "Height",
-                value: height ? height : "Unknown",
+                value: esperInfo.height,
                 inline: true
             },
             {
                 name: "Affiliation",
-                value: affiliation,
+                value: esperInfo.affiliation,
                 inline: true
             },
             {
                 name: "Identity",
-                value: identity ? identity : "Unknown",
+                value: esperInfo.identity,
                 inline: true
             },
             {
                 name: "Preference",
-                value: preference ? preference : "Unknown",
+                value: esperInfo.preference,
                 inline: true
             },
         ]);
