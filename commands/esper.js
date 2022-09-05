@@ -7,6 +7,13 @@ var wiki = wikijs({
     origin: null
 });
 
+const icons = {
+    Shimmer: "https://static.wikia.nocookie.net/dislyte/images/b/b4/Shimmer-icon.png/revision/latest/",
+    Inferno: "https://static.wikia.nocookie.net/dislyte/images/5/5a/Inferno-icon.png/revision/latest/",
+    Flow: "https://static.wikia.nocookie.net/dislyte/images/3/33/Flow-icon.png/revision/latest/",
+    Wind: "https://static.wikia.nocookie.net/dislyte/images/0/06/Wind-icon.png/revision/latest/",
+}
+
 module.exports = {
     description: "Get a dislyte esper!",
     usage: "[esper]",
@@ -29,25 +36,14 @@ module.exports = {
         let affiliation = raw.match(/affiliation=\{\{Icon\|([a-z A-Z]+)\}\}/)[1];
 
         const embed = new MessageEmbed()
+        .setAuthor({
+            name: `${attribute} ${role}`,
+            url: icon[attribute]
+        })
         .setTitle(search.results[0])
         .setColor(bot.consts.Colors.INFO)
         .setImage(await esperPage.mainImage())
         .addFields([
-            {
-                name: "Rarity",
-                value: rarity,
-                inline: true
-            },
-            {
-                name: "Role",
-                value: role,
-                inline: true
-            },
-            {
-                name: "Attribute",
-                value: attribute,
-                inline: true
-            },
             {
                 name: "Age",
                 value: pageInfo.general.age,
