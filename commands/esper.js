@@ -22,12 +22,31 @@ module.exports = {
         if (!esperPage) return bot.utils.softErr(bot, message, "Unfortunately, this Esper was not found!", loadingMsg);
 
         const pageInfo = await esperPage.fullInfo();
+        let rarity = raw.match(/rarity=\{\{Icon\|([a-zA-Z]+)\}/)[1];
+        let role = raw.match(/role=([a-zA-Z]+)/)[1];
+        let attribute = raw.match(/attribute=\{\{Icon\|([a-zA-Z]+)\}/)[1];
+        let affiliation = raw.match(/affiliation=\{\{Icon\|([a-zA-Z]+ [a-zA-Z]+)\}\}/)[1];
 
         const embed = new MessageEmbed()
         .setTitle(esper)
         .setColor(bot.constants.COLORS.SUCCESS)
         .setImage(await esperPage.mainImage())
         .addFields([
+            {
+                name: "Rarity",
+                value: rarity,
+                inline: true
+            },
+            {
+                name: "Role",
+                value: role,
+                inline: true
+            },
+            {
+                name: "Attribute",
+                value: attribute,
+                inline: true
+            },
             {
                 name: "Age",
                 value: pageInfo.general.age,
@@ -36,6 +55,11 @@ module.exports = {
             {
                 name: "Height",
                 value: pageInfo.general.height,
+                inline: true
+            },
+            {
+                name: "Affiliation",
+                value: affiliation,
                 inline: true
             },
             {
