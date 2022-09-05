@@ -35,6 +35,8 @@ module.exports = {
         let attribute = raw.match(/attribute=\{\{Icon\|([a-zA-Z]+)\}/)[1];
         let affiliation = raw.match(/affiliation=\{\{Icon\|([a-z A-Z]+)\}\}/)[1];
 
+        const { age, height, preference, identity } = pageInfo.general;
+
         const embed = new MessageEmbed()
         .setAuthor({
             name: `${attribute} ${role}`,
@@ -46,12 +48,12 @@ module.exports = {
         .addFields([
             {
                 name: "Age",
-                value: pageInfo.general.age,
+                value: age ? age : "Unknown",
                 inline: true
             },
             {
                 name: "Height",
-                value: pageInfo.general.height,
+                value: height ? height : "Unknown",
                 inline: true
             },
             {
@@ -61,12 +63,12 @@ module.exports = {
             },
             {
                 name: "Identity",
-                value: pageInfo.general.identity,
+                value: identity ? identity : "Unknown",
                 inline: true
             },
             {
                 name: "Preference",
-                value: pageInfo.general.preference,
+                value: preference ? preference : "Unknown",
                 inline: true
             },
         ]);
