@@ -43,7 +43,7 @@ module.exports = {
         const { age, height, preference, identity } = pageInfo.general;
 
         const esperInfo = {
-            name: search.result[0],
+            name: search.results[0],
             rarity: raw.match(/rarity=\{\{Icon\|([a-zA-Z]+)\}/)[1],
             role: raw.match(/role=([a-zA-Z]+)/)[1],
             attribute: {
