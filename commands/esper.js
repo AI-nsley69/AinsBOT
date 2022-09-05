@@ -40,7 +40,7 @@ module.exports = {
         const embed = new MessageEmbed()
         .setAuthor({
             name: `${attribute} ${role}`,
-            url: icon[attribute]
+            url: icons[attribute]
         })
         .setTitle(search.results[0])
         .setColor(bot.consts.Colors.INFO)
