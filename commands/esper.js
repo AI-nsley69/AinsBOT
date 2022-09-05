@@ -22,6 +22,7 @@ module.exports = {
         if (!esperPage) return bot.utils.softErr(bot, message, "Unfortunately, this Esper was not found!", loadingMsg);
 
         const pageInfo = await esperPage.fullInfo();
+        const raw = await esperPage.rawInfo();
         let rarity = raw.match(/rarity=\{\{Icon\|([a-zA-Z]+)\}/)[1];
         let role = raw.match(/role=([a-zA-Z]+)/)[1];
         let attribute = raw.match(/attribute=\{\{Icon\|([a-zA-Z]+)\}/)[1];
@@ -72,8 +73,8 @@ module.exports = {
                 value: pageInfo.general.preference,
                 inline: true
             },
-        ])
-        .setFooter(`"${pageInfo.general.quote}"`);
+        ]);
+        // .setFooter(`"${pageInfo.general.quote}"`);
 
         loadingMsg.edit({ embeds: [embed] });
     }
