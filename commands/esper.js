@@ -8,10 +8,10 @@ var wiki = wikijs({
 });
 
 const icons = {
-    Shimmer: "https://static.wikia.nocookie.net/dislyte/images/b/b4/Shimmer-icon.png/revision/latest/",
-    Inferno: "https://static.wikia.nocookie.net/dislyte/images/5/5a/Inferno-icon.png/revision/latest/",
-    Flow: "https://static.wikia.nocookie.net/dislyte/images/3/33/Flow-icon.png/revision/latest/",
-    Wind: "https://static.wikia.nocookie.net/dislyte/images/0/06/Wind-icon.png/revision/latest/",
+    Shimmer: "https://static.wikia.nocookie.net/dislyte/images/b/b4/Shimmer-icon.png",
+    Inferno: "https://static.wikia.nocookie.net/dislyte/images/5/5a/Inferno-icon.png",
+    Flow: "https://static.wikia.nocookie.net/dislyte/images/3/33/Flow-icon.png",
+    Wind: "https://static.wikia.nocookie.net/dislyte/images/0/06/Wind-icon.png",
 }
 
 module.exports = {
@@ -40,7 +40,8 @@ module.exports = {
         const embed = new MessageEmbed()
         .setAuthor({
             name: `${attribute} ${role}`,
-            url: icons[attribute]
+            url: icons[attribute],
+            iconURL: icons[attribute],
         })
         .setTitle(search.results[0])
         .setColor(bot.consts.Colors.INFO)
