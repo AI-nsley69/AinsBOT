@@ -52,6 +52,7 @@ module.exports = {
                 color: attributes.colors[attribute]
             },
             artwork: await esperPage.mainImage(),
+            url: await esperPage.url(),
             age: age ? age : "Unknown",
             height: height ? height : "Unknown",
             affiliation: raw.match(/affiliation=\{\{Icon\|([a-z A-Z]+)\}\}/)[1],
@@ -66,7 +67,7 @@ module.exports = {
             iconURL: esperInfo.attribute.icon,
         })
         .setTitle(esperInfo.name)
-        .setURL(esperPage.url)
+        .setURL(esperInfo.url)
         .setColor(esperInfo.attribute.color)
         .setImage(esperInfo.artwork)
         .addFields([
