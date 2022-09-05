@@ -49,7 +49,7 @@ module.exports = {
             attribute: {
                 name: attribute,
                 icon: attributes.icons[attribute],
-                color: attribute.colors[attribute]
+                color: attributes.colors[attribute]
             },
             artwork: await esperPage.mainImage(),
             age: age ? age : "Unknown",
