@@ -30,7 +30,7 @@ module.exports = {
 
         const embed = new MessageEmbed()
         .setTitle(search.results[0])
-        .setColor(bot.consts.COLORS.INFO)
+        .setColor(bot.consts.Colors.INFO)
         .setImage(await esperPage.mainImage())
         .addFields([
             {
