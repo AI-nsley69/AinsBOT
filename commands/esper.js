@@ -6,6 +6,8 @@ var wiki = wikijs({
     apiUrl: "https://dislyte.fandom.com/api.php",
     origin: null
 });
+// Espers JSON
+const espers = JSON.parse(bot.fs.readFileSync("../assets/espers.json"));
 
 const attributes = {
     icons: {
@@ -33,8 +35,11 @@ module.exports = {
         const esper = args.join(" ");
         if (!esper) return bot.utils.softErr(bot, message, "Missing an esper!", loadingMsg);
         const search = await wiki.search(esper);
-        if (!search) return bot.utils.softErr(bot, message, "Unfortunately, this Esper was not found!", loadingMsg);
+        if (!search.results) return bot.utils.softErr(bot, message, "Unfortunately, this Esper was not found!", loadingMsg);
+        const esperName = search.results[0].split(" ")[0];
         const esperPage = await wiki.page(search.results[0]);
+
+        const esperObj = espers.filter(e => e.name === esperName);
 
         const pageInfo = await esperPage.fullInfo();
         const raw = await esperPage.rawInfo();
@@ -52,12 +57,14 @@ module.exports = {
                 color: attributes.colors[attribute]
             },
             artwork: await esperPage.mainImage(),
+            icon: esper.icon,
             url: await esperPage.url(),
             age: age ? age : "Unknown",
             height: height ? height : "Unknown",
             affiliation: raw.match(/affiliation=\{\{Icon\|([a-z A-Z]+)\}\}/)[1],
             identity: identity ? identity : "Unknown",
-            preference: preference ? preference : "Unknown"
+            preference: preference ? preference : "Unknown",
+            stats: esper.stats,
         }
 
         const embed = new MessageEmbed()
@@ -66,6 +73,7 @@ module.exports = {
             url: esperInfo.attribute.icon,
             iconURL: esperInfo.attribute.icon,
         })
+        .setThumbnail(esperInfo.icon)
         .setTitle(esperInfo.name)
         .setURL(esperInfo.url)
         .setColor(esperInfo.attribute.color)
@@ -82,22 +90,34 @@ module.exports = {
                 inline: true
             },
             {
-                name: "Affiliation",
-                value: esperInfo.affiliation,
-                inline: true
-            },
-            {
-                name: "Identity",
-                value: esperInfo.identity,
-                inline: true
-            },
-            {
                 name: "Preference",
                 value: esperInfo.preference,
                 inline: true
             },
-        ]);
-        // .setFooter(`"${pageInfo.general.quote}"`);
+            {
+                name: "HP",
+                value: esperInfo.stats.hp,
+                inline: true
+            },
+            {
+                name: "ATK",
+                value: esperInfo.stats.atk,
+                inline: true
+            },
+            {
+                name: "DEF",
+                value: esperInfo.stats.def,
+                inline: true
+            },
+            {
+                name: "Speed",
+                value: esperInfo.stats.speed,
+                inline: true
+            },
+        ])
+        .setFooter({
+            text: `${esperInfo.affiliation}, ${esperInfo.identity}`
+        });
 
         loadingMsg.edit({ embeds: [embed] });
     }
