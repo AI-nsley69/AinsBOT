@@ -1,28 +1,5 @@
 const { Permissions, MessageEmbed } = require("discord.js");
-// MediaWiki API
-const wikijs = require('wikijs').default;
-
-var wiki = wikijs({
-    apiUrl: "https://dislyte.fandom.com/api.php",
-    origin: null
-});
-// Espers JSON
-const espers = JSON.parse(require("fs").readFileSync("./assets/espers.json"));
-
-const attributes = {
-    icons: {
-        Shimmer: "https://static.wikia.nocookie.net/dislyte/images/b/b4/Shimmer-icon.png",
-        Inferno: "https://static.wikia.nocookie.net/dislyte/images/5/5a/Inferno-icon.png",
-        Flow: "https://static.wikia.nocookie.net/dislyte/images/3/33/Flow-icon.png",
-        Wind: "https://static.wikia.nocookie.net/dislyte/images/0/06/Wind-icon.png",
-    },
-    colors: {
-        Shimmer: 0xacefed,
-        Inferno: 0xfc8c04,
-        Flow: 0xdb7bfb,
-        Wind: 0x1cf3c3
-    }
-}
+const axios = require("axios");
 
 module.exports = {
     description: "Get a dislyte esper!",
@@ -32,43 +9,13 @@ module.exports = {
     guild: false,
     cooldown: 0,
     run: async (bot, message, loadingMsg, args) => {
-        const esper = args.join(" ");
+        const esper = args.join("-").toLowerCase();
         // Check if we have an argument
         if (!esper) return bot.utils.softErr(bot, message, "Missing an esper!", loadingMsg);
-        // Search for the esper, if there's no result return
-        const search = await wiki.search(esper);
-        if (!search.results) return bot.utils.softErr(bot, message, "Unfortunately, this Esper was not found!", loadingMsg);
-        const esperPage = await wiki.page(search.results[0]);
-        // Fetch object from esper name
-        const esperName = search.results[0].split(" (")[0];
-        const esperObj = espers.filter(e => e.name === esperName)[0];
-
-        // Get full & raw info to extract as much data as possible
-        const pageInfo = await esperPage.fullInfo();
-        const raw = await esperPage.rawInfo();
-        const attribute = raw.match(/attribute=\{\{Icon\|([a-zA-Z]+)\}/)[1];
-
-        const { age, height, preference, identity } = pageInfo.general;
-
-        const esperInfo = {
-            name: search.results[0],
-            rarity: raw.match(/rarity=\{\{Icon\|([a-zA-Z]+)\}/)[1],
-            role: raw.match(/role=([a-zA-Z]+)/)[1],
-            attribute: {
-                name: attribute,
-                icon: attributes.icons[attribute],
-                color: attributes.colors[attribute]
-            },
-            artwork: await esperPage.mainImage(),
-            icon: esperObj.icon,
-            url: await esperPage.url(),
-            age: age ? age : "Unknown",
-            height: height ? height : "Unknown",
-            affiliation: raw.match(/affiliation=\{\{Icon\|([a-z A-Z]+)\}\}/)[1],
-            identity: identity ? identity : "Unknown",
-            preference: preference ? preference : "Unknown",
-            stats: esperObj.stats,
-        }
+        // Get the esper through the api
+        const res = await axios.get(`https://api.initegaming.repl.co/dislyte/esper/${esper}`);
+        // Take the data into the esperInfo object
+        const esperInfo = res.data;
 
         const embed = new MessageEmbed()
         .setAuthor({
