@@ -69,6 +69,10 @@ module.exports = {
                 value: `__Una:__ ${esperInfo.relics.una}\n__Mui:__ ${esperInfo.relics.mui}`,
             },
             {
+                name: "Recommended Stats",
+                value: `__Una 2:__ ${esperInfo.main_stats.una2}\n__Una 4:__ ${esperInfo.main_stats.una4}\n__Mui 2:__ ${esperInfo.main_stats.mui2}`
+            },
+            {
                 name: "Credits",
                 value: `[Gachax](${esperInfo.credits[0]}) [Fandom](${esperInfo.credits[1]}) [Spreadsheet](${esperInfo.credits[2]})`
             }
