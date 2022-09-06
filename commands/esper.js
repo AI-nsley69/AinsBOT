@@ -7,7 +7,7 @@ var wiki = wikijs({
     origin: null
 });
 // Espers JSON
-const espers = JSON.parse(bot.fs.readFileSync("../assets/espers.json"));
+const espers = JSON.parse(require("fs").readFileSync("../assets/espers.json"));
 
 const attributes = {
     icons: {
