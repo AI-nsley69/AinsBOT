@@ -64,6 +64,14 @@ module.exports = {
                 value: esperInfo.stats.speed,
                 inline: true
             },
+            {
+                name: "Recommend relics",
+                value: `__Una:__ ${esperInfo.relics.una}\n__Mui:__ ${esperInfo.relics.mui}`,
+            },
+            {
+                name: "Credits",
+                value: `[Gachax](${esperInfo.credits[0]}) [Fandom](${esperInfo.credits[1]}) [Spreadsheet](${esperInfo.credits[2]})`
+            }
         ])
         .setFooter({
             text: `${esperInfo.affiliation}, ${esperInfo.identity}`
