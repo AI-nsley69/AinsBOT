@@ -39,8 +39,7 @@ module.exports = {
         const esperName = search.results[0].split(" ")[0];
         const esperPage = await wiki.page(search.results[0]);
 
-        const esperObj = espers.filter(e => e.name === esperName);
-
+        const esperObj = espers.filter(e => e.name === esperName)[0];
         const pageInfo = await esperPage.fullInfo();
         const raw = await esperPage.rawInfo();
         const attribute = raw.match(/attribute=\{\{Icon\|([a-zA-Z]+)\}/)[1];
