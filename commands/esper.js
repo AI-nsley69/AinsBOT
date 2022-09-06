@@ -33,13 +33,17 @@ module.exports = {
     cooldown: 0,
     run: async (bot, message, loadingMsg, args) => {
         const esper = args.join(" ");
+        // Check if we have an argument
         if (!esper) return bot.utils.softErr(bot, message, "Missing an esper!", loadingMsg);
+        // Search for the esper, if there's no result return
         const search = await wiki.search(esper);
         if (!search.results) return bot.utils.softErr(bot, message, "Unfortunately, this Esper was not found!", loadingMsg);
-        const esperName = search.results[0].split(" ")[0];
         const esperPage = await wiki.page(search.results[0]);
-
+        // Fetch object from esper name
+        const esperName = search.results[0].split(" (")[0];
         const esperObj = espers.filter(e => e.name === esperName)[0];
+
+        // Get full & raw info to extract as much data as possible
         const pageInfo = await esperPage.fullInfo();
         const raw = await esperPage.rawInfo();
         const attribute = raw.match(/attribute=\{\{Icon\|([a-zA-Z]+)\}/)[1];
