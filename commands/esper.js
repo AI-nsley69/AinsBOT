@@ -57,14 +57,14 @@ module.exports = {
                 color: attributes.colors[attribute]
             },
             artwork: await esperPage.mainImage(),
-            icon: esper.icon,
+            icon: esperObj.icon,
             url: await esperPage.url(),
             age: age ? age : "Unknown",
             height: height ? height : "Unknown",
             affiliation: raw.match(/affiliation=\{\{Icon\|([a-z A-Z]+)\}\}/)[1],
             identity: identity ? identity : "Unknown",
             preference: preference ? preference : "Unknown",
-            stats: esper.stats,
+            stats: esperObj.stats,
         }
 
         const embed = new MessageEmbed()
