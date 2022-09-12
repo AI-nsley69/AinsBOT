@@ -81,6 +81,11 @@ module.exports = {
             text: `${esperInfo.affiliation}, ${esperInfo.identity}`
         });
 
-        loadingMsg.edit({ embeds: [embed] });
+        const skillEmbed = new MessageEmbed()
+        .setTitle("Skills")
+        .setColor(esperInfo.attribute.color)
+        .addFields(esperInfo.skills)
+
+        loadingMsg.edit({ embeds: [embed, skillEmbed] });
     }
 }
