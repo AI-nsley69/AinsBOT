@@ -60,7 +60,7 @@ async function parseColor(color) {
   }
   // Check for hex shorthand
   if (color.length === 3) {
-    let pad = color.split();
+    let pad = color.split("");
     pad.forEach((v, i) => (pad[i] = v.padStart(2, v)));
     color = pad.join("");
   }
