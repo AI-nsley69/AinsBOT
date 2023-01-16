@@ -114,8 +114,8 @@ async function commandHandler(bot, message) {
         "This command is only available in guilds 🌧"
       );
     // Validate argument count
-    const minArgs = command.usage.match(/\[.*?\]/g).length;
-    const maxArgs = minArgs + command.usage.match(/\(.*?\)/g).length;
+    const minArgs = commandInfo.usage.match(/\[.*?\]/g).length;
+    const maxArgs = minArgs + commandInfo.usage.match(/\(.*?\)/g).length;
     if (args.length < minArgs) {
       // Too few arguments
       return bot.utils.softErr(
