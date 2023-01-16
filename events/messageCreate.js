@@ -113,17 +113,21 @@ async function commandHandler(bot, message) {
         message,
         "This command is only available in guilds 🌧"
       );
+    /*
+    // Regex for getting required and optional args
+    const requiredRegex = /\[.*?\]/g;
+    const optionalRegex = /\(.*?\)/g;
     // Validate argument count
-    const minArgs = commandInfo.usage.match(/\[.*?\]/g).length;
-    const maxArgs = minArgs + commandInfo.usage.match(/\(.*?\)/g).length;
-    if (args.length < minArgs) {
+    const minArgs = commandInfo.usage.match(requiredRegex) || [];
+    const maxArgs = minArgs + commandInfo.usage.match(optionalRegex) || [];
+    if (args.length < minArgs.length) {
       // Too few arguments
       return bot.utils.softErr(
         bot,
         message,
         "Too few arguments provided! Please provide the required arguments and try again."
       );
-    } else if (args.length > maxArgs) {
+    } else if (args.length > maxArgs.length) {
       // Too many arguments
       return bot.utils.softErr(
         bot,
@@ -131,6 +135,7 @@ async function commandHandler(bot, message) {
         "Too many arguments provided! Please provide the required arguments and try again."
       );
     }
+    */
     // Run the command and catch any error to not crash bot
     const loadingMsg = await bot.utils.cmdLoadingMsg(bot, message);
     bot.logger.verbose(
