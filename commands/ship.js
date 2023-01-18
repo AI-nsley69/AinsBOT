@@ -56,10 +56,14 @@ function generateNumber(authorId, targetId) {
   authorId = BigInt(authorId);
   targetId = BigInt(targetId);
 
+  // Some algorithm with randomly tested operators to generate a pseudo random number
   let pseudoRand =
     ((authorId ^ targetId) * firstPrime + secondPrime) % thirdPrime;
-
-  return Number(pseudoRand.toString().slice(-2));
+  // Get the last 2 digits of the number
+  pseudoRand = Number(pseudoRand.toString().slice(-2));
+  // Divide by 99 and multiply by 100 and then round it off for 0-100 range
+  pseduoRand = Math.round((pseudoRand / 99) * 100);
+  return pseudoRand;
 }
 
 function getTitle(n) {
@@ -74,6 +78,7 @@ function getTitle(n) {
     "You two definitely crush on each other.", // 70 - 79%
     "Definitely dating.", // 80 - 89%
     "Actual soulmates.", // 90 - 99%
+    "Literally made for each other.", // 100%
   ];
   n = Math.floor(n / 10);
 
