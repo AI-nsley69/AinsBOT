@@ -28,24 +28,26 @@ module.exports = {
       `${user} do you wish to marry ${message.author}? 🥹 (y/n)`
     );
 
-    let res = await bot.helpers
-      .get("message")
-      .awaitResponse(message, user.id, 60 * 1000)
-      .catch((err) => message.channel.send("You just got ghosted! 👻"));
-
-    if (!(res instanceof String)) return;
-
-    if (res.startsWith("y") && res.length < 4) {
-      message.channel.send(
-        `I hereby pronounce ${message.author} & ${user} a married couple! 🫶`
-      );
-      addMarriage(bot, message.author, user);
-    } else if (res.startsWith("n") && res.length < 4) {
-      message.channel.send("Get rejected bozo L 😈");
-    } else {
-      message.channel.send(
-        "Unrecognized response, marriage cannot be established :c"
-      );
+    try {
+      bot.helpers
+        .get("message")
+        .awaitResponse(message, user.id, 60 * 1000)
+        .then((res) => {
+          if (res.startsWith("y") && res.length < 4) {
+            message.channel.send(
+              `I hereby pronounce ${message.author} & ${user} a married couple! 🫶`
+            );
+            addMarriage(bot, message.author, user);
+          } else if (res.startsWith("n") && res.length < 4) {
+            message.channel.send("Get rejected bozo L 😈");
+          } else {
+            message.channel.send(
+              "Unrecognized response, marriage cannot be established :c"
+            );
+          }
+        });
+    } catch (err) {
+      message.channel.send("You just got ghosted! 👻");
     }
   },
 };
