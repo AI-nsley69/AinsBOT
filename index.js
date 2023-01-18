@@ -34,6 +34,12 @@ const bot = {
   imgur: new ImgurClient({ clientId: process.env.imgurId }),
   passthroughs: [],
   bridges: [],
+  gifCache: {
+    cuddle: [],
+    hug: [],
+    kiss: [],
+    pat: [],
+  },
 };
 // Database for toggling features
 bot.db.features = bot.sequelize.define("features", {
@@ -62,6 +68,12 @@ bot.db.botChannels = bot.sequelize.define("bot_channels", {
   bot_channel: Sequelize.STRING,
 });
 
+bot.db.marriages = bot.sequelize.define("marriages", {
+  userId: Sequelize.STRING,
+  spouseId: Sequelize.STRING,
+  date: Sequelize.INTEGER,
+});
+
 bot.config = JSON.parse(bot.fs.readFileSync("./config.json"));
 
 // Read the directory containing commands and then add them to a map
@@ -74,6 +86,17 @@ bot.commands = new Map(
     require(`./commands/${file}`),
   ])
 );
+
+const helpers = bot.fs
+  .readdirSync("./modules/helpers")
+  .filter((f) => f.endsWith(".js"));
+bot.helpers = new Map(
+  helpers.map((file) => [
+    file.replace(".js", ""),
+    require(`./modules/helpers/${file}`),
+  ])
+);
+
 // Repeat for admin commands
 bot.adminCommandFiles = bot.fs
   .readdirSync("./commands/admin/")
@@ -95,9 +118,12 @@ bot.events = new Map(
   ])
 );
 
-bot.events.forEach((v, eventName, events) => {
-  const event = bot.events.get(eventName);
+for (const [eventName, event] of bot.events) {
   bot.client.on(eventName, async (...args) => {
-    event.run(bot, ...args).catch((err) => console.log(err));
+    try {
+      await event.run(bot, ...args);
+    } catch (err) {
+      console.log(err);
+    }
   });
-});
+}

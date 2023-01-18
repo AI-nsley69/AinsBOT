@@ -79,11 +79,7 @@ async function commandHandler(bot, message) {
       );
     // Check if user has cooldown on said command
     if (cmdCooldown.has(`${message.author.id}-${command}`))
-      return bot.utils.softErr(
-        bot,
-        message,
-        "Slow down there cowboy! You're on cooldown 😅"
-      );
+      return message.react("⏳");
     // Check if the user has the required permission, if wanted
     if (
       commandInfo.permission &&
