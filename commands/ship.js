@@ -59,12 +59,12 @@ function generateNumber(authorId, targetId) {
   let pseudoRand =
     ((authorId ^ targetId) * firstPrime + secondPrime) % thirdPrime;
 
-  return pseudoRand.toString().slice(-2);
+  return Number(pseudoRand.toString().slice(-2));
 }
 
 function getTitle(n) {
   const titles = [
-    "Archnemis maybe?", // 0 - 9%
+    "Archnemesis maybe?", // 0 - 9%
     "Definitely long-time enemies.", // 10 - 19%
     "Y'all are enemies huh?", // 20 - 29%
     "Acquaintences, nothing else or more.", // 30 - 39%
