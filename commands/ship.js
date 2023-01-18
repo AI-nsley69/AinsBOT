@@ -40,7 +40,7 @@ module.exports = {
       .setDescription(
         `${message.author.tag} and ${member.user.tag} are ${percentage}% compatible!`
       )
-      .setColor(bot.consts.Colors.INFO);
+      .setColor(getColor(percentage));
 
     loadingMsg.edit({ embeds: [embed] });
   },
@@ -83,4 +83,35 @@ function getTitle(n) {
   n = Math.floor(n / 10);
 
   return titles[n];
+}
+
+function getColor(n) {
+  n = n / 100; // get the decimal value of the percentage
+  // Setup the lowest & highest color
+  const lowestColor = {
+    red: 0x66,
+    green: 0x33,
+    blue: 0x99,
+  };
+  const highestColor = {
+    red: 0xff,
+    green: 0xd1,
+    blue: 0xdc,
+  };
+
+  let finalColor = "";
+  // Red
+  finalColor += Math.round(
+    lowestColor.red + n * (highestColor.red - lowestColor.red)
+  ).toString(16);
+  // Green
+  finalColor += Math.round(
+    lowestColor.green + n * (highestColor.green - lowestColor.green)
+  ).toString(16);
+  // Blue
+  finalColor += Math.round(
+    lowestColor.blue + n * (highestColor.blue - lowestColor.blue)
+  ).toString(16);
+
+  return parseInt(finalColor, 16);
 }
