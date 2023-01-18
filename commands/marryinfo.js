@@ -13,7 +13,7 @@ module.exports = {
       message.mentions.members.first() ||
       (await message.guild.members.fetch(args[0])) ||
       message.member;
-    const user = member.length < 2 ? member.user : message.author;
+    const user = member instanceof Array ? member.user : message.author;
 
     const status = await bot.db.marriages.findAll({
       where: {

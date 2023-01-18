@@ -34,10 +34,10 @@ module.exports = {
         .awaitResponse(message, user.id, 60 * 1000)
         .then((res) => {
           if (res.startsWith("y") && res.length < 4) {
+            addMarriage(bot, message.author, user);
             message.channel.send(
               `I hereby pronounce ${message.author} & ${user} a married couple! 🫶`
             );
-            addMarriage(bot, message.author, user);
           } else if (res.startsWith("n") && res.length < 4) {
             message.channel.send("Get rejected bozo L 😈");
           } else {
