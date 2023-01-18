@@ -10,7 +10,6 @@ module.exports = {
   run: async (bot, message, loadingMsg, args) => {
     // Get the user
     const member = message.mentions.members.first() || message.member;
-
     const user = member.user;
 
     const status = await bot.db.marriages.findAll({
