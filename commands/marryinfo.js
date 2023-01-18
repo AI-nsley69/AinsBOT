@@ -9,11 +9,7 @@ module.exports = {
   cooldown: 5,
   run: async (bot, message, loadingMsg, args) => {
     // Get the user
-    const member =
-      message.mentions.members.first() ||
-      (await message.guild.members.fetch(args[0])) ||
-      message.member;
-    const user = member instanceof Array ? member.user : message.author;
+    const member = message.mentions.members.first() || message.member;
 
     const status = await bot.db.marriages.findAll({
       where: {
