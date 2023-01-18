@@ -76,7 +76,27 @@ bot.db.marriages = bot.sequelize.define("marriages", {
 
 bot.config = JSON.parse(bot.fs.readFileSync("./config.json"));
 
+bot.commandGroups = bot.fs
+  .readdirSync("./commands/", { withFileTypes: true })
+  .filter((d) => d.isDirectory() && d.name !== "admin")
+  .map((d) => d.name);
+
+bot.commands = new Map();
+
+bot.commandGroups.forEach((group) => {
+  const files = bot.fs
+    .readdirSync(`./commands/${group}/`)
+    .filter((file) => file.endsWith(".js"));
+
+  files.forEach((file) => {
+    let cmd = require(`./commands/${group}/${file}`);
+    cmd.group = group;
+
+    bot.commands.set(file.replace(".js", ""), cmd);
+  });
+});
 // Read the directory containing commands and then add them to a map
+/*
 bot.commandFiles = bot.fs
   .readdirSync("./commands/")
   .filter((file) => file.endsWith(".js"));
@@ -86,7 +106,7 @@ bot.commands = new Map(
     require(`./commands/${file}`),
   ])
 );
-
+*/
 const helpers = bot.fs
   .readdirSync("./modules/helpers")
   .filter((f) => f.endsWith(".js"));
