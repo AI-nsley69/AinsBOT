@@ -86,7 +86,7 @@ Promise.all(waits).then(() => {
 });
 
 async function loadFiles(fieldName, path) {
-	bot.fs.readdirSync(path).filter(f => f.endsWith('.js')).forEach(f => {
+	(await bot.fs.promises.readdir(path)).filter(f => f.endsWith('.js')).forEach(f => {
 		bot[fieldName].set(f.replace('.js', ''), require(`${path}/${f}`));
 	});
 }
