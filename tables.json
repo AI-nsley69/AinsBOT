@@ -1,0 +1,30 @@
+{
+        "features": {
+            "guildId": {
+                "type": "STRING",
+                "unique": true
+            },
+            "tiktokPreview": "BOOL",
+            "messagePreview": "BOOL",
+            "redditPreview": "BOOL"
+        },
+        "commands": {
+            "guildId": {
+                "type": "STRING",
+                "unique": true
+            },
+            "disabled": "STRING"
+        },
+        "bot_channels": {
+            "guildId": {
+                "type": "STRING",
+                "unique": true
+            },
+            "bot_channel": "STRING"
+        },
+        "marriages": {
+            "userId": "STRING",
+            "spouseId": "STRING",
+            "date": "INT"
+        }
+}
