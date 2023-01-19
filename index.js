@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const Sequelize = require('sequelize');
 const { ImgurClient } = require('imgur');
 
+const time = performance.now();
+
 // Create intents for discord bot so library is satisfied"
 const intents = new Intents();
 intents.add(
@@ -35,6 +37,7 @@ const bot = {
 	imgur: new ImgurClient({ clientId: process.env.imgurId }),
 	passthroughs: [],
 	bridges: [],
+	initTime: time,
 };
 
 // Used for parsing the table objects

@@ -21,7 +21,11 @@ module.exports = {
 			events: bot.events.size,
 			user: bot.client.user.tag,
 		};
+
+		bot.initTime = performance.now() - bot.initTime;
+
 		console.table(botInfo);
+		console.log(`Startup took ${Math.round(bot.initTime)}ms`);
 	},
 };
 async function checkServersInDB(bot) {
