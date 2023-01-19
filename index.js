@@ -34,14 +34,8 @@ const bot = {
 	imgur: new ImgurClient({ clientId: process.env.imgurId }),
 	passthroughs: [],
 	bridges: [],
-	gifCache: {
-		cuddle: [],
-		hug: [],
-		kiss: [],
-		pat: [],
-	},
 };
-// Database for toggling features
+// Table for toggling features
 bot.db.features = bot.sequelize.define('features', {
 	guildId: {
 		type: Sequelize.STRING,
@@ -51,7 +45,7 @@ bot.db.features = bot.sequelize.define('features', {
 	messagePreview: Sequelize.BOOLEAN,
 	redditPreview: Sequelize.BOOLEAN,
 });
-// Database for toggling commands
+// Table for toggling commands
 bot.db.commands = bot.sequelize.define('commands', {
 	guildId: {
 		type: Sequelize.STRING,
@@ -59,7 +53,7 @@ bot.db.commands = bot.sequelize.define('commands', {
 	},
 	disabled: Sequelize.STRING,
 });
-// Database for bot channel
+// Table for bot channel
 bot.db.botChannels = bot.sequelize.define('bot_channels', {
 	guildId: {
 		type: Sequelize.STRING,
@@ -67,7 +61,7 @@ bot.db.botChannels = bot.sequelize.define('bot_channels', {
 	},
 	bot_channel: Sequelize.STRING,
 });
-
+// Table for marriages
 bot.db.marriages = bot.sequelize.define('marriages', {
 	userId: Sequelize.STRING,
 	spouseId: Sequelize.STRING,
@@ -82,61 +76,24 @@ bot.commandGroups = bot.fs
 	.map((d) => d.name);
 
 bot.commands = new Map();
+bot.helpers = new Map();
+bot.adminCommands = new Map();
+bot.events = new Map();
 
+let calls = 0;
 bot.commandGroups.forEach((group) => {
-	const files = bot.fs
-		.readdirSync(`./commands/${group}/`)
-		.filter((file) => file.endsWith('.js'));
-
-	files.forEach((file) => {
-		const cmd = require(`./commands/${group}/${file}`);
-		cmd.group = group;
-
-		bot.commands.set(file.replace('.js', ''), cmd);
-	});
+	loadFiles('commands', `./commands/${group}`).then(calls += 1);
 });
-// Read the directory containing commands and then add them to a map
-/*
-bot.commandFiles = bot.fs
-  .readdirSync("./commands/")
-  .filter((file) => file.endsWith(".js"));
-bot.commands = new Map(
-  bot.commandFiles.map((file) => [
-    file.replace(".js", ""),
-    require(`./commands/${file}`),
-  ])
-);
-*/
-const helpers = bot.fs
-	.readdirSync('./modules/helpers')
-	.filter((f) => f.endsWith('.js'));
-bot.helpers = new Map(
-	helpers.map((file) => [
-		file.replace('.js', ''),
-		require(`./modules/helpers/${file}`),
-	]),
-);
+loadFiles('helpers', './modules/helpers').then(calls += 1);
+loadFiles('adminCommands', './commands/admin').then(calls += 1);
+loadFiles('events', './events').then(calls += 1);
 
-// Repeat for admin commands
-bot.adminCommandFiles = bot.fs
-	.readdirSync('./commands/admin/')
-	.filter((file) => file.endsWith('.js'));
-bot.adminCommands = new Map(
-	bot.adminCommandFiles.map((file) => [
-		file.replace('.js', ''),
-		require(`./commands/admin/${file}`),
-	]),
-);
-// Repeat, again, for events
-bot.eventFiles = bot.fs
-	.readdirSync('./events/')
-	.filter((file) => file.endsWith('.js'));
-bot.events = new Map(
-	bot.eventFiles.map((file) => [
-		file.replace('.js', ''),
-		require(`./events/${file}`),
-	]),
-);
+// Wait for the functions to finish
+while (calls < 4) {
+	// Only check the calls count every 5 ms
+	// eslint-disable-next-line no-empty-function
+	setTimeout(() => {}, 5);
+}
 
 for (const [eventName, event] of bot.events) {
 	bot.client.on(eventName, async (...args) => {
@@ -146,5 +103,11 @@ for (const [eventName, event] of bot.events) {
 		catch (err) {
 			console.log(err);
 		}
+	});
+}
+
+async function loadFiles(fieldName, path) {
+	bot.fs.readdirSync(path).filter(f => f.endsWith('.js')).forEach(f => {
+		bot[fieldName].set(f.replace('.js', ''), require(`${path}/${f}`));
 	});
 }
