@@ -64,13 +64,13 @@ bot.helpers = new Map();
 bot.adminCommands = new Map();
 bot.events = new Map();
 
-const loadCalls = 0;
+let loadCalls = 0;
 bot.commandGroups.forEach((group) => {
-	loadFiles('commands', `./commands/${group}`);
+	loadFiles('commands', `./commands/${group}`).then(loadCalls++);
 });
-loadFiles('helpers', './modules/helpers');
-loadFiles('adminCommands', './commands/admin');
-loadFiles('events', './events');
+loadFiles('helpers', './modules/helpers').then(loadCalls++);
+loadFiles('adminCommands', './commands/admin').then(loadCalls++);
+loadFiles('events', './events').then(loadCalls++);
 
 const loadCallsLimit = 8;
 const defineCallsLimit = 4;
