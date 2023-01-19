@@ -28,21 +28,9 @@ module.exports = {
 			);
 		}
 		// Fetch the media
-		let cuddle;
-		try {
-			cuddle = await axios
-				.get('https://api.otakugifs.xyz/gif?reaction=cuddle&format=gif')
-				.then((res) => res.data.url);
-			bot.utils.putIfAbsent(bot.gifCache.cuddle, cuddle);
-		}
-		catch (err) {
-			bot.logger.warn(err.toString());
-			cuddle =
-        bot.gifCache.cuddle[
-        // eslint-disable-next-line no-mixed-spaces-and-tabs
-        	Math.floor(Math.random * bot.gifCache.cuddle.length)
-        ];
-		}
+		const cuddle = await axios
+			.get('https://api.otakugifs.xyz/gif?reaction=cuddle&format=gif')
+			.then((res) => res.data.url);
 
 		sendEmbed(bot, loadingMsg, member, message, cuddle);
 	},
@@ -53,7 +41,7 @@ function sendEmbed(bot, loadingMsg, member, message, cuddle) {
 	const embed = new MessageEmbed()
 		.setTitle(`${member.user.tag} got cuddled by ${message.author.tag}!`)
 		.setColor(bot.consts.Colors.INFO)
-		.setImage(cuddle.data.url)
+		.setImage(cuddle)
 		.setTimestamp();
 	// Send the new embed
 	loadingMsg
