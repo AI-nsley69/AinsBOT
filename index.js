@@ -46,12 +46,6 @@ const types = {
 
 const { features, commands, bot_channels, marriages } = JSON.parse(bot.fs.readFileSync('./tables.json'));
 
-let defineCalls = 0;
-loadTable('features', features, 'features').then(defineCalls++);
-loadTable('commands', commands, 'commands').then(defineCalls++);
-loadTable('bot_channels', bot_channels, 'botChannels').then(defineCalls++);
-loadTable('marriages', marriages, 'marriages').then(defineCalls++);
-
 bot.config = JSON.parse(bot.fs.readFileSync('./config.json'));
 
 bot.commandGroups = bot.fs
@@ -64,33 +58,32 @@ bot.helpers = new Map();
 bot.adminCommands = new Map();
 bot.events = new Map();
 
-let loadCalls = 0;
+const waits = [];
+
+waits.push(loadTable('features', features, 'features'));
+waits.push(loadTable('commands', commands, 'commands'));
+waits.push(loadTable('bot_channels', bot_channels, 'botChannels'));
+waits.push(loadTable('marriages', marriages, 'marriages'));
+
 bot.commandGroups.forEach((group) => {
-	loadFiles('commands', `./commands/${group}`).then(loadCalls++);
+	waits.push(loadFiles('commands', `./commands/${group}`));
 });
-loadFiles('helpers', './modules/helpers').then(loadCalls++);
-loadFiles('adminCommands', './commands/admin').then(loadCalls++);
-loadFiles('events', './events').then(loadCalls++);
+waits.push(loadFiles('helpers', './modules/helpers'));
+waits.push(loadFiles('adminCommands', './commands/admin'));
+waits.push(loadFiles('events', './events'));
 
-const loadCallsLimit = 8;
-const defineCallsLimit = 4;
-// Wait for the functions to finish
-while (loadCalls < loadCallsLimit || defineCalls < defineCallsLimit) {
-	// Only check the loadCalls count every 5 ms
-	// eslint-disable-next-line no-empty-function
-	setTimeout(() => {}, 5);
-}
-
-for (const [eventName, event] of bot.events) {
-	bot.client.on(eventName, async (...args) => {
-		try {
-			await event.run(bot, ...args);
-		}
-		catch (err) {
-			console.log(err);
-		}
-	});
-}
+Promise.all(waits).then(() => {
+	for (const [eventName, event] of bot.events) {
+		bot.client.on(eventName, async (...args) => {
+			try {
+				await event.run(bot, ...args);
+			}
+			catch (err) {
+				console.log(err);
+			}
+		});
+	}
+});
 
 async function loadFiles(fieldName, path) {
 	bot.fs.readdirSync(path).filter(f => f.endsWith('.js')).forEach(f => {
@@ -100,7 +93,7 @@ async function loadFiles(fieldName, path) {
 
 async function loadTable(name, input, field) {
 	input = parseTableInput(input);
-	bot.db[field] = await bot.sequelize.define(name, input);
+	bot.db[field] = bot.sequelize.define(name, input);
 }
 
 function parseTableInput(obj) {
