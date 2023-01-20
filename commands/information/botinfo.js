@@ -3,6 +3,8 @@ import pkg from 'node-os-utils';
 import { Command } from '../../modules/commandClass.js';
 const { mem: _mem, cpu: _cpu, os: _os } = pkg;
 
+import pretty from 'pretty-ms';
+
 export default new Command()
 	.setDescription('Get information about the bot!')
 	.setRun(async (bot, message, loadingMsg) => {
@@ -22,7 +24,7 @@ export default new Command()
 				},
 				{
 					name: 'Uptime',
-					value: (await import('pretty-ms'))(bot.client.uptime),
+					value: pretty((bot.client.uptime)),
 				},
 				{
 					name: 'Memory (RAM)',
