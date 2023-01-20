@@ -79,7 +79,7 @@ waits.push(loadTable('bot_channels', bot_channels, 'botChannels'));
 waits.push(loadTable('marriages', marriages, 'marriages'));
 
 bot.commandGroups.forEach((group) => {
-	waits.push(loadFiles('commands', `./commands/${group}`));
+	waits.push(loadFiles('commands', `./commands/${group}`, true, group));
 });
 waits.push(loadFiles('helpers', './modules/helpers'));
 waits.push(loadFiles('adminCommands', './commands/admin'));
@@ -98,10 +98,11 @@ Promise.all(waits).then(() => {
 	}
 });
 
-async function loadFiles(fieldName, path) {
+async function loadFiles(fieldName, path, addGroup = false, group = '') {
 	const files = (await bot.fs.promises.readdir(path)).filter(f => f.endsWith('.js'));
 	const promises = files.map(async f => {
 		const file = await import(`${path}/${f}`);
+		if (addGroup) file.default.group = group;
 		bot[fieldName].set(f.replace('.js', ''), file.default);
 	});
 

@@ -65,8 +65,9 @@ async function fetchCommands(bot, message, group) {
 				!disabled.includes(name) && bot.commands.get(name).group === group,
 		)
 		.map((name) => {
-			const { cmdDescription, cmdUsage } = bot.commands.get(name);
-			return `${bot.config.prefix}${name} ${cmdUsage} - ${cmdDescription}`;
+			// eslint-disable-next-line no-shadow
+			const { description, usage } = bot.commands.get(name);
+			return `${bot.config.prefix}${name} ${usage} - ${description}`;
 		});
 
 	return cmds.join('\n');
