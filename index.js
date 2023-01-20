@@ -1,7 +1,17 @@
-const { Client, Intents } = require('discord.js');
-const dotenv = require('dotenv');
-const Sequelize = require('sequelize');
-const { ImgurClient } = require('imgur');
+import { Client, Intents } from 'discord.js';
+// const { Client, Intents } = require('discord.js');
+import dotenv from 'dotenv';
+// const dotenv = require('dotenv');
+import sequelize from 'sequelize';
+// const sequelize = require('sequelize');
+import pkg from 'imgur';
+const { ImgurClient } = pkg;
+// const { ImgurClient } = require('imgur');
+import fs from 'fs';
+
+import logger from './modules/logger.js';
+import utils from './modules/utils.js';
+import consts from './modules/constants.js';
 
 const time = performance.now();
 
@@ -23,11 +33,11 @@ client.login(process.env.token);
 
 const bot = {
 	client: client,
-	fs: require('fs'),
-	logger: require('./modules/logger.js'),
-	utils: require('./modules/utils.js'),
-	consts: require('./modules/constants.js'),
-	sequelize: new Sequelize('database', 'user', 'password', {
+	fs: fs,
+	logger: logger,
+	utils: utils,
+	consts: consts,
+	sequelize: new sequelize('database', 'user', 'password', {
 		host: 'localhost',
 		dialect: 'sqlite',
 		logging: false,
@@ -42,9 +52,9 @@ const bot = {
 
 // Used for parsing the table objects
 const types = {
-	'STRING': Sequelize.STRING,
-	'INT': Sequelize.INTEGER,
-	'BOOL': Sequelize.BOOLEAN,
+	'STRING': sequelize.STRING,
+	'INT': sequelize.INTEGER,
+	'BOOL': sequelize.BOOLEAN,
 };
 
 const { features, commands, bot_channels, marriages } = JSON.parse(bot.fs.readFileSync('./tables.json'));
@@ -89,8 +99,9 @@ Promise.all(waits).then(() => {
 });
 
 async function loadFiles(fieldName, path) {
-	(await bot.fs.promises.readdir(path)).filter(f => f.endsWith('.js')).forEach(f => {
-		bot[fieldName].set(f.replace('.js', ''), require(`${path}/${f}`));
+	(await bot.fs.promises.readdir(path)).filter(f => f.endsWith('.js')).forEach(async f => {
+		const cmd = await import(`${path}/${f}`);
+		bot[fieldName].set(f.replace('.js', ''), cmd);
 	});
 }
 

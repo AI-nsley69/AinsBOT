@@ -1,19 +1,19 @@
-const chalk = require('chalk');
+import chalk from 'chalk';
 const file = './logs/latest.log';
 
-module.exports = {
-	err: async (bot, toLog) => {
-		log(bot, toLog, chalk.redBright('ERR'));
-	},
-	verbose: async (bot, toLog) => {
-		if (bot.config.logLevel !== 'verbose') return;
-		log(bot, toLog, chalk.greenBright('VERBOSE'));
-	},
-	warn: async (bot, toLog) => {
-		if (bot.config.logLevel !== 'warn' || bot.config.logLevel !== 'verbose') return;
-		log(bot, toLog, chalk.rgb(255, 139, 40)('WARN'));
-	},
-};
+async function err(bot, toLog) {
+	log(bot, toLog, chalk.redBright('ERR'));
+}
+async function verbose(bot, toLog) {
+	if (bot.config.logLevel !== 'verbose') {return;}
+	log(bot, toLog, chalk.greenBright('VERBOSE'));
+}
+async function warn(bot, toLog) {
+	if (bot.config.logLevel !== 'warn' || bot.config.logLevel !== 'verbose') {return;}
+	log(bot, toLog, chalk.rgb(255, 139, 40)('WARN'));
+}
+
+export default { err, verbose, warn };
 
 function log(bot, str, level) {
 	const currentTime = new Date();

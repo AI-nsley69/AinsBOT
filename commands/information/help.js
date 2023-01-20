@@ -1,51 +1,50 @@
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
 
-module.exports = {
-	description: 'List all commands with their usages',
-	usage: '(group)',
-	permission: null,
-	botPermissions: [],
-	guild: false,
-	cooldown: 0,
-	run: async (bot, message, loadingMsg, args) => {
-		const [group] = args;
 
-		if (!group || !Object.values(bot.commandGroups).includes(group)) {
-			const embed = new MessageEmbed()
-				.setTitle('List of command groups!')
-				.setAuthor({
-					name: message.author.tag,
-					iconURL: message.author.displayAvatarURL(),
-				})
-				.setDescription(
-					Array.from(
-						bot.commandGroups,
-						(name) => name[0].toUpperCase() + name.substr(1),
-					).join('\n'),
-				)
-				.setColor(bot.consts.Colors.INFO)
-				.setFooter({
-					text: `Use ${bot.config.prefix}help <group> to learn about commands in the group!`,
-				});
+const description = 'List all commands with their usages';
+const usage = '(group)';
+const permission = null;
+const botPermissions = [];
+const guild = false;
+const cooldown = 0;
+async function run(bot, message, loadingMsg, args) {
+	const [group] = args;
 
-			loadingMsg.edit({ embeds: [embed] });
-			return;
-		}
-
-		const cmds = await fetchCommands(bot, message, group);
+	if (!group || !Object.values(bot.commandGroups).includes(group)) {
 		const embed = new MessageEmbed()
-			.setTitle(`List of commands in the ${group} group!`)
+			.setTitle('List of command groups!')
 			.setAuthor({
 				name: message.author.tag,
 				iconURL: message.author.displayAvatarURL(),
 			})
-			.setDescription(cmds)
+			.setDescription(
+				Array.from(
+					bot.commandGroups,
+					(name) => name[0].toUpperCase() + name.substr(1),
+				).join('\n'),
+			)
 			.setColor(bot.consts.Colors.INFO)
-			.setTimestamp();
+			.setFooter({
+				text: `Use ${bot.config.prefix}help <group> to learn about commands in the group!`,
+			});
 
 		loadingMsg.edit({ embeds: [embed] });
-	},
-};
+		return;
+	}
+
+	const cmds = await fetchCommands(bot, message, group);
+	const embed = new MessageEmbed()
+		.setTitle(`List of commands in the ${group} group!`)
+		.setAuthor({
+			name: message.author.tag,
+			iconURL: message.author.displayAvatarURL(),
+		})
+		.setDescription(cmds)
+		.setColor(bot.consts.Colors.INFO)
+		.setTimestamp();
+
+	loadingMsg.edit({ embeds: [embed] });
+}
 
 async function fetchCommands(bot, message, group) {
 	// Query all disabled commands for this guild
@@ -66,9 +65,11 @@ async function fetchCommands(bot, message, group) {
 				!disabled.includes(name) && bot.commands.get(name).group === group,
 		)
 		.map((name) => {
-			const { description, usage } = bot.commands.get(name);
-			return `${bot.config.prefix}${name} ${usage} - ${description}`;
+			const { cmdDescription, cmdUsage } = bot.commands.get(name);
+			return `${bot.config.prefix}${name} ${cmdUsage} - ${cmdDescription}`;
 		});
 
 	return cmds.join('\n');
 }
+
+export default { description, usage, permission, botPermissions, guild, cooldown, run };

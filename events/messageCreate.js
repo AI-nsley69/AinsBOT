@@ -1,8 +1,9 @@
-const { MessageEmbed } = require('discord.js');
-const tiktok = require('tiktok-scraper');
-const unshortener = require('unshorten.it');
-const axios = require('axios');
-const tinyurl = require('shefin-tinyurl');
+import { MessageEmbed } from 'discord.js';
+import { getVideoMeta } from 'tiktok-scraper';
+import unshortener from 'unshorten.it';
+import pkg from 'axios';
+const { get } = pkg;
+import { shorten } from 'shefin-tinyurl';
 // Add cooldown for commands
 const cmdCooldown = new Set();
 
@@ -22,28 +23,28 @@ const hardValues = {
 	},
 };
 
-module.exports = {
-	run: async (bot, message) => {
-		// Check if the author is a bot
-		if (message.author.bot) return;
-		// Command handlers
-		commandHandler(bot, message);
-		adminCommandHandler(bot, message);
-		// Dm relay
-		dmRelay(bot, message);
-		// Misc
-		// Hardcoded to work for my personal guild with my cat emote guild
-		catEmotes(bot, message);
-		mentionReponse(bot, message);
-		// Features
-		getTiktok(bot, message);
-		previewMessage(bot, message);
-		previewReddit(bot, message);
-		// Channel bridge & passthrough
-		channelPassthrough(bot, message);
-		channelBridging(bot, message);
-	},
-};
+async function run(bot, message) {
+	// Check if the author is a bot
+	if (message.author.bot) {return;}
+	// Command handlers
+	commandHandler(bot, message);
+	adminCommandHandler(bot, message);
+	// Dm relay
+	dmRelay(bot, message);
+	// Misc
+	// Hardcoded to work for my personal guild with my cat emote guild
+	catEmotes(bot, message);
+	mentionReponse(bot, message);
+	// Features
+	getTiktok(bot, message);
+	previewMessage(bot, message);
+	previewReddit(bot, message);
+	// Channel bridge & passthrough
+	channelPassthrough(bot, message);
+	channelBridging(bot, message);
+}
+
+export default { run };
 
 async function commandHandler(bot, message) {
 	// Only react to messages that start with our prefix
@@ -300,7 +301,7 @@ async function getTiktok(bot, message) {
 	);
 	if (message.guild) message.delete();
 	// Use tiktok-scraper to get the video meta and then grab the videourl
-	const req = await tiktok.getVideoMeta(fullUrl).catch((err) => {
+	const req = await getVideoMeta(fullUrl).catch((err) => {
 		msg.edit(`${hardValues.emojis.previewFail} Failed to get tiktok!`);
 		console.log(err);
 		return;
@@ -320,8 +321,7 @@ async function getTiktok(bot, message) {
 		});
 	}
 	catch (err) {
-		const newLink = await tinyurl
-			.shorten(videoUrl)
+		const newLink = await shorten(videoUrl)
 			.catch((err) => bot.logger.err(bot, err));
 		msg.edit(`Requsted by ${message.author}\n${newLink}`);
 	}
@@ -403,7 +403,7 @@ async function previewReddit(bot, message) {
 	);
 	// Fetch post
 	const redditLinkJson = redditLink[0].slice(0, -1) + '.json';
-	let redditPost = await axios.get(redditLinkJson);
+	let redditPost = await get(redditLinkJson);
 	// Get the variables from the post
 	redditPost = redditPost.data[0].data.children[0].data;
 	const {
