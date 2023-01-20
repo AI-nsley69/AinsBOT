@@ -22,7 +22,7 @@ export default new Command()
 				},
 				{
 					name: 'Uptime',
-					value: require('pretty-ms')(bot.client.uptime),
+					value: (await import('pretty-ms'))(bot.client.uptime),
 				},
 				{
 					name: 'Memory (RAM)',
