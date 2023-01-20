@@ -1,6 +1,6 @@
 import { commandHandler, adminCommandHandler } from './messageCreate/handlers.js';
 import { catEmotes } from './messageCreate/misc.js';
-import { getTiktok, previewMessage, previewReddit } from './messageCreate/features.js';
+import { previewMessage, previewReddit } from './messageCreate/features.js';
 import { dmRelay, channelBridging, channelPassthrough } from './messageCreate/bridges.js';
 
 
@@ -17,7 +17,7 @@ async function run(bot, message) {
 	catEmotes(bot, message).catch(err => bot.logger.err(err.toString()));
 	// mentionReponse(bot, message);
 	// Features
-	getTiktok(bot, message).catch(err => bot.logger.err(err.toString()));
+	// getTiktok(bot, message).catch(err => bot.logger.err(err.toString()));
 	previewMessage(bot, message).catch(err => bot.logger.err(err.toString()));
 	previewReddit(bot, message).catch(err => bot.logger.err(err.toString()));
 	// Channel bridge & passthrough
