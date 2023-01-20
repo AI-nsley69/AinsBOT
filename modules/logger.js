@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import fs from 'fs';
 const file = './logs/latest.log';
 
 async function err(bot, toLog) {
@@ -19,7 +20,7 @@ function log(bot, str, level) {
 	const currentTime = new Date();
 	str = `(${chalk.magentaBright(currentTime.toTimeString().split(' ')[0])}) [${chalk.yellow('LOG')}/${level}] ${str}`;
 	console.log(str);
-	bot.fs.appendFile(file, `${str}\n`, (err) => {
+	fs.appendFile(file, `${str}\n`, (err) => {
 		if (err) throw err;
 	});
 }
