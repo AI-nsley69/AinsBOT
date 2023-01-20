@@ -99,10 +99,11 @@ Promise.all(waits).then(() => {
 });
 
 async function loadFiles(fieldName, path) {
-	(await bot.fs.promises.readdir(path)).filter(f => f.endsWith('.js')).forEach(async f => {
-		const cmd = await import(`${path}/${f}`);
-		bot[fieldName].set(f.replace('.js', ''), cmd);
-	});
+	const files = (await bot.fs.promises.readdir(path)).filter(f => f.endsWith('.js'));
+	for (const f of files) {
+		const file = await import(`${path}/${f}`);
+		bot[fieldName].set(f.replace('.js', ''), file.default);
+	}
 }
 
 async function loadTable(name, input, field) {
