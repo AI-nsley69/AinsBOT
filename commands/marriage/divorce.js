@@ -1,32 +1,31 @@
 import { MessageEmbed } from 'discord.js';
+import { Command } from '../../modules/commandClass.js';
 
 
-const description = 'Divorce your spouse';
-const usage = '';
-const permission = null;
-const botPermissions = [];
-const guild = true;
-const cooldown = 30;
-async function run(bot, message, loadingMsg) {
-	const spouse = await getSpouse(bot, message.author.id);
-	if (!spouse) {
-		return bot.utils.softErr(
-			bot,
-			message,
-			'You have no maiden 🙈',
-			loadingMsg,
-		);
-	}
+export default new Command()
+	.setDescription('Divorce your spouse')
+	.setGuild(true)
+	.setCooldown(30)
+	.setRun(async (bot, message, loadingMsg) => {
+		const spouse = await getSpouse(bot, message.author.id);
+		if (!spouse) {
+			return bot.utils.softErr(
+				bot,
+				message,
+				'You have no maiden 🙈',
+				loadingMsg,
+			);
+		}
 
-	divorce(bot, message.author.id, spouse.id);
+		divorce(bot, message.author.id, spouse.id);
 
-	const embed = new MessageEmbed()
-		.setDescription(`${message.author} has divorced ${spouse}!`)
-		.setColor(bot.consts.Colors.INFO)
-		.setTimestamp();
+		const embed = new MessageEmbed()
+			.setDescription(`${message.author} has divorced ${spouse}!`)
+			.setColor(bot.consts.Colors.INFO)
+			.setTimestamp();
 
-	loadingMsg.edit({ embeds: [embed] });
-}
+		loadingMsg.edit({ embeds: [embed] });
+	});
 
 async function getSpouse(bot, id) {
 	const status = await bot.db.marriages.findAll({
@@ -52,5 +51,3 @@ async function divorce(bot, id, spouse) {
 		},
 	});
 }
-
-export default { description, usage, permission, botPermissions, guild, cooldown, run };

@@ -1,50 +1,48 @@
 import { MessageEmbed } from 'discord.js';
 
+import { Command } from '../../modules/commandClass.js';
 
-const description = 'List all commands with their usages';
-const usage = '(group)';
-const permission = null;
-const botPermissions = [];
-const guild = false;
-const cooldown = 0;
-async function run(bot, message, loadingMsg, args) {
-	const [group] = args;
+export default new Command()
+	.setDescription('List all commands in a group with their usage')
+	.setUsage('(group)')
+	.setRun(async (bot, message, loadingMsg, args) => {
+		const [group] = args;
 
-	if (!group || !Object.values(bot.commandGroups).includes(group)) {
+		if (!group || !Object.values(bot.commandGroups).includes(group)) {
+			const embed = new MessageEmbed()
+				.setTitle('List of command groups!')
+				.setAuthor({
+					name: message.author.tag,
+					iconURL: message.author.displayAvatarURL(),
+				})
+				.setDescription(
+					Array.from(
+						bot.commandGroups,
+						(name) => name[0].toUpperCase() + name.substr(1),
+					).join('\n'),
+				)
+				.setColor(bot.consts.Colors.INFO)
+				.setFooter({
+					text: `Use ${bot.config.prefix}help <group> to learn about commands in the group!`,
+				});
+
+			loadingMsg.edit({ embeds: [embed] });
+			return;
+		}
+
+		const cmds = await fetchCommands(bot, message, group);
 		const embed = new MessageEmbed()
-			.setTitle('List of command groups!')
+			.setTitle(`List of commands in the ${group} group!`)
 			.setAuthor({
 				name: message.author.tag,
 				iconURL: message.author.displayAvatarURL(),
 			})
-			.setDescription(
-				Array.from(
-					bot.commandGroups,
-					(name) => name[0].toUpperCase() + name.substr(1),
-				).join('\n'),
-			)
+			.setDescription(cmds)
 			.setColor(bot.consts.Colors.INFO)
-			.setFooter({
-				text: `Use ${bot.config.prefix}help <group> to learn about commands in the group!`,
-			});
+			.setTimestamp();
 
 		loadingMsg.edit({ embeds: [embed] });
-		return;
-	}
-
-	const cmds = await fetchCommands(bot, message, group);
-	const embed = new MessageEmbed()
-		.setTitle(`List of commands in the ${group} group!`)
-		.setAuthor({
-			name: message.author.tag,
-			iconURL: message.author.displayAvatarURL(),
-		})
-		.setDescription(cmds)
-		.setColor(bot.consts.Colors.INFO)
-		.setTimestamp();
-
-	loadingMsg.edit({ embeds: [embed] });
-}
+	});
 
 async function fetchCommands(bot, message, group) {
 	// Query all disabled commands for this guild
@@ -72,5 +70,3 @@ async function fetchCommands(bot, message, group) {
 
 	return cmds.join('\n');
 }
-
-export default { description, usage, permission, botPermissions, guild, cooldown, run };

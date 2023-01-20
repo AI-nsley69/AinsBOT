@@ -1,5 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
+import { Command } from '../../modules/commandClass.js';
+
 
 function apiFetch(url, mapper) {
 	return (http) => {
@@ -42,22 +44,20 @@ const animalApis = {
 };
 
 
-const description = 'Get a random animal';
-const usage = '(animal)';
-const permission = null;
-const botPermissions = [];
-const guild = false;
-const cooldown = 15;
-async function run(bot, message, loadingMsg, args) {
-	const api = animalApis[args[0]];
-	if (!api) {return bot.utils.softErr(bot, message, '**Available animals**\ncapybara, cat, dog, firefox, fox', loadingMsg);}
-	// Create the embed
-	animalEmbed(bot, message, loadingMsg, {
-		image: await api.fetchImage(axios),
-		fact: await api.fetchFact(axios),
-		title: api.title,
-	}).catch(err => bot.utils.handleCmdError(bot, message, loadingMsg, err));
-}
+export default new Command()
+	.setDescription('Get pictures and (possibly) a fact about an animal!')
+	.setUsage('(animal)')
+	.setCooldown(15)
+	.setRun(async (bot, message, loadingMsg, args) => {
+		const api = animalApis[args[0]];
+		if (!api) {return bot.utils.softErr(bot, message, '**Available animals**\ncapybara, cat, dog, firefox, fox', loadingMsg);}
+		// Create the embed
+		animalEmbed(bot, message, loadingMsg, {
+			image: await api.fetchImage(axios),
+			fact: await api.fetchFact(axios),
+			title: api.title,
+		}).catch(err => bot.utils.handleCmdError(bot, message, loadingMsg, err));
+	});
 
 async function animalEmbed(bot, message, msg, animalInfo) {
 	const embed = new MessageEmbed()
@@ -74,5 +74,3 @@ async function animalEmbed(bot, message, msg, animalInfo) {
 	// Edit to add the new embed
 	msg.edit({ embeds: [embed] });
 }
-
-export default { description, usage, permission, botPermissions, guild, cooldown, run };

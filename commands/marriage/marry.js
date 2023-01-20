@@ -1,54 +1,56 @@
-const description = 'Propose to another user!';
-const usage = '[user]';
-const permission = null;
-const botPermissions = [];
-const guild = true;
-const cooldown = 5;
-async function run(bot, message, loadingMsg, args) {
-	loadingMsg.delete();
-	// Get the user
-	const member = message.mentions.members.first() ||
+import { Command } from '../../modules/commandClass.js';
+
+
+export default new Command()
+	.setDescription('Propose to another user!')
+	.setDescription('[user]')
+	.setGuild(true)
+	.setCooldown(5)
+	.setRun(async (bot, message, loadingMsg, args) => {
+		loadingMsg.delete();
+		// Get the user
+		const member = message.mentions.members.first() ||
 		(await message.guild.members.fetch(args[0])) ||
 		message.member;
 
-	const user = member.user;
+		const user = member.user;
 
-	if (!(await isAbleToMarry(bot, message, user))) {
+		if (!(await isAbleToMarry(bot, message, user))) {
+			message.channel.send(
+				'Sorry, this proposal cannot be accepted!\nThis may because you or them are already married, you\'re trying to marry yourself or you\'re trying to marry a bot.',
+			);
+			return;
+		}
+		// Consent is important
 		message.channel.send(
-			'Sorry, this proposal cannot be accepted!\nThis may because you or them are already married, you\'re trying to marry yourself or you\'re trying to marry a bot.',
+			`${user} do you wish to marry ${message.author}? 🥹 (y/n)`,
 		);
-		return;
-	}
-	// Consent is important
-	message.channel.send(
-		`${user} do you wish to marry ${message.author}? 🥹 (y/n)`,
-	);
 
-	try {
-		bot.helpers
-			.get('message')
-			.awaitResponse(message, user.id, 60 * 1000)
-			.then((res) => {
-				if (res.startsWith('y') && res.length < 4) {
-					addMarriage(bot, message.author, user);
-					message.channel.send(
-						`I hereby pronounce ${message.author} & ${user} a married couple! 🫶`,
-					);
-				}
-				else if (res.startsWith('n') && res.length < 4) {
-					message.channel.send('Get rejected bozo L 😈');
-				}
-				else {
-					message.channel.send(
-						'Unrecognized response, marriage cannot be established :c',
-					);
-				}
-			});
-	}
-	catch (err) {
-		message.channel.send('You just got ghosted! 👻');
-	}
-}
+		try {
+			bot.helpers
+				.get('message')
+				.awaitResponse(message, user.id, 60 * 1000)
+				.then((res) => {
+					if (res.startsWith('y') && res.length < 4) {
+						addMarriage(bot, message.author, user);
+						message.channel.send(
+							`I hereby pronounce ${message.author} & ${user} a married couple! 🫶`,
+						);
+					}
+					else if (res.startsWith('n') && res.length < 4) {
+						message.channel.send('Get rejected bozo L 😈');
+					}
+					else {
+						message.channel.send(
+							'Unrecognized response, marriage cannot be established :c',
+						);
+					}
+				});
+		}
+		catch (err) {
+			message.channel.send('You just got ghosted! 👻');
+		}
+	});
 
 async function isAbleToMarry(bot, message, user) {
 	if (user.bot) return false;
@@ -83,5 +85,3 @@ async function addMarriage(bot, author, user) {
 		date: time,
 	});
 }
-
-export default { description, usage, permission, botPermissions, guild, cooldown, run };

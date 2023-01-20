@@ -1,53 +1,51 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-inline-comments */
 import { MessageEmbed } from 'discord.js';
+import { Command } from '../../modules/commandClass.js';
 
+export default new Command()
+	.setDescription('Shipping percentage')
+	.setUsage('[user]')
+	.setGuild(true)
+	.setRun(async (bot, message, loadingMsg) => {
+		const member = message.mentions.members.first();
+		if (!member) {
+			return bot.utils.softErr(
+				bot,
+				message,
+				'You did not mention a user!',
+				loadingMsg,
+			);
+		}
 
-const description = 'Shipping percentage';
-const usage = '[user]';
-const permission = null;
-const botPermissions = [];
-const guild = true;
-const cooldown = 0;
-async function run(bot, message, loadingMsg) {
-	const member = message.mentions.members.first();
-	if (!member) {
-		return bot.utils.softErr(
-			bot,
-			message,
-			'You did not mention a user!',
-			loadingMsg,
-		);
-	}
+		if (member.user === message.author) {
+			return bot.utils.softErr(
+				bot,
+				message,
+				'Hey now! There\'s only one of you.',
+				loadingMsg,
+			);
+		}
 
-	if (member.user === message.author) {
-		return bot.utils.softErr(
-			bot,
-			message,
-			'Hey now! There\'s only one of you.',
-			loadingMsg,
-		);
-	}
+		const percentage = generateNumber(message.author.id, member.user.id);
 
-	const percentage = generateNumber(message.author.id, member.user.id);
+		const embed = new MessageEmbed()
+			.setTitle(getTitle(percentage))
+			.setAuthor({
+				name: message.author.tag,
+				iconURL: message.author.displayAvatarURL(),
+			})
+			.setFooter({
+				text: member.user.tag,
+				iconURL: member.user.displayAvatarURL(),
+			})
+			.setDescription(
+				`${message.author.tag} and ${member.user.tag} are ${percentage}% compatible!`,
+			)
+			.setColor(getColor(percentage));
 
-	const embed = new MessageEmbed()
-		.setTitle(getTitle(percentage))
-		.setAuthor({
-			name: message.author.tag,
-			iconURL: message.author.displayAvatarURL(),
-		})
-		.setFooter({
-			text: member.user.tag,
-			iconURL: member.user.displayAvatarURL(),
-		})
-		.setDescription(
-			`${message.author.tag} and ${member.user.tag} are ${percentage}% compatible!`,
-		)
-		.setColor(getColor(percentage));
-
-	loadingMsg.edit({ embeds: [embed] });
-}
+		loadingMsg.edit({ embeds: [embed] });
+	});
 
 // Pseudorng for generating a random digit
 function generateNumber(authorId, targetId) {
@@ -119,5 +117,3 @@ function getColor(n) {
 
 	return parseInt(finalColor, 16);
 }
-
-export default { description, usage, permission, botPermissions, guild, cooldown, run };

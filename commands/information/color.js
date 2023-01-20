@@ -1,42 +1,40 @@
 import { MessageEmbed } from 'discord.js';
 import { createCanvas } from 'canvas';
+import { Command } from '../../modules/commandClass.js';
 
-
-const description = 'Get color of an image';
-const usage = '[color]';
-const permission = null;
-const botPermissions = [];
-const guild = false;
-const cooldown = 5;
-async function run(bot, message, loadingMsg, args) {
+export default new Command()
+	.setDescription('Get color of an image')
+	.setUsage('[color]')
+	.setCooldown(5)
+	.setRun(async (bot, message, loadingMsg, args) => {
 	// Simple validation of color
-	let [color] = args;
-	color = await parseColor(color);
-	if (!color) {
-		return bot.utils.softErr(
-			bot,
-			message,
-			'Incorrect color, please use a valid hex code or rgb value!',
-			loadingMsg,
-		);
-	}
-	// Create the image from the hexcode
-	const img = createImage(color);
+		let [color] = args;
+		color = await parseColor(color);
+		if (!color) {
+			return bot.utils.softErr(
+				bot,
+				message,
+				'Incorrect color, please use a valid hex code or rgb value!',
+				loadingMsg,
+			);
+		}
+		// Create the image from the hexcode
+		const img = createImage(color);
 
-	const imgLink = await bot.utils.bufToImgurURL(bot, img);
-	// Send the color
-	const embed = new MessageEmbed()
-		.setTitle(`0x${color}`)
-		.setColor(color)
-		.setImage(imgLink)
-		.setAuthor({
-			name: message.author.tag,
-			iconURL: message.author.displayAvatarURL(),
-		})
-		.setTimestamp();
+		const imgLink = await bot.utils.bufToImgurURL(bot, img);
+		// Send the color
+		const embed = new MessageEmbed()
+			.setTitle(`0x${color}`)
+			.setColor(color)
+			.setImage(imgLink)
+			.setAuthor({
+				name: message.author.tag,
+				iconURL: message.author.displayAvatarURL(),
+			})
+			.setTimestamp();
 
-	loadingMsg.edit({ embeds: [embed] });
-}
+		loadingMsg.edit({ embeds: [embed] });
+	});
 
 async function parseColor(color) {
 	if (!color) return null;
@@ -86,5 +84,3 @@ function createImage(color) {
 	const buffer = canvas.toBuffer('image/png');
 	return buffer;
 }
-
-export default { description, usage, permission, botPermissions, guild, cooldown, run };
