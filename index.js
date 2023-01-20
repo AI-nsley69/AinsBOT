@@ -59,7 +59,7 @@ const types = {
 
 const { features, commands, bot_channels, marriages } = JSON.parse(bot.fs.readFileSync('./tables.json'));
 
-bot.config = JSON.parse(bot.fs.readFileSync('./config.json'));
+bot.config = JSON.parse(fs.readFileSync('./config.json'));
 
 bot.commandGroups = bot.fs
 	.readdirSync('./commands/', { withFileTypes: true })
