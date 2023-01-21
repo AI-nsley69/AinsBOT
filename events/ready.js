@@ -1,9 +1,12 @@
 async function run(bot) {
 	// Sync databases
+	/*
 	bot.db.features.sync();
 	bot.db.commands.sync();
 	bot.db.botChannels.sync();
 	bot.db.marriages.sync();
+	*/
+	syncTables(bot);
 
 	checkServersInDB(bot);
 	// Set bot activity
@@ -26,6 +29,13 @@ async function run(bot) {
 	console.table(botInfo);
 	console.log(`Startup took ${Math.round(bot.initTime)}ms`);
 }
+
+function syncTables(bot) {
+	Object.keys(bot.db).forEach(k => {
+		bot.db[k].sync();
+	});
+}
+
 async function checkServersInDB(bot) {
 	// Get all guilds and then sort through to only have the ids
 	let guildIds = await bot.db.features.findAll();
