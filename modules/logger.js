@@ -4,23 +4,23 @@ const file = './logs/latest.log';
 let currentTime;
 
 async function err(bot, toLog) {
-	console(toLog, chalk.redBright('ERR'));
+	sendToConsole(toLog, chalk.redBright('ERR'));
 	saveToFile(toLog, 'ERR');
 }
 async function verbose(bot, toLog) {
 	if (bot.config.logLevel !== 'verbose') {return;}
-	console(toLog, chalk.greenBright('VERBOSE'));
+	sendToConsole(toLog, chalk.greenBright('VERBOSE'));
 	saveToFile(toLog, 'VERBOSE');
 }
 async function warn(bot, toLog) {
 	if (bot.config.logLevel !== 'warn' || bot.config.logLevel !== 'verbose') {return;}
-	console(toLog, chalk.rgb(255, 139, 40)('WARN'));
+	sendToConsole(toLog, chalk.rgb(255, 139, 40)('WARN'));
 	saveToFile(toLog, 'WARN');
 }
 
 export default { err, verbose, warn };
 
-function console(str, level) {
+function sendToConsole(str, level) {
 	currentTime = new Date();
 	str = `(${chalk.magentaBright(currentTime.toTimeString().split(' ')[0])}) [${chalk.yellow('LOG')}/${level}] ${str}`;
 	console.log(str);
