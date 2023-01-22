@@ -67,16 +67,37 @@ async function convertArg(contentElement, type, bot) {
 		break;
 	}
 	case ReqArg.Channel: case OptArg.Channel: {
-		// Parse channels
+		let channelIdTofetch = contentElement;
+		if (contentElement.startsWith('<@')) {
+			channelIdTofetch = contentElement.substring(2, 20);
+		}
+		const userFromCache = bot.client.channels.cache.get(channelIdTofetch);
+		if (!userFromCache) {
+			// eslint-disable-next-line no-unused-vars
+			returnVal = await bot.client.channels.fetch(channelIdTofetch).catch(err => {
+				throw new Error('Could not fetch the user');
+			});
+		}
+		else {
+			returnVal = userFromCache;
+		}
 		break;
 	}
 	case ReqArg.User: case OptArg.User: {
-		// Parse users
-		break;
-	}
-	case ReqArg.TimeStamp: case OptArg.TimeStamp: {
-		// Parse TimeStamps
-		bot.iWantToSatisfyEsLint();
+		let idTofetch = contentElement;
+		if (contentElement.startsWith('<@')) {
+			idTofetch = contentElement.substring(2, 20);
+		}
+		const userFromCache = bot.client.users.cache.get(idTofetch);
+		if (!userFromCache) {
+			// eslint-disable-next-line no-unused-vars
+			returnVal = await bot.client.fetchUser(idTofetch).catch(err => {
+				throw new Error('Could not fetch the user');
+			});
+		}
+		else {
+			returnVal = userFromCache;
+		}
 		break;
 	}
 	default:
