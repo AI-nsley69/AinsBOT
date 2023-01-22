@@ -85,7 +85,10 @@ async function convertArg(contentElement, type, bot) {
 	}
 	case ReqArg.User: case OptArg.User: {
 		let idTofetch = contentElement;
-		if (contentElement.startsWith('<@')) {
+		if (contentElement.startsWith('<@!')) {
+			idTofetch = contentElement.substring(3, 21);
+		}
+		else if (contentElement.startsWith('<@')) {
 			idTofetch = contentElement.substring(2, 20);
 		}
 		const userFromCache = bot.client.users.cache.get(idTofetch);
