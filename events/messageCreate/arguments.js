@@ -11,19 +11,18 @@ async function argParser(bot, contents, commandArgObject) {
 
 	for (let i = 0; i <= fields.length; i++) {
 		const fieldElement = fields[i][1];
-		if (!fieldElement) return null;
+		if (!fieldElement) throw new Error('Invalid Command Structure');
 		const isRequired = fieldElement.charAt(0) === 'r';
 
 		if (hasMetCoalesc) {
 			// if coalesc has been met and the next arg is non optional, argument order is deemed invalid
-			if (isRequired) return null;
+			if (isRequired) throw new Error('Non optional argument after coalesc argument');
 			fieldValues[i] = null;
 		}
 		else if (fieldElement === ReqArg.StringCoalescing || fieldElement === OptArg.StringCoalescing) {
 			fieldValues.push(
 				contents.join(' '),
 			);
-			// fields[i] = null - this could be used to check if any non opt args were not fullfiled
 			hasMetCoalesc = true;
 		}
 		else {
@@ -32,7 +31,7 @@ async function argParser(bot, contents, commandArgObject) {
 			// if the parsed value is null and required, there command run is invalid
 			if (!parsedValue) {
 				if (isRequired) {
-					return null;
+					throw new Error(`Could not parse value for the ${fieldElement} arument`);
 				}
 				// If the parsed value is null but the arg is optional, the content will not be removed
 				// so that it can be tried to be parsed with the next arg
@@ -51,13 +50,11 @@ async function argParser(bot, contents, commandArgObject) {
 async function convertArg(contentElement, type, bot) {
 	let returnVal;
 	switch (type) {
-	case ReqArg.String:
-	case OptArg.String: {
+	case ReqArg.String: case OptArg.String: {
 		returnVal = contentElement;
 		break;
 	}
-	case ReqArg.Boolean:
-	case OptArg.Boolean: {
+	case ReqArg.Boolean: case OptArg.Boolean: {
 		if (contentElement === 'true') {
 			returnVal = true;
 		}
@@ -69,18 +66,15 @@ async function convertArg(contentElement, type, bot) {
 		}
 		break;
 	}
-	case ReqArg.Channel:
-	case OptArg.Channel: {
+	case ReqArg.Channel: case OptArg.Channel: {
 		// Parse channels
 		break;
 	}
-	case ReqArg.User:
-	case OptArg.User: {
+	case ReqArg.User: case OptArg.User: {
 		// Parse users
 		break;
 	}
-	case ReqArg.TimeStamp:
-	case OptArg.TimeStamp: {
+	case ReqArg.TimeStamp: case OptArg.TimeStamp: {
 		// Parse TimeStamps
 		bot.iWantToSatisfyEsLint();
 		break;
