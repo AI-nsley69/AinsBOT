@@ -4,9 +4,10 @@
 // Will return null if the arguement structure or input is invalid
 import { OptArg, ReqArg } from '../../modules/commandClass.js';
 
+// eslint-disable-next-line no-unused-vars
 async function argParser(bot, contents, commandArgObject) {
 	const fields = Object.entries(commandArgObject);
-	const fieldValues = new Array(fields.length);
+	const fieldValues = fields.slice();
 	let hasMetCoalesc = false;
 
 	for (let i = 0; i <= fields.length; i++) {
@@ -17,17 +18,15 @@ async function argParser(bot, contents, commandArgObject) {
 		if (hasMetCoalesc) {
 			// if coalesc has been met and the next arg is non optional, argument order is deemed invalid
 			if (isRequired) throw new Error('Non optional argument after coalesc argument');
-			fieldValues[i] = null;
+			fieldValues[i][1] = null;
 		}
 		else if (fieldElement === ReqArg.StringCoalescing || fieldElement === OptArg.StringCoalescing) {
-			fieldValues.push(
-				contents.join(' '),
-			);
+			fieldValues[i][1] = contents.join();
 			hasMetCoalesc = true;
 		}
 		else {
 			const parsedValue = convertArg(contents[0], fieldElement, bot);
-			fieldValues.push(parsedValue);
+			fieldValues[i][1] = parsedValue;
 			// if the parsed value is null and required, there command run is invalid
 			if (!parsedValue) {
 				if (isRequired) {
@@ -44,17 +43,19 @@ async function argParser(bot, contents, commandArgObject) {
 
 	}
 
-	return fieldValues;
+	return Object.fromEntries(fieldValues);
 }
 
 async function convertArg(contentElement, type, bot) {
 	let returnVal;
 	switch (type) {
-	case ReqArg.String: case OptArg.String: {
+	case ReqArg.String:
+	case OptArg.String: {
 		returnVal = contentElement;
 		break;
 	}
-	case ReqArg.Boolean: case OptArg.Boolean: {
+	case ReqArg.Boolean:
+	case OptArg.Boolean: {
 		if (contentElement === 'true') {
 			returnVal = true;
 		}
@@ -66,7 +67,8 @@ async function convertArg(contentElement, type, bot) {
 		}
 		break;
 	}
-	case ReqArg.Channel: case OptArg.Channel: {
+	case ReqArg.Channel:
+	case OptArg.Channel: {
 		let channelIdTofetch = contentElement;
 		if (contentElement.startsWith('<@')) {
 			channelIdTofetch = contentElement.substring(2, 20);
@@ -75,7 +77,7 @@ async function convertArg(contentElement, type, bot) {
 		if (!userFromCache) {
 			// eslint-disable-next-line no-unused-vars
 			returnVal = await bot.client.channels.fetch(channelIdTofetch).catch(err => {
-				throw new Error('Could not fetch the user');
+				bot.logger.warn('Could not fetch channel');
 			});
 		}
 		else {
@@ -83,7 +85,8 @@ async function convertArg(contentElement, type, bot) {
 		}
 		break;
 	}
-	case ReqArg.User: case OptArg.User: {
+	case ReqArg.User:
+	case OptArg.User: {
 		let idTofetch = contentElement;
 		if (contentElement.startsWith('<@!')) {
 			idTofetch = contentElement.substring(3, 21);
@@ -95,7 +98,7 @@ async function convertArg(contentElement, type, bot) {
 		if (!userFromCache) {
 			// eslint-disable-next-line no-unused-vars
 			returnVal = await bot.client.fetchUser(idTofetch).catch(err => {
-				throw new Error('Could not fetch the user');
+				bot.logger.warn('Could not fetch the user');
 			});
 		}
 		else {
