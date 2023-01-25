@@ -2,6 +2,7 @@ export class Command {
 	constructor() {
 		this.description = '';
 		this.usage = '';
+		this.args = {};
 		this.permission = null;
 		this.botPermissions = [];
 		this.guild = false;
@@ -16,6 +17,11 @@ export class Command {
 
 	setUsage(usage) {
 		this.usage = usage;
+		return this;
+	}
+
+	setArgs(args) {
+		this.args = args;
 		return this;
 	}
 

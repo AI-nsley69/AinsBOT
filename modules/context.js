@@ -1,8 +1,13 @@
+import { MessageEmbed } from 'discord.js';
+import pkg from './constants.js';
+const { Colors } = pkg;
+
 class Context {
-	constructor(author, channel, guild) {
+	constructor(author, channel, guild, src) {
 		this._author = author;
 		this._channel = channel;
 		this._guild = guild;
+		this._src = src;
 	}
 
 	setArgs(args) {
@@ -24,11 +29,20 @@ class Context {
 	getGuild() {
 		return this._guild;
 	}
+
+	err(ctx, err) {
+		const embed = new MessageEmbed()
+			.setTitle('Oh no! Something went wrong running this command!')
+			.setDescription(err)
+			.setColor(Colors.SOFT_ERR);
+
+		ctx.embed([embed]);
+	}
 }
 
 class SlashContext extends Context {
-	constructor(author, channel, guild, interaction) {
-		super(author, channel, guild);
+	constructor(interaction) {
+		super(interaction.author, interaction.channel, interaction.guild, interaction);
 		this.interaction = interaction;
 	}
 
@@ -42,8 +56,8 @@ class SlashContext extends Context {
 }
 
 class TextContext extends Context {
-	constructor(author, channel, guild, msg) {
-		super(author, channel, guild);
+	constructor(msg) {
+		super(msg.author, msg.channel, msg.guild, msg);
 		this.msg = msg;
 	}
 

@@ -1,16 +1,19 @@
 import { MessageEmbed } from 'discord.js';
 import pkg from 'axios';
-import { Command } from '../../modules/commandClass.js';
+import { Command, ReqArg } from '../../modules/commandClass.js';
 const { get } = pkg;
 
 export default new Command()
 	.setDescription('Get a dislyte esper!')
 	.setUsage('[esper]')
+	.setArgs({
+		esper: ReqArg.StringCoalescing,
+	})
 	.setCooldown(5)
-	.setRun(async (bot, message, loadingMsg, args) => {
-		const esper = args.join('-').toLowerCase();
+	.setRun(async (bot, ctx) => {
+		const esper = ctx.getArgs().replace(' ', '-').toLowerCase();
 		// Check if we have an argument
-		if (!esper) {return bot.utils.softErr(bot, message, 'Missing an esper!', loadingMsg);}
+		if (!esper) {return ctx.err(ctx, 'Missing an esper!');}
 		// Get the esper through the api
 		const res = await get(`https://api.initegaming.repl.co/dislyte/esper/${esper}`);
 		// Take the data into the esperInfo object
@@ -85,5 +88,5 @@ export default new Command()
 			.setColor(esperInfo.attribute.color)
 			.addFields(esperInfo.skills);
 
-		loadingMsg.edit({ embeds: [embed, skillEmbed] });
+		ctx.embed([embed, skillEmbed]);
 	});

@@ -6,6 +6,7 @@ import { OptArg, ReqArg } from '../../modules/commandClass.js';
 
 async function argParser(bot, contents, commandArgObject) {
 	const fields = Object.entries(commandArgObject);
+	if (fields.length < 1) return {};
 	const fieldValues = new Array(fields.length);
 	let hasMetCoalesc = false;
 
@@ -108,3 +109,5 @@ async function convertArg(contentElement, type, bot) {
 	}
 	return returnVal;
 }
+
+export { argParser };

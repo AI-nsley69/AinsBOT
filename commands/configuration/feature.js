@@ -1,25 +1,26 @@
 import { MessageEmbed } from 'discord.js';
-import { Command } from '../../modules/commandClass.js';
+import { Command, OptArg } from '../../modules/commandClass.js';
 
 
 export default new Command()
 	.setDescription('Disable certain bot features')
 	.setUsage('[disable|enable] (feature)')
+	.setArgs({
+		action: OptArg.String,
+		target: OptArg.String,
+	})
 	.setPermission('MANAGE_GUILD')
 	.setGuild(true)
 	.setCooldown(10)
-	.setRun(async (bot, message, loadingMsg, args) => {
+	.setRun(async (bot, ctx) => {
 	// Deconstruct array into appropiate vars
-	// eslint-disable-next-line prefer-const
-		let [action, targetFeature] = args;
+		const action = ctx.getArgs().action;
+		const targetFeature = ctx.getArgs().target;
+		// eslint-disable-next-line prefer-const
 		// Check if the action exists and if it is enable or disable
-		if (!action) { targetFeature = null; }
-		else if (!['enable', 'disable'].includes(action)) {
-			return bot.utils.softErr(
-				bot,
-				message,
+		if (!['enable', 'disable'].includes(action)) {
+			return ctx.err(
 				'Incorrect disable/enable argument!',
-				loadingMsg,
 			);
 		}
 		// Create a boolean based on the action
@@ -33,12 +34,12 @@ export default new Command()
 				{ tiktokPreview: futureBoolean },
 				{
 					where: {
-						guildId: message.guild.id,
+						guildId: ctx.getGuild().id,
 					},
 				},
 			);
 			// Send the embed
-			sendEmbed(bot, message, 'tiktokPreview', futureBoolean, loadingMsg);
+			sendEmbed(bot, ctx, 'tiktokPreview', futureBoolean);
 			break;
 		}
 		// Message preview
@@ -48,12 +49,12 @@ export default new Command()
 				{ messagePreview: futureBoolean },
 				{
 					where: {
-						guildId: message.guild.id,
+						guildId: ctx.getGuild().id,
 					},
 				},
 			);
 			// Send the embed
-			sendEmbed(bot, message, 'messagePreview', futureBoolean, loadingMsg);
+			sendEmbed(bot, ctx, 'messagePreview', futureBoolean);
 			break;
 		}
 		// Reddit preview
@@ -63,19 +64,19 @@ export default new Command()
 				{ redditPreview: futureBoolean },
 				{
 					where: {
-						guildId: message.guild.id,
+						guildId: ctx.getGuild().id,
 					},
 				},
 			);
 			// Send the embed
-			sendEmbed(bot, message, 'redditPreview', futureBoolean, loadingMsg);
+			sendEmbed(bot, ctx, 'redditPreview', futureBoolean);
 			break;
 		}
 
 		default: {
 			const query = await bot.db.features.findAll({
 				where: {
-					guildId: message.guild.id,
+					guildId: ctx.getGuild().id,
 				},
 			});
 			const { tiktokPreview, messagePreview, redditPreview } = query[0].dataValues;
@@ -96,20 +97,20 @@ export default new Command()
 					},
 				])
 				.setAuthor({
-					name: message.author.tag,
-					iconURL: message.author.displayAvatarURL(),
+					name: ctx.getAuthor().tag,
+					iconURL: ctx.getAuthor().displayAvatarURL(),
 				})
 				.setColor(bot.consts.Colors.INFO)
 				.setTimestamp();
 
-			loadingMsg.edit({ embeds: [embed] });
+			ctx.embed([embed]);
 			break;
 		}
 		}
 	});
 
 // Send embed
-async function sendEmbed(bot, message, feature, futureBoolean, loadingMsg) {
+async function sendEmbed(bot, ctx, feature, futureBoolean) {
 	const embed = new MessageEmbed()
 		.setTitle(`Updated ${feature}!`)
 		.setDescription(`Set to: \`${futureBoolean}\``)
@@ -117,10 +118,10 @@ async function sendEmbed(bot, message, feature, futureBoolean, loadingMsg) {
 			!futureBoolean ? bot.consts.Colors.SOFT_ERR : bot.consts.Colors.SUCCESS,
 		)
 		.setAuthor({
-			name: message.author.tag,
-			iconURL: message.author.displayAvatarURL(),
+			name: ctx.getAuthor().tag,
+			iconURL: ctx.getAuthor().displayAvatarURL(),
 		})
 		.setTimestamp();
 
-	loadingMsg.edit({ embeds: [embed] });
+	ctx.embed([embed]);
 }

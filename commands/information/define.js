@@ -1,14 +1,17 @@
 import { MessageEmbed } from 'discord.js';
 import ud from 'relevant-urban';
-import { Command } from '../../modules/commandClass.js';
+import { Command, OptArg } from '../../modules/commandClass.js';
 const { random } = ud;
 
 export default new Command()
 	.setDescription('Looks up the definition of a word on Urban Dictionary')
 	.setUsage('(word)')
-	.setRun(async (bot, message, loadingMsg, args) => {
-		const [word] = args;
-		const def = word ? await ud(args.join(' ')) : random();
+	.setArgs({
+		word: OptArg.StringCoalescing,
+	})
+	.setRun(async (bot, ctx) => {
+		const word = ctx.getArgs().word;
+		const def = word ? await ud(word) : random();
 
 		const embed = new MessageEmbed()
 			.setTitle(def.word)
@@ -33,5 +36,5 @@ export default new Command()
 				text: `👍 ${def.thumbsUp} 👎 ${def.thumbsDown}`,
 			});
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});

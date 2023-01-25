@@ -1,41 +1,30 @@
 /* eslint-disable no-undef */
 import { MessageEmbed } from 'discord.js';
 import { Command } from '../../modules/commandClass.js';
+import { ReqArg } from '../../modules/commandClass.js';
 
 export default new Command()
 	.setDescription('Disable/enable commands')
 	.setUsage('[disable|enable] [command]')
+	.setArgs({
+		action: ReqArg.String,
+		command: ReqArg.String,
+	})
 	.setPermission('MANAGE_GUILD')
 	.setGuild(true)
 	.setCooldown(10)
-	.setRun(async (bot, message, loadingMsg, args) => {
+	.setRun(async (bot, ctx) => {
 	// Setup variables and verify them
 	// eslint-disable-next-line prefer-const
-		let [action, targetCmd] = args;
-		if (!action) { targetCmd = null; }
-		else if (!(action === 'enable' || action === 'disable')) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'Incorrect enable/disable argument',
-				loadingMsg,
-			);
+		const { action, command } = ctx.getArgs().action;
+		if (!(action === 'enable' || action === 'disable')) {
+			return ctx.err(ctx, 'Incorrect enable/disable argument');
 		}
-		else if (!bot.commands.has(targetCmd)) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'Missing target command argument',
-				loadingMsg,
-			);
+		else if (!bot.commands.has(command)) {
+			return ctx.err(ctx, 'Missing target command');
 		}
-		else if (targetCmd === 'command' || targetCmd === 'feature') {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'You cannot toggle the command/feature command!',
-				loadingMsg,
-			);
+		else if (command === 'command' || command === 'feature') {
+			return ctx.err(ctx, 'You cannot toggle the command/feature command!');
 		}
 		// Create boolean based on action
 		const futureBool = action === 'enable';
@@ -43,12 +32,12 @@ export default new Command()
 		let query = await bot.db.commands
 			.findAll({
 				where: {
-					guildId: message.guild.id,
+					guildId: ctx.getGuild().id,
 				},
 			})
 			.then((q) => bot.utils.csvToArr(q[0].dataValues.disabled));
 		// Show all commands available if no argument
-		if (!targetCmd) {
+		if (!command) {
 		// Add all commands to an array
 			const allCmds = [];
 			for ([cmd, info] of bot.commands.entries()) {
@@ -72,48 +61,43 @@ export default new Command()
 					},
 				])
 				.setAuthor({
-					name: message.author.tag,
-					iconURL: message.author.displayAvatarURL(),
+					name: ctx.getAuthor().tag,
+					iconURL: ctx.getAuthor().displayAvatarURL(),
 				})
 				.setTimestamp();
 
-			loadingMsg.edit({ embeds: [embed] });
+			ctx.embed({ embeds: [embed] });
 			return;
 		}
 		// Soft error if already disabled.
-		if (query.includes(targetCmd) && !action) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				`This command is already ${action}`,
-				loadingMsg,
-			);
+		if (query.includes(command) && !action) {
+			return ctx.err(ctx, `This command is already ${action}`);
 		}
 		// Remove command if enabled, otherwise disable it
-		if (futureBool) {query = query.filter((cmd) => cmd !== targetCmd);}
-		else {query.push(targetCmd);}
+		if (futureBool) {query = query.filter((cmd) => cmd !== command);}
+		else {query.push(command);}
 
 		const csv = bot.utils.arrToCsv(query);
 		await bot.db.commands.update(
 			{ disabled: csv },
 			{
 				where: {
-					guildId: message.guild.id,
+					guildId: ctx.getGuild().id,
 				},
 			},
 		);
 
 		const embed = new MessageEmbed()
-			.setTitle(`Updated ${targetCmd}`)
+			.setTitle(`Updated ${command}`)
 			.setDescription(`Set to: \`${futureBool}\``)
 			.setColor(
 				futureBool ? bot.consts.Colors.SUCCESS : bot.consts.Colors.SOFT_ERR,
 			)
 			.setAuthor({
-				name: message.author.tag,
-				iconURL: message.author.displayAvatarURL(),
+				name: ctx.getAuthor().tag,
+				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
 			.setTimestamp();
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed({ embeds: [embed] });
 	});

@@ -3,9 +3,9 @@ import { Command } from '../../modules/commandClass.js';
 
 export default new Command()
 	.setDescription('Ping pong!')
-	.setRun(async (bot, message, loadingMsg) => {
+	.setRun(async (bot, ctx) => {
 	// Get ping by subtracting the created timestamp from the current timestamp
-		const ping = Date.now() - message.createdTimestamp;
+		const ping = Date.now() - ctx._src.createdTimestamp;
 		// Set up the title and color depending on the ping value
 		let title = 'Pong!';
 		let color = 0x000000;
@@ -34,5 +34,5 @@ export default new Command()
 				text: 'Note: the ping is between Discord API and the bot!',
 			});
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});

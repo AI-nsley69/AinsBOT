@@ -1,5 +1,48 @@
+import { TextContext } from '../../modules/context.js';
+import { argParser } from '../messageCreate/arguments.js';
+
 // Add cooldown for commands
 const cmdCooldown = new Set();
+
+async function isGuild(message) {
+	return message.guild ? true : false;
+}
+
+async function isBotChannel(bot, message) {
+	// Return true if the message is sent in a non-guild chat
+	if (!isGuild(message)) return true;
+
+	const query = await bot.db.botChannels.findAll({
+		where: {
+			guildId: message.guild.id,
+
+		},
+	});
+	// Check if the query returned a response, otherwise return true if no bot channel is set
+	if (query[0]) {
+		const botChannel = query[0].dataValues.bot_channel;
+		return message.channel.id === botChannel;
+	}
+	else {
+		return true;
+	}
+}
+
+async function isCommandEnabled(bot, message, command) {
+	if (!isGuild) return true;
+
+	const query = await bot.db.commands.findAll({
+		where: { guildId: message.guild.id },
+	});
+
+	if (query[0]) {
+		const disabledCommands = bot.utils.csvToArr(query[0].dataValues.disabled);
+		return !disabledCommands.includes(command);
+	}
+	else {
+		return true;
+	}
+}
 
 async function commandHandler(bot, message) {
 	// Only react to messages that start with our prefix
@@ -9,33 +52,25 @@ async function commandHandler(bot, message) {
 			.trim()
 			.split(/ +/);
 		const command = args.shift().toLowerCase();
+
 		// Ignore if command doesn't exist, otherwise grab it in a constant
 		if (!bot.commands.has(command)) return;
 		const commandInfo = bot.commands.get(command);
-		// Check if the command is ran in the bot channel
-		const botChannel = await bot.db.botChannels.findAll({
-			where: { guildId: message.guild ? message.guild.id : null },
-		});
-		const correctChannel = botChannel[0]
-			? botChannel[0].dataValues.bot_channel
-			: null;
-		if (correctChannel && correctChannel !== message.channel.id) return;
-		// Check if the command is enabled
-		const query = await bot.db.commands.findAll({
-			where: { guildId: message.guild ? message.guild.id : null },
-		});
-		const disabledArr = query[0]
-			? bot.utils.csvToArr(query[0].dataValues.disabled)
-			: [];
-		if (disabledArr.includes(command)) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'This command is not enabled in this guild! ❌',
-			);
-		}
+
 		// Check if user has cooldown on said command
 		if (cmdCooldown.has(`${message.author.id}-${command}`)) {return message.react('⏳');}
+
+		// Setup context for the command
+		const ctx = new TextContext(message);
+		ctx.setArgs(await argParser(bot, args, commandInfo.args));
+
+		// Check if the command is ran in the bot channel
+		if (!(await isBotChannel(bot, message))) return;
+
+		// Check if the command is enabled
+		if (!(await isCommandEnabled(bot, message, command))) {
+			return ctx.err('This command is not enabled in this guild! ❌');
+		}
 		// Check if the user has the required permission, if wanted
 		if (
 			commandInfo.permission &&
@@ -47,6 +82,7 @@ async function commandHandler(bot, message) {
 				'You do not have the permission to run this command! ❌',
 			);
 		}
+
 		// Check if bot has the required permissions for the command
 		const missingPerms = commandInfo.botPermissions.filter((perm) =>
 			message.guild ? !message.guild.me.permissions.has(perm) : false,
@@ -60,6 +96,7 @@ async function commandHandler(bot, message) {
 				)}\``,
 			);
 		}
+
 		// Check if the message is from a guild, if wanted
 		if (commandInfo.guild && !message.guild) {
 			return bot.utils.softErr(
@@ -68,41 +105,21 @@ async function commandHandler(bot, message) {
 				'This command is only available in guilds 🌧',
 			);
 		}
-		/*
-    // Regex for getting required and optional args
-    const requiredRegex = /\[.*?\]/g;
-    const optionalRegex = /\(.*?\)/g;
-    // Validate argument count
-    const minArgs = commandInfo.usage.match(requiredRegex) || [];
-    const maxArgs = minArgs + commandInfo.usage.match(optionalRegex) || [];
-    if (args.length < minArgs.length) {
-      // Too few arguments
-      return bot.utils.softErr(
-        bot,
-        message,
-        "Too few arguments provided! Please provide the required arguments and try again."
-      );
-    } else if (args.length > maxArgs.length) {
-      // Too many arguments
-      return bot.utils.softErr(
-        bot,
-        message,
-        "Too many arguments provided! Please provide the required arguments and try again."
-      );
-    }
-    */
+
 		// Run the command and catch any error to not crash bot
-		const loadingMsg = await bot.utils.cmdLoadingMsg(bot, message);
 		bot.logger.verbose(
 			bot,
 			`${message.author.tag} ran ${command} command with ${
 				args.length > 0 ? args.join(' ') : 'no'
 			} arguments!`,
 		);
-		await commandInfo.run(bot, message, loadingMsg, args).catch((err) => {
-			bot.utils.handleCmdError(bot, message, loadingMsg, `${err}`);
+
+		commandInfo.run(bot, ctx).catch((err) => {
+			ctx.err(ctx, err.toString());
+			console.log(err);
 			bot.logger.err(bot, err);
 		});
+
 		// Add user to cooldown if enabled
 		if (commandInfo.cooldown < 0) return;
 		cmdCooldown.add(`${message.author.id}-${command}`);

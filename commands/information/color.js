@@ -1,22 +1,19 @@
 import { MessageEmbed } from 'discord.js';
 import { createCanvas } from 'canvas';
-import { Command } from '../../modules/commandClass.js';
+import { Command, ReqArg } from '../../modules/commandClass.js';
 
 export default new Command()
 	.setDescription('Get color of an image')
 	.setUsage('[color]')
+	.setArgs({
+		color: ReqArg.String,
+	})
 	.setCooldown(5)
-	.setRun(async (bot, message, loadingMsg, args) => {
+	.setRun(async (bot, ctx) => {
 	// Simple validation of color
-		let [color] = args;
-		color = await parseColor(color);
+		const color = await parseColor(ctx.getArgs().color);
 		if (!color) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'Incorrect color, please use a valid hex code or rgb value!',
-				loadingMsg,
-			);
+			return ctx.err(ctx, 'Incorrect color, please use a valid hex code or rgb value!');
 		}
 		// Create the image from the hexcode
 		const img = createImage(color);
@@ -28,12 +25,12 @@ export default new Command()
 			.setColor(color)
 			.setImage(imgLink)
 			.setAuthor({
-				name: message.author.tag,
-				iconURL: message.author.displayAvatarURL(),
+				name: ctx.getAuthor().tag,
+				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
 			.setTimestamp();
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});
 
 async function parseColor(color) {
