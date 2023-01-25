@@ -7,8 +7,9 @@ import { OptArg, ReqArg } from '../../modules/commandClass.js';
 // eslint-disable-next-line no-unused-vars
 async function argParser(bot, contents, commandArgObject) {
 	const fields = Object.entries(commandArgObject);
+  if (fields.length < 1) return {};
 	const fieldValues = fields.slice();
-	let hasMetCoalesc = false;
+  let hasMetCoalesc = false;
 
 	for (let i = 0; i <= fields.length; i++) {
 		const fieldElement = fields[i][1];
@@ -111,3 +112,5 @@ async function convertArg(contentElement, type, bot) {
 	}
 	return returnVal;
 }
+
+export { argParser };

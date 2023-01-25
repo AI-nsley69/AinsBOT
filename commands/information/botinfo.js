@@ -7,12 +7,12 @@ import pretty from 'pretty-ms';
 
 export default new Command()
 	.setDescription('Get information about the bot!')
-	.setRun(async (bot, message, loadingMsg) => {
+	.setRun(async (bot, ctx) => {
 		const mem = await _mem.info(), cpu = await _cpu.usage(), osName = await _os.oos(), osPlatform = await _os.platform(), cpuArch = _os.arch(), cpuModel = _cpu.model();
 		// , drive = await os.drive.info();
 		const embed = new MessageEmbed()
 			.setTitle('Bot information!')
-			.setColor(message.guild.me.displayHexColor)
+			.setColor(ctx.getGuild().me.displayHexColor)
 			.addFields([
 				{
 					name: 'Tag',
@@ -40,10 +40,10 @@ export default new Command()
 				},
 			])
 			.setAuthor({
-				name: message.author.tag,
-				iconURL: message.author.displayAvatarURL(),
+				name: ctx.getAuthor().tag,
+				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
 			.setTimestamp();
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});

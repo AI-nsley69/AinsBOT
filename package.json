@@ -1,4 +1,23 @@
 {
+  "name": "AinsBOT",
+  "version": "0.1.0",
+  "description": "Personal discord mod",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "newcmd": "node scripts/newcmd.js --"
+  },
+  "author": "Trainsley69",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AI-nsley69/AinsBOT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AI-nsley69/AinsBOT/issues"
+  },
+  "homepage": "https://github.com/AI-nsley69/AinsBOT",
   "type": "module",
   "dependencies": {
     "axios": "^0.26.0",

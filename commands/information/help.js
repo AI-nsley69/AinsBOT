@@ -1,19 +1,22 @@
 import { MessageEmbed } from 'discord.js';
 
-import { Command } from '../../modules/commandClass.js';
+import { Command, OptArg } from '../../modules/commandClass.js';
 
 export default new Command()
 	.setDescription('List all commands in a group with their usage')
 	.setUsage('(group)')
-	.setRun(async (bot, message, loadingMsg, args) => {
-		const [group] = args;
+	.setArgs({
+		group: OptArg.String,
+	})
+	.setRun(async (bot, ctx) => {
+		const group = ctx.getArgs().group;
 
 		if (!group || !Object.values(bot.commandGroups).includes(group)) {
 			const embed = new MessageEmbed()
 				.setTitle('List of command groups!')
 				.setAuthor({
-					name: message.author.tag,
-					iconURL: message.author.displayAvatarURL(),
+					name: ctx.getAuthor().tag,
+					iconURL: ctx.getAuthor().displayAvatarURL(),
 				})
 				.setDescription(
 					Array.from(
@@ -26,31 +29,31 @@ export default new Command()
 					text: `Use ${bot.config.prefix}help <group> to learn about commands in the group!`,
 				});
 
-			loadingMsg.edit({ embeds: [embed] });
+			ctx.embed([embed]);
 			return;
 		}
 
-		const cmds = await fetchCommands(bot, message, group);
+		const cmds = await fetchCommands(bot, ctx, group);
 		const embed = new MessageEmbed()
 			.setTitle(`List of commands in the ${group} group!`)
 			.setAuthor({
-				name: message.author.tag,
-				iconURL: message.author.displayAvatarURL(),
+				name: ctx.getAuthor().tag,
+				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
 			.setDescription(cmds)
 			.setColor(bot.consts.Colors.INFO)
 			.setTimestamp();
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});
 
-async function fetchCommands(bot, message, group) {
+async function fetchCommands(bot, ctx, group) {
 	// Query all disabled commands for this guild
-	const disabled = message.guild
+	const disabled = ctx.getGuild()
 		? await bot.db.commands
 			.findAll({
 				where: {
-					guildId: message.guild.id,
+					guildId: ctx.getGuild().id,
 				},
 			})
 			.then((q) => bot.utils.csvToArr(q[0].dataValues.disabled))
