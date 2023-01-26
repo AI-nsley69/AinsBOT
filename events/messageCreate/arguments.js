@@ -27,7 +27,7 @@ async function argParser(bot, contents, commandArgObject) {
 			hasMetCoalesc = true;
 		}
 		else {
-			const parsedValue = convertArg(contents[0], fieldElement, bot);
+			const parsedValue = await convertArg(contents[0], fieldElement, bot);
 			fieldValues[i][1] = parsedValue;
 			// if the parsed value is null and required, there command run is invalid
 			if (!parsedValue) {
