@@ -72,7 +72,8 @@ async function convertArg(contentElement, type, bot) {
 	case ReqArg.Channel:
 	case OptArg.Channel: {
 		let channelIdTofetch = contentElement;
-		if (contentElement.startsWith('<@')) {
+		if (!channelIdTofetch) return null;
+		if (contentElement.startsWith('<#')) {
 			channelIdTofetch = contentElement.substring(2, 20);
 		}
 		const userFromCache = bot.client.channels.cache.get(channelIdTofetch);
@@ -85,11 +86,13 @@ async function convertArg(contentElement, type, bot) {
 		else {
 			returnVal = userFromCache;
 		}
+
 		break;
 	}
 	case ReqArg.User:
 	case OptArg.User: {
 		let idTofetch = contentElement;
+		if (!idTofetch) return null;
 		if (contentElement.startsWith('<@!')) {
 			idTofetch = contentElement.substring(3, 21);
 		}
