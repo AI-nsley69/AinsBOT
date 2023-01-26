@@ -32,14 +32,14 @@ async function argParser(bot, contents, commandArgObject) {
 			// if the parsed value is null and required, there command run is invalid
 			if (!parsedValue) {
 				if (isRequired) {
-					throw new Error(`Could not parse value for the ${fieldElement} arument`);
+					throw new Error(`Could not parse value for the ${fieldValues[i][0]} argument`);
 				}
 				// If the parsed value is null but the arg is optional, the content will not be removed
 				// so that it can be tried to be parsed with the next arg
 			}
 			else {
 				// if the parsed value is not null the the content is assigned to an argument and hence remmoved
-				contents.pop();
+				contents.shift();
 			}
 		}
 
@@ -80,7 +80,7 @@ async function convertArg(contentElement, type, bot) {
 		if (!userFromCache) {
 			// eslint-disable-next-line no-unused-vars
 			returnVal = await bot.client.channels.fetch(channelIdTofetch).catch(err => {
-				bot.logger.warn('Could not fetch channel');
+				bot.logger.warn(bot, 'Could not fetch channel');
 			});
 		}
 		else {
@@ -102,8 +102,8 @@ async function convertArg(contentElement, type, bot) {
 		const userFromCache = bot.client.users.cache.get(idTofetch);
 		if (!userFromCache) {
 			// eslint-disable-next-line no-unused-vars
-			returnVal = await bot.client.fetchUser(idTofetch).catch(err => {
-				bot.logger.warn('Could not fetch the user');
+			returnVal = await bot.client.users.fetch(idTofetch).catch(err => {
+				bot.logger.warn(bot, 'Could not fetch the user');
 			});
 		}
 		else {

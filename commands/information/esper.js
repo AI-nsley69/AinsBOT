@@ -11,7 +11,7 @@ export default new Command()
 	})
 	.setCooldown(5)
 	.setRun(async (bot, ctx) => {
-		const esper = ctx.getArgs().replace(' ', '-').toLowerCase();
+		const esper = ctx.getArgs().esper.replace(' ', '-').toLowerCase();
 		// Check if we have an argument
 		if (!esper) {return ctx.err(ctx, 'Missing an esper!');}
 		// Get the esper through the api

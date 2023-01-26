@@ -1,24 +1,17 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-inline-comments */
 import { MessageEmbed } from 'discord.js';
-import { Command } from '../../modules/commandClass.js';
+import { Command, ReqArg } from '../../modules/commandClass.js';
 
 export default new Command()
 	.setDescription('Shipping percentage')
 	.setUsage('[user]')
+	.setArgs({
+		user: ReqArg.User,
+	})
 	.setGuild(true)
-	.setRun(async (bot, message, loadingMsg) => {
-		const member = message.mentions.members.first();
-		if (!member) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'You did not mention a user!',
-				loadingMsg,
-			);
-		}
-
-		if (member.user === message.author) {
+	.setRun(async (bot, ctx) => {
+		if (member.user === ctx.getAuthor()) {
 			return bot.utils.softErr(
 				bot,
 				message,
@@ -27,24 +20,24 @@ export default new Command()
 			);
 		}
 
-		const percentage = generateNumber(message.author.id, member.user.id);
+		const percentage = generateNumber(ctx.getAuthor().id, ctx.getArgs().user.id);
 
 		const embed = new MessageEmbed()
 			.setTitle(getTitle(percentage))
 			.setAuthor({
-				name: message.author.tag,
-				iconURL: message.author.displayAvatarURL(),
+				name: ctx.getAuthor().tag,
+				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
 			.setFooter({
-				text: member.user.tag,
-				iconURL: member.user.displayAvatarURL(),
+				text: ctx.getArgs().user.tag,
+				iconURL: ctx.getArgs().user.displayAvatarURL(),
 			})
 			.setDescription(
-				`${message.author.tag} and ${member.user.tag} are ${percentage}% compatible!`,
+				`${ctx.getAuthor().tag} and ${ctx.getArgs().user.tag} are ${percentage}% compatible!`,
 			)
 			.setColor(getColor(percentage));
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});
 
 // Pseudorng for generating a random digit

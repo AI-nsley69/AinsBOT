@@ -1,16 +1,17 @@
 import { MessageEmbed } from 'discord.js';
-import { Command } from '../../modules/commandClass.js';
+import { Command, OptArg } from '../../modules/commandClass.js';
 
 
 export default new Command()
 	.setDescription('Get info about a marriage')
 	.setUsage('(user)')
+	.setArgs({
+		user: OptArg.User,
+	})
 	.setGuild(true)
 	.setCooldown(5)
-	.setRun(async (bot, message, loadingMsg) => {
-	// Get the user
-		const member = message.mentions.members.first() || message.member;
-		const user = member.user;
+	.setRun(async (bot, ctx) => {
+		const user = ctx.getArgs().user || ctx.getAuthor();
 
 		const status = await bot.db.marriages.findAll({
 			where: {
@@ -19,12 +20,7 @@ export default new Command()
 		});
 
 		if (!status[0]) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'User is not married!',
-				loadingMsg,
-			);
+			return ctx.err(ctx, 'User is not married!');
 		}
 		const spouse = await bot.client.users.fetch(status[0].dataValues.spouseId);
 
@@ -47,5 +43,5 @@ export default new Command()
 				},
 			]);
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});

@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { Command } from '../../modules/commandClass.js';
+import { Command, OptArg } from '../../modules/commandClass.js';
 
 
 function apiFetch(url, mapper) {
@@ -47,24 +47,27 @@ const animalApis = {
 export default new Command()
 	.setDescription('Get pictures and (possibly) a fact about an animal!')
 	.setUsage('(animal)')
+	.setArgs({
+		api: OptArg.String,
+	})
 	.setCooldown(15)
-	.setRun(async (bot, message, loadingMsg, args) => {
-		const api = animalApis[args[0]];
-		if (!api) {return bot.utils.softErr(bot, message, '**Available animals**\ncapybara, cat, dog, firefox, fox', loadingMsg);}
+	.setRun(async (bot, ctx) => {
+		const api = animalApis[ctx.getArgs().api];
+		if (!api) {return ctx.err(ctx, '**Available animals**\ncapybara, cat, dog, firefox, fox');}
 		// Create the embed
-		animalEmbed(bot, message, loadingMsg, {
+		animalEmbed(bot, ctx, {
 			image: await api.fetchImage(axios),
 			fact: await api.fetchFact(axios),
 			title: api.title,
-		}).catch(err => bot.utils.handleCmdError(bot, message, loadingMsg, err));
+		});
 	});
 
-async function animalEmbed(bot, message, msg, animalInfo) {
+async function animalEmbed(bot, ctx, animalInfo) {
 	const embed = new MessageEmbed()
 		.setTitle(animalInfo.title)
 		.setAuthor({
-			name: message.author.tag,
-			iconURL: message.author.displayAvatarURL(),
+			name: ctx.getAuthor().tag,
+			iconURL: ctx.getAuthor().displayAvatarURL(),
 		})
 		.setImage(animalInfo.image)
 		.setURL(animalInfo.image)
@@ -72,5 +75,5 @@ async function animalEmbed(bot, message, msg, animalInfo) {
 
 	animalInfo.fact ? embed.setFooter({ text: animalInfo.fact }) : embed.setTimestamp();
 	// Edit to add the new embed
-	msg.edit({ embeds: [embed] });
+	ctx.embed([embed]);
 }

@@ -62,7 +62,12 @@ async function commandHandler(bot, message) {
 
 		// Setup context for the command
 		const ctx = new TextContext(message);
-		ctx.setArgs(await argParser(bot, args, commandInfo.args));
+		const ctxArgs = await argParser(bot, args, commandInfo.args).catch(err => {
+			ctx.err(ctx, err.toString());
+			bot.logger.verbose(bot, err.toString());
+		});
+		if (!ctxArgs) return;
+		ctx.setArgs(ctxArgs);
 
 		// Check if the command is ran in the bot channel
 		if (!(await isBotChannel(bot, message))) return;
@@ -113,6 +118,8 @@ async function commandHandler(bot, message) {
 				args.length > 0 ? args.join(' ') : 'no'
 			} arguments!`,
 		);
+
+		await ctx.getChannel().sendTyping();
 
 		commandInfo.run(bot, ctx).catch((err) => {
 			ctx.err(ctx, err.toString());

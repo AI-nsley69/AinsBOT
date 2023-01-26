@@ -16,7 +16,7 @@ export default new Command()
 	.setRun(async (bot, ctx) => {
 	// Setup variables and verify them
 	// eslint-disable-next-line prefer-const
-		const { action, command } = ctx.getArgs().action;
+		const { action, command } = ctx.getArgs();
 		if (!(action === 'enable' || action === 'disable')) {
 			return ctx.err(ctx, 'Incorrect enable/disable argument');
 		}
@@ -99,5 +99,5 @@ export default new Command()
 			})
 			.setTimestamp();
 
-		ctx.embed({ embeds: [embed] });
+		ctx.embed([embed]);
 	});

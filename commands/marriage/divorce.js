@@ -6,25 +6,20 @@ export default new Command()
 	.setDescription('Divorce your spouse')
 	.setGuild(true)
 	.setCooldown(30)
-	.setRun(async (bot, message, loadingMsg) => {
-		const spouse = await getSpouse(bot, message.author.id);
+	.setRun(async (bot, ctx) => {
+		const spouse = await getSpouse(bot, ctx.getAuthor().id);
 		if (!spouse) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'You have no maiden 🙈',
-				loadingMsg,
-			);
+			return ctx.err(ctx, 'You have no maiden 🙈');
 		}
 
-		divorce(bot, message.author.id, spouse.id);
+		divorce(bot, ctx.getAuthor().id, spouse.id);
 
 		const embed = new MessageEmbed()
-			.setDescription(`${message.author} has divorced ${spouse}!`)
+			.setDescription(`${ctx.getAuthor()} has divorced ${spouse}!`)
 			.setColor(bot.consts.Colors.INFO)
 			.setTimestamp();
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});
 
 async function getSpouse(bot, id) {

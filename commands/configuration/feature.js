@@ -16,13 +16,6 @@ export default new Command()
 	// Deconstruct array into appropiate vars
 		const action = ctx.getArgs().action;
 		const targetFeature = ctx.getArgs().target;
-		// eslint-disable-next-line prefer-const
-		// Check if the action exists and if it is enable or disable
-		if (!['enable', 'disable'].includes(action)) {
-			return ctx.err(
-				'Incorrect disable/enable argument!',
-			);
-		}
 		// Create a boolean based on the action
 		const futureBoolean = action === 'enable';
 		// Switch case for editing previews
