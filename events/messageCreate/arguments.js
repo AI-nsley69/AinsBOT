@@ -11,7 +11,7 @@ async function argParser(bot, contents, commandArgObject) {
 	const fieldValues = fields.slice();
 	let hasMetCoalesc = false;
 
-	for (let i = 0; i <= fields.length; i++) {
+	for (let i = 0; i < fields.length; i++) {
 		const fieldElement = fields[i][1];
 		if (!fieldElement) throw new Error('Invalid Command Structure');
 		const isRequired = fieldElement.charAt(0) === 'r';
@@ -22,6 +22,7 @@ async function argParser(bot, contents, commandArgObject) {
 			fieldValues[i][1] = null;
 		}
 		else if (fieldElement === ReqArg.StringCoalescing || fieldElement === OptArg.StringCoalescing) {
+			if (contents.join().length < 1 && isRequired) throw new Error(`Could not parse value for the ${fieldElement} arument`);
 			fieldValues[i][1] = contents.join();
 			hasMetCoalesc = true;
 		}
