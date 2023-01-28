@@ -163,9 +163,9 @@ async function previewReddit(bot, message) {
 		.setURL(redditLink[0])
 		.setAuthor(subreddit_name_prefixed)
 		.setColor(over_18 ? 0xff0000 : 0xffffff)
-		.setFooter(
-			`${ups} upvotes, ${Math.floor(ups / upvote_ratio - ups)} downvotes`,
-		);
+		.setFooter({
+			text: `${ups} upvotes, ${Math.floor(ups / upvote_ratio - ups)} downvotes`,
+		});
 	if (url) {
 		over_18 === message.channel.nsfw
 			? embed.setImage(url)
