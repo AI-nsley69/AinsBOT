@@ -1,7 +1,7 @@
 {
     "prefix": "a!",
     "adminPrefix": "doas",
-    "adminIds": ["213585513326706690"],
+	"adminIds": ["213585513326706690","882895795282661386"],
 
     "logLevel": "verbose"
 }

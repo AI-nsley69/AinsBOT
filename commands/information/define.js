@@ -11,7 +11,11 @@ export default new Command()
 	})
 	.setRun(async (bot, ctx) => {
 		const word = ctx.getArgs().word;
-		const def = word ? await ud(word) : random();
+		const def = word ? await ud(word) : await random();
+		let defString = def.definition;
+		let defExample = def.example;
+		if (defString.length >= 1024) defString = defString.substring(0, 1024);
+		if (defExample.length >= 1024) defExample = defExample.substring(0, 1024);
 
 		const embed = new MessageEmbed()
 			.setTitle(def.word)
@@ -22,12 +26,12 @@ export default new Command()
 			.addFields([
 				{
 					name: 'Description',
-					value: def.definition,
+					value: defString,
 					inline: false,
 				},
 				{
 					name: 'Example',
-					value: def.example,
+					value: defExample,
 					inline: false,
 				},
 			])
