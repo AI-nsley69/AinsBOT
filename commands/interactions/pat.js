@@ -1,17 +1,20 @@
 import { MessageEmbed } from 'discord.js';
 import pkg from 'axios';
 const { get } = pkg;
-import { Command } from '../../modules/commandClass.js';
+import { Command, ReqArg } from '../../modules/commandClass.js';
 
 
 export default new Command()
 	.setDescription('Pat a user!')
 	.setUsage('[user]')
+	.setArgs({
+		user: ReqArg.User,
+	})
 	.setGuild(true)
 	.setCooldown(15)
 	.setRun(async (bot, ctx) => {
 	// Verify user
-		const member = ctx.getGuild().members.fetch(ctx.getArgs().user) || null;
+		const member = await ctx.getGuild().members.fetch(ctx.getArgs().user) || null;
 		if (!member) {return ctx.err(ctx, 'Awh.. got no one to pat? ):');}
 		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t pat yourself silly!');}
 		// Fetch from api

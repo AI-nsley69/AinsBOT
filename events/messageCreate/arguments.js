@@ -23,7 +23,7 @@ async function argParser(bot, contents, commandArgObject) {
 		}
 		else if (fieldElement === ReqArg.StringCoalescing || fieldElement === OptArg.StringCoalescing) {
 			if (contents.join().length < 1 && isRequired) throw new Error(`Could not parse value for the ${fieldElement} arument`);
-			fieldValues[i][1] = contents.join();
+			fieldValues[i][1] = contents.join(' ');
 			hasMetCoalesc = true;
 		}
 		else {
@@ -51,13 +51,11 @@ async function argParser(bot, contents, commandArgObject) {
 async function convertArg(contentElement, type, bot) {
 	let returnVal;
 	switch (type) {
-	case ReqArg.String:
-	case OptArg.String: {
+	case ReqArg.String: case OptArg.String: {
 		returnVal = contentElement;
 		break;
 	}
-	case ReqArg.Boolean:
-	case OptArg.Boolean: {
+	case ReqArg.Boolean: case OptArg.Boolean: {
 		if (contentElement === 'true') {
 			returnVal = true;
 		}
@@ -69,35 +67,32 @@ async function convertArg(contentElement, type, bot) {
 		}
 		break;
 	}
-	case ReqArg.Channel:
-	case OptArg.Channel: {
+	case ReqArg.Channel: case OptArg.Channel: {
 		let channelIdTofetch = contentElement;
 		if (!channelIdTofetch) return null;
 		if (contentElement.startsWith('<#')) {
-			channelIdTofetch = contentElement.substring(2, 20);
+			const startIndex = 2;
+			channelIdTofetch = contentElement.substring(startIndex, contentElement.length - 1);
 		}
-		const userFromCache = bot.client.channels.cache.get(channelIdTofetch);
-		if (!userFromCache) {
+		const channelFromCache = bot.client.channels.cache.get(channelIdTofetch);
+		if (!channelFromCache) {
 			// eslint-disable-next-line no-unused-vars
 			returnVal = await bot.client.channels.fetch(channelIdTofetch).catch(err => {
 				bot.logger.warn(bot, 'Could not fetch channel');
 			});
 		}
 		else {
-			returnVal = userFromCache;
+			returnVal = channelFromCache;
 		}
 
 		break;
 	}
-	case ReqArg.User:
-	case OptArg.User: {
+	case ReqArg.User: case OptArg.User: {
 		let idTofetch = contentElement;
 		if (!idTofetch) return null;
-		if (contentElement.startsWith('<@!')) {
-			idTofetch = contentElement.substring(3, 21);
-		}
-		else if (contentElement.startsWith('<@')) {
-			idTofetch = contentElement.substring(2, 20);
+		if (contentElement.startsWith('<@')) {
+			const startIndex = contentElement.charAt(2) === '!' ? 3 : 2;
+			idTofetch = contentElement.substring(startIndex, contentElement.length - 1);
 		}
 		const userFromCache = bot.client.users.cache.get(idTofetch);
 		if (!userFromCache) {
