@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import pkg from 'axios';
 const { get } = pkg;
-import { Command, ReqArg } from '../../modules/commandClass.js';
+import { Command, OptArg } from '../../modules/commandClass.js';
 
 const params = new URLSearchParams([['sort', 'hot'], ['limit', '30']]);
 
@@ -13,7 +13,7 @@ export default new Command()
 	.setDescription('Fetches adult content from whitelisted subreddits')
 	.setUsage('[subreddit]')
 	.setArgs({
-		subreddit: ReqArg.String,
+		subreddit: OptArg.String,
 	})
 	.setGuild(true)
 	.setCooldown(5)
@@ -21,6 +21,7 @@ export default new Command()
 	// Check if the channel is nsfw
 		if (!ctx.getChannel().nsfw) {return ctx.err(ctx, 'This command is only available in NSFW channels! 😡');}
 		const { subreddit } = ctx.getArgs();
+		if (!subreddit) return ctx.message(`Supported subreddits: ${supported.join(', ')}`);
 		if (!supported.includes(subreddit)) {
 			const embed = new MessageEmbed()
 				.setTitle('Available adult content subreddits!')

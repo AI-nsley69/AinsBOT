@@ -78,7 +78,7 @@ export default new Command()
 		else {query.push(command);}
 
 		const csv = bot.utils.arrToCsv(query);
-		await bot.db.commands.update(
+		const newData = await bot.db.commands.update(
 			{ disabled: csv },
 			{
 				where: {
@@ -86,6 +86,8 @@ export default new Command()
 				},
 			},
 		);
+
+		bot.cache.updateAt(`commands-${ctx.getGuild().id}`, newData[0].dataValues);
 
 		const embed = new MessageEmbed()
 			.setTitle(`Updated ${command}`)

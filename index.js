@@ -12,6 +12,7 @@ import fs from 'fs';
 import logger from './modules/logger.js';
 import utils from './modules/utils.js';
 import consts from './modules/constants.js';
+import { Cache } from './modules/cache.js';
 
 const time = performance.now();
 
@@ -49,6 +50,8 @@ const bot = {
 	bridges: [],
 	initTime: time,
 };
+
+bot.cache = new Cache(bot);
 
 // Used for parsing the table objects
 const types = {

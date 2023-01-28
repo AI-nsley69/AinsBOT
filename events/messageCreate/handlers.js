@@ -31,17 +31,14 @@ async function isBotChannel(bot, message) {
 async function isCommandEnabled(bot, message, command) {
 	if (!isGuild) return true;
 
-	const query = await bot.db.commands.findAll({
-		where: { guildId: message.guild.id },
-	});
+	const query = await bot.cache.queryDb('commands', message.guild.id, { where: {
+		guildId: message.guild.id,
+	} });
 
-	if (query[0]) {
-		const disabledCommands = bot.utils.csvToArr(query[0].dataValues.disabled);
-		return !disabledCommands.includes(command);
-	}
-	else {
-		return true;
-	}
+	if (!query || !query.disabled) return true;
+
+	const disabledCommands = bot.utils.csvToArr(query.disabled);
+	return !disabledCommands.includes(command);
 }
 
 async function commandHandler(bot, message) {
@@ -62,54 +59,41 @@ async function commandHandler(bot, message) {
 
 		// Setup context for the command
 		const ctx = new TextContext(message);
-		const ctxArgs = await argParser(bot, args, commandInfo.args).catch(err => {
-			ctx.err(ctx, err.toString());
-			bot.logger.verbose(bot, err.toString());
-		});
-		if (!ctxArgs) return;
-		ctx.setArgs(ctxArgs);
 
 		// Check if the command is ran in the bot channel
 		if (!(await isBotChannel(bot, message))) return;
 
 		// Check if the command is enabled
 		if (!(await isCommandEnabled(bot, message, command))) {
-			return ctx.err('This command is not enabled in this guild! ❌');
+			return ctx.err(ctx, 'This command is not enabled in this guild! ❌');
 		}
 		// Check if the user has the required permission, if wanted
 		if (
 			commandInfo.permission &&
       !message.member.permissions.has(commandInfo.permission)
 		) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'You do not have the permission to run this command! ❌',
-			);
+			return ctx.err(ctx, 'You do not have the permission to run this command! ❌');
 		}
 
 		// Check if bot has the required permissions for the command
-		const missingPerms = commandInfo.botPermissions.filter((perm) =>
-			message.guild ? !message.guild.me.permissions.has(perm) : false,
-		);
+		const missingPerms = commandInfo.botPermissions.filter((perm) => {
+			message.guild ? !message.guild.me.permissions.has(perm) : false;
+		});
 		if (missingPerms.length > 0) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				`I am missing the needed commands to run this command ):\nPlease give me the following permissions:\`${missingPerms.join(
-					', ',
-				)}\``,
-			);
+			return ctx.err(ctx, `I am missing the needed commands to run this command ):\nPlease give me the following permissions:\`${missingPerms.join(', ')}\``);
 		}
 
 		// Check if the message is from a guild, if wanted
 		if (commandInfo.guild && !message.guild) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'This command is only available in guilds 🌧',
-			);
+			return bot.utils.softErr(ctx, 'This command is only available in guilds 🌧');
 		}
+
+		const ctxArgs = await argParser(bot, args, commandInfo.args).catch(err => {
+			ctx.err(ctx, err.toString());
+			bot.logger.verbose(bot, err.toString());
+		});
+		if (!ctxArgs) return;
+		ctx.setArgs(ctxArgs);
 
 		// Run the command and catch any error to not crash bot
 		bot.logger.verbose(
@@ -122,9 +106,8 @@ async function commandHandler(bot, message) {
 		await ctx.getChannel().sendTyping();
 
 		commandInfo.run(bot, ctx).catch((err) => {
-			ctx.err(ctx, err.toString());
-			console.log(err);
 			bot.logger.err(bot, err);
+			ctx.err(ctx, err.toString());
 		});
 
 		// Add user to cooldown if enabled
