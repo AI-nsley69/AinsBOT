@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import pkg from 'axios';
 const { get } = pkg;
-import { Command } from '../../modules/commandClass.js';
+import { Command, OptArg } from '../../modules/commandClass.js';
 
 const params = new URLSearchParams([['sort', 'hot'], ['limit', '30']]);
 
@@ -12,23 +12,27 @@ const supported = ['boobs', 'nsfw', 'milf', 'gonewild', 'camsluts', 'ass', 'hold
 export default new Command()
 	.setDescription('Fetches adult content from whitelisted subreddits')
 	.setUsage('[subreddit]')
+	.setArgs({
+		subreddit: OptArg.String,
+	})
 	.setGuild(true)
 	.setCooldown(5)
-	.setRun(async (bot, message, loadingMsg, args) => {
+	.setRun(async (bot, ctx) => {
 	// Check if the channel is nsfw
-		if (!message.channel.nsfw) {return bot.utils.softErr(bot, message, 'This command is only available in NSFW channels! 😡', loadingMsg);}
-		const [subreddit] = args;
+		if (!ctx.getChannel().nsfw) {return ctx.err(ctx, 'This command is only available in NSFW channels! 😡');}
+		const { subreddit } = ctx.getArgs();
+		if (!subreddit) return ctx.message(`Supported subreddits: ${supported.join(', ')}`);
 		if (!supported.includes(subreddit)) {
 			const embed = new MessageEmbed()
 				.setTitle('Available adult content subreddits!')
 				.setDescription(supported.join(', '))
 				.setAuthor({
-					name: message.author.tag,
-					iconURL: message.author.displayAvatarURL(),
+					name: ctx.getAuthor().tag,
+					iconURL: ctx.getAuthor().displayAvatarURL(),
 				})
 				.setColor(bot.consts.Colors.INFO);
 
-			loadingMsg.edit({ embeds: [embed] });
+			ctx.embed([embed]);
 			return;
 		}
 		// Get the payload from the subreddit
@@ -46,17 +50,15 @@ export default new Command()
 		// Handle gifv & redgifs differently
 		if (media.includes('redgifs') || media.endsWith('.gifv')) {
 			if (media.includes('redgifs')) {
-				await message.channel.send({
+				await ctx.getChannel().send({
 					files: [{
 						attachment: media,
 					}],
-				}).catch(() => message.channel.send(media));
-				loadingMsg.delete();
+				}).catch(() => ctx.getChannel().send(media));
 				return;
 			}
 
-			await message.channel.send(media);
-			loadingMsg.delete();
+			await ctx.getChannel().send(media);
 		}
 		const embed = new MessageEmbed()
 			.setTitle(`Incoming ${subreddit} content!`)
@@ -64,12 +66,12 @@ export default new Command()
 			.setColor(bot.consts.Colors.REDDIT)
 			.setImage(media)
 			.setAuthor({
-				name: message.author.tag,
-				iconURL: message.author.displayAvatarURL(),
+				name: ctx.getAuthor().tag,
+				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
 			.setFooter({
 				text: 'Provided by Reddit!',
 			});
 
-		loadingMsg.edit({ embeds: [embed] }).catch(err => bot.logger.err(bot, err.toString()));
+		ctx.embed([embed]);
 	});

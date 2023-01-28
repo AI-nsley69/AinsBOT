@@ -7,7 +7,7 @@ import { Command } from '../../modules/commandClass.js';
 export default new Command()
 	.setDescription('Get a random insult!')
 	.setCooldown(15)
-	.setRun(async (bot, message, loadingMsg) => {
+	.setRun(async (bot, ctx) => {
 		const insult = await get('https://insult.mattbas.org/api/insult').then(r => r.data);
 		// Create the message embed
 		const embed = new MessageEmbed()
@@ -15,5 +15,5 @@ export default new Command()
 			.setColor(bot.consts.Colors.INFO)
 			.setDescription(insult);
 
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});

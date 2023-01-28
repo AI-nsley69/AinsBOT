@@ -9,21 +9,21 @@ export default new Command()
 	.setUsage('[user]')
 	.setGuild(true)
 	.setCooldown(15)
-	.setRun(async (bot, message, loadingMsg) => {
+	.setRun(async (bot, ctx) => {
 	// Verify user
-		const member = message.mentions.members.first();
-		if (!member) {return bot.utils.softErr(bot, message, 'Awh.. got no one to pat? ):', loadingMsg);}
-		if (member.user.id === message.author.id) {return bot.utils.softErr(bot, message, 'You can\'t pat yourself silly!', loadingMsg);}
+		const member = ctx.getGuild().members.fetch(ctx.getArgs().user) || null;
+		if (!member) {return ctx.err(ctx, 'Awh.. got no one to pat? ):');}
+		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t pat yourself silly!');}
 		// Fetch from api
 		const pat = await get('https://some-random-api.ml/animu/pat');
 		const icon = await get('https://some-random-api.ml/img/koala');
 		// Create embed
 		const embed = new MessageEmbed()
-			.setTitle(`${message.author.tag} gave ${member.user.tag} a pat!`)
+			.setTitle(`${ctx.getAuthor().tag} gave ${member.user.tag} a pat!`)
 			.setThumbnail(icon.data.link)
 			.setColor(bot.consts.Colors.INFO)
 			.setImage(pat.data.link)
 			.setTimestamp();
 
-		loadingMsg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, null, err, loadingMsg));
+		ctx.embed([embed]);
 	});

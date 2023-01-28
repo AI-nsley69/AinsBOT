@@ -1,63 +1,59 @@
-import { Command } from '../../modules/commandClass.js';
+import { Command, ReqArg } from '../../modules/commandClass.js';
 
 
 export default new Command()
 	.setDescription('Propose to another user!')
 	.setDescription('[user]')
+	.setArgs({
+		user: ReqArg.User,
+	})
 	.setGuild(true)
 	.setCooldown(5)
-	.setRun(async (bot, message, loadingMsg, args) => {
-		loadingMsg.delete();
-		// Get the user
-		const member = message.mentions.members.first() ||
-		(await message.guild.members.fetch(args[0])) ||
-		message.member;
-
-		const user = member.user;
-
-		if (!(await isAbleToMarry(bot, message, user))) {
-			message.channel.send(
+	.setRun(async (bot, ctx) => {
+		const { user } = ctx.getArgs();
+		if (!(await isAbleToMarry(bot, ctx.getAuthor(), user))) {
+			ctx.message(
 				'Sorry, this proposal cannot be accepted!\nThis may because you or them are already married, you\'re trying to marry yourself or you\'re trying to marry a bot.',
 			);
 			return;
 		}
 		// Consent is important
-		message.channel.send(
-			`${user} do you wish to marry ${message.author}? 🥹 (y/n)`,
+		ctx.message(
+			`${user} do you wish to marry ${ctx.getAuthor()}? 🥹 (y/n)`,
 		);
 
 		try {
 			bot.helpers
 				.get('message')
-				.awaitResponse(message, user.id, 60 * 1000)
+				.awaitResponse(ctx._src, user.id, 60 * 1000)
 				.then((res) => {
 					if (res.startsWith('y') && res.length < 4) {
-						addMarriage(bot, message.author, user);
-						message.channel.send(
-							`I hereby pronounce ${message.author} & ${user} a married couple! 🫶`,
+						addMarriage(bot, ctx.getAuthor(), user);
+						ctx.message(
+							`I hereby pronounce ${ctx.getAuthor()} & ${user} a married couple! 🫶`,
 						);
 					}
 					else if (res.startsWith('n') && res.length < 4) {
-						message.channel.send('Get rejected bozo L 😈');
+						ctx.message('Get rejected bozo L 😈');
 					}
 					else {
-						message.channel.send(
+						ctx.message(
 							'Unrecognized response, marriage cannot be established :c',
 						);
 					}
 				});
 		}
 		catch (err) {
-			message.channel.send('You just got ghosted! 👻');
+			ctx.message('You just got ghosted! 👻');
 		}
 	});
 
-async function isAbleToMarry(bot, message, user) {
+async function isAbleToMarry(bot, author, user) {
 	if (user.bot) return false;
-	if (user.id === message.author.id) return false;
+	if (user.id === author.id) return false;
 	const isAuthorMarried = await bot.db.marriages.findAll({
 		where: {
-			userId: message.author.id,
+			userId: author.id,
 		},
 	});
 	if (isAuthorMarried[0]) return false;

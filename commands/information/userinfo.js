@@ -1,16 +1,16 @@
 import { MessageEmbed } from 'discord.js';
-import { Command } from '../../modules/commandClass.js';
+import { Command, OptArg } from '../../modules/commandClass.js';
 
 export default new Command()
 	.setDescription('Get some information about a user')
 	.setUsage('(user)')
+	.setArgs({
+		user: OptArg.User,
+	})
 	.setRun(
-		async (bot, message, loadingMsg, args) => {
-			// Fetch the user, either with the first mentioned member or user id, then check if we have a member object
-			const member = message.mentions.members.first() ||
-		(await message.guild.members.fetch(args[0])) ||
-		message.member;
-
+		async (bot, ctx) => {
+			const { user } = ctx.getArgs();
+			const member = user ? await ctx.getGuild().members.fetch(user.id) : ctx._src.member;
 			// Create a new embed with the info
 			const embed = new MessageEmbed()
 				.setAuthor({
@@ -46,5 +46,5 @@ export default new Command()
 				.setTimestamp();
 
 			// Send the message
-			loadingMsg.edit({ embeds: [embed] });
+			ctx.embed([embed]);
 		});

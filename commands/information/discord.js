@@ -10,5 +10,5 @@ export default new Command()
 			.setURL(process.env.inviteLink)
 			.setColor(bot.consts.Colors.INFO);
 
-		ctx.embed({ embeds: [embed] });
+		ctx.embed([embed]);
 	});

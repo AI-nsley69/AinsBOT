@@ -11,7 +11,7 @@ async function argParser(bot, contents, commandArgObject) {
 	const fieldValues = fields.slice();
 	let hasMetCoalesc = false;
 
-	for (let i = 0; i <= fields.length; i++) {
+	for (let i = 0; i < fields.length; i++) {
 		const fieldElement = fields[i][1];
 		if (!fieldElement) throw new Error('Invalid Command Structure');
 		const isRequired = fieldElement.charAt(0) === 'r';
@@ -22,23 +22,24 @@ async function argParser(bot, contents, commandArgObject) {
 			fieldValues[i][1] = null;
 		}
 		else if (fieldElement === ReqArg.StringCoalescing || fieldElement === OptArg.StringCoalescing) {
+			if (contents.join().length < 1 && isRequired) throw new Error(`Could not parse value for the ${fieldElement} arument`);
 			fieldValues[i][1] = contents.join();
 			hasMetCoalesc = true;
 		}
 		else {
-			const parsedValue = convertArg(contents[0], fieldElement, bot);
+			const parsedValue = await convertArg(contents[0], fieldElement, bot);
 			fieldValues[i][1] = parsedValue;
 			// if the parsed value is null and required, there command run is invalid
 			if (!parsedValue) {
 				if (isRequired) {
-					throw new Error(`Could not parse value for the ${fieldElement} arument`);
+					throw new Error(`Could not parse value for the ${fieldValues[i][0]} argument`);
 				}
 				// If the parsed value is null but the arg is optional, the content will not be removed
 				// so that it can be tried to be parsed with the next arg
 			}
 			else {
 				// if the parsed value is not null the the content is assigned to an argument and hence remmoved
-				contents.pop();
+				contents.shift();
 			}
 		}
 
@@ -71,24 +72,27 @@ async function convertArg(contentElement, type, bot) {
 	case ReqArg.Channel:
 	case OptArg.Channel: {
 		let channelIdTofetch = contentElement;
-		if (contentElement.startsWith('<@')) {
+		if (!channelIdTofetch) return null;
+		if (contentElement.startsWith('<#')) {
 			channelIdTofetch = contentElement.substring(2, 20);
 		}
 		const userFromCache = bot.client.channels.cache.get(channelIdTofetch);
 		if (!userFromCache) {
 			// eslint-disable-next-line no-unused-vars
 			returnVal = await bot.client.channels.fetch(channelIdTofetch).catch(err => {
-				bot.logger.warn('Could not fetch channel');
+				bot.logger.warn(bot, 'Could not fetch channel');
 			});
 		}
 		else {
 			returnVal = userFromCache;
 		}
+
 		break;
 	}
 	case ReqArg.User:
 	case OptArg.User: {
 		let idTofetch = contentElement;
+		if (!idTofetch) return null;
 		if (contentElement.startsWith('<@!')) {
 			idTofetch = contentElement.substring(3, 21);
 		}
@@ -98,8 +102,8 @@ async function convertArg(contentElement, type, bot) {
 		const userFromCache = bot.client.users.cache.get(idTofetch);
 		if (!userFromCache) {
 			// eslint-disable-next-line no-unused-vars
-			returnVal = await bot.client.fetchUser(idTofetch).catch(err => {
-				bot.logger.warn('Could not fetch the user');
+			returnVal = await bot.client.users.fetch(idTofetch).catch(err => {
+				bot.logger.warn(bot, 'Could not fetch the user');
 			});
 		}
 		else {

@@ -1,30 +1,19 @@
 import { MessageEmbed } from 'discord.js';
-import { Command } from '../../modules/commandClass.js';
+import { Command, ReqArg } from '../../modules/commandClass.js';
 
 
 export default new Command()
 	.setDescription('Classic 8ball, ask a question!')
 	.setUsage('[question]')
-	.setRun(async (bot, message, loadingMsg, args) => {
-	// Check if the argument array exists, if not let the user know they're missing the question
-		if (!args) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'Missing a question..',
-				loadingMsg,
-			);
-		}
+	.setArgs({
+		question: ReqArg.StringCoalescing,
+	})
+	.setRun(async (bot, ctx) => {
 		// Join the array to turn it into a string
-		const question = args.join(' ');
+		const { question } = ctx.getArgs();
 		// Check if the message ends with a question mark, otherwise classify it as not asking a question
 		if (!question.endsWith('?')) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'You\'re not asking a question.',
-				loadingMsg,
-			);
+			return ctx.err(ctx, 'You\'re not asking a question.');
 		}
 		// 2d array to include a color with an answer
 		const response = [
@@ -39,12 +28,12 @@ export default new Command()
 		const embed = new MessageEmbed()
 			.setTitle(question)
 			.setAuthor({
-				name: message.author.tag,
-				iconURL: message.author.displayAvatarURL(),
+				name: ctx.getAuthor().tag,
+				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
 			.setColor(color)
 			.setDescription(answer)
 			.setTimestamp();
 		// Send the message
-		loadingMsg.edit({ embeds: [embed] });
+		ctx.embed([embed]);
 	});

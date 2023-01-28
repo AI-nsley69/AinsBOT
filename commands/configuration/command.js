@@ -16,7 +16,7 @@ export default new Command()
 	.setRun(async (bot, ctx) => {
 	// Setup variables and verify them
 	// eslint-disable-next-line prefer-const
-		const { action, command } = ctx.getArgs().action;
+		const { action, command } = ctx.getArgs();
 		if (!(action === 'enable' || action === 'disable')) {
 			return ctx.err(ctx, 'Incorrect enable/disable argument');
 		}
@@ -78,7 +78,7 @@ export default new Command()
 		else {query.push(command);}
 
 		const csv = bot.utils.arrToCsv(query);
-		await bot.db.commands.update(
+		const newData = await bot.db.commands.update(
 			{ disabled: csv },
 			{
 				where: {
@@ -86,6 +86,8 @@ export default new Command()
 				},
 			},
 		);
+
+		bot.cache.updateAt(`commands-${ctx.getGuild().id}`, newData[0].dataValues);
 
 		const embed = new MessageEmbed()
 			.setTitle(`Updated ${command}`)
@@ -99,5 +101,5 @@ export default new Command()
 			})
 			.setTimestamp();
 
-		ctx.embed({ embeds: [embed] });
+		ctx.embed([embed]);
 	});

@@ -1,18 +1,26 @@
 import { MessageEmbed } from 'discord.js';
 import translate from 'translate-google';
-import { Command } from '../../modules/commandClass.js';
+import { Command, OptArg } from '../../modules/commandClass.js';
+import { TextContext } from '../../modules/context.js';
 
 export default new Command()
 	.setDescription('Translates a message to english')
 	.setUsage('[text or reply]')
+	.setArgs({
+		text: OptArg.StringCoalescing,
+	})
 	.setCooldown(3)
-	.setRun(async (bot, message, loadingMsg, args) => {
-	// Check if there's a message reference or any string to translate
-		if (!message.reference && !args) {return bot.utils.softErr(bot, message, 'Please reply to a message or give text to translate!', loadingMsg);}
+	.setRun(async (bot, ctx) => {
+		// Check if there's a message reference or any string to translate
+		if (ctx instanceof TextContext
+			&& ctx.getArgs().text.length < 1
+			&& !ctx._src.reference
+		) return ctx.err(ctx, 'Missing text/reply to translate!');
+
 		// Get message object if it exists, otherwise make it null
-		const msg = message.reference ? (await message.channel.messages.fetch(message.reference.messageId)) : null;
+		const msg = ctx._src.reference ? (await ctx.getChannel().messages.fetch(ctx._src.reference.messageId)) : null;
 		// Check the referenced msg content if it exists, otherwise just join the arguments to a string
-		const toTranslate = msg ? msg.content : args.join(' ');
+		const toTranslate = msg ? msg.content : ctx.getArgs().text;
 		// Translate the message
 		const translated = await translate(toTranslate, { to: 'en' });
 		// Create an embed with the translated message
@@ -20,8 +28,8 @@ export default new Command()
 			.setTitle('Google Translate!')
 			.setColor(bot.consts.Colors.TRANSLATE)
 			.setAuthor({
-				name: message.author.tag,
-				iconURL: message.author.displayAvatarURL(),
+				name: ctx.getAuthor().tag,
+				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
 			.addFields([
 				{
@@ -36,5 +44,5 @@ export default new Command()
 			])
 			.setTimestamp();
 		// Edit the temp message
-		loadingMsg.edit({ embeds: [embed] }).catch(err => bot.utils.handleCmdError(bot, message, loadingMsg, err));
+		ctx.embed([embed]);
 	});

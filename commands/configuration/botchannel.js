@@ -6,8 +6,8 @@ export default new Command()
 	.setDescription('Limit the bot to a specific channel!')
 	.setUsage('(channel id|channel mention|reset)')
 	.setArgs({
-		reset: OptArg.String,
 		channel: OptArg.Channel,
+		reset: OptArg.String,
 	})
 	.setPermission('MANAGE_GUILD')
 	.setGuild(true)
@@ -20,7 +20,7 @@ export default new Command()
 			},
 		});
 		// Check if it's not configured, and if so soft error
-		if (!channel[0] && !ctx.getArgs().reset) {return ctx.err(ctx, 'Bot channel is not configured in this guild!');}
+		if (!channel[0] && (!ctx.getArgs().reset || ctx.getArgs().channel)) {return ctx.err(ctx, 'Bot channel is not configured in this guild!');}
 		// If no command is given, give the current channel
 		if (!(ctx.getArgs().reset || ctx.getArgs().channel)) {
 		// const configChannel = await message.guild.channels.fetch(channel[0].dataValues.bot_channel);
