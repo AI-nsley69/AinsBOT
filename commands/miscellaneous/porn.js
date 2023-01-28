@@ -46,7 +46,6 @@ export default new Command()
 		}
 
 		const media = post.data.url.includes('redgifs') ? await get(`https://api.redgifs.com/v1/gfycats/${post.data.url.split('/').slice(-1)[0]}`).then(r => r.data.gfyItem.content_urls.mp4.url) : post.data.url;
-		console.log(media);
 		// Handle gifv & redgifs differently
 		if (media.includes('redgifs') || media.endsWith('.gifv')) {
 			if (media.includes('redgifs')) {

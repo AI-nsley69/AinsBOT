@@ -29,7 +29,6 @@ export default new Command()
 			.setColor(bot.consts.Colors.INFO)
 			.setImage(hug)
 			.setTimestamp();
-		console.log(hug);
 		// Edit message to include the new embed
 		ctx.embed([embed]);
 	});

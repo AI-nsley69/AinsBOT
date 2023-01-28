@@ -45,7 +45,7 @@ async function getTiktok(bot, message) {
 	// Use tiktok-scraper to get the video meta and then grab the videourl
 	const req = await getVideoMeta(fullUrl).catch((err) => {
 		msg.edit(`${hardValues.emojis.previewFail} Failed to get tiktok!`);
-		console.log(err);
+		bot.logger.err(err);
 		return;
 	});
 	const { id, text, videoUrl } = req.collector[0];

@@ -37,7 +37,7 @@ async function run(bot, message, args) {
 }
 
 function cleanOutput(bot, output) {
-	console.log(output);
+	bot.logger.warn(output);
 	return output.replaceAll(process.env.token, '[REDACTED]');
 }
 
