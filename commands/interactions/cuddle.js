@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
-import pkg from 'axios';
-const { get } = pkg;
 import { Command, ReqArg } from '../../modules/commandClass.js';
+
+const cache = new Map();
 
 export default new Command()
 	.setDescription('Cuddle a user!')
@@ -14,9 +14,7 @@ export default new Command()
 	.setRun(async (bot, ctx) => {
 		if (ctx.getArgs().user.id === ctx.getAuthor().id) return ctx.err(ctx, 'You can\'t cuddle yourself!');
 		// Fetch the media
-		const cuddle = await get('https://api.otakugifs.xyz/gif?reaction=cuddle&format=gif')
-			.then((res) => res.data.url);
-
+		const cuddle = await bot.utils.getMedia(bot, 'https://api.otakugifs.xyz/gif?reaction=cuddle&format=gif', cache);
 		sendEmbed(bot, ctx, cuddle);
 	});
 

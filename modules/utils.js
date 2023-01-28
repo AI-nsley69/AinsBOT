@@ -1,5 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { Readable } from 'stream';
+import axios from 'axios';
 
 async function reply(bot, message, content) {
 	message
@@ -77,4 +78,31 @@ function putIfAbsent(arr, obj) {
 	}
 }
 
-export default { reply, replyEmbed, softErr, handleCmdError, cmdLoadingMsg, bufToImgurURL, arrToCsv, csvToArr, putIfAbsent };
+// Used for interactions command to store gifs in cache incase the api denies it.
+async function getMedia(bot, url, cache) {
+	const notFound = 'https://media.tenor.com/U5QXJDAXq_AAAAAi/erro.gif';
+	try {
+		const link = await axios.get(url)
+			.then((res) => res.data.link);
+
+		let key = link.split('/');
+		key = key[key.length - 1];
+		if (!cache.has(key)) cache.set(key, link);
+
+		return link;
+	}
+	catch (err) {
+		bot.logger.warn(bot, err);
+		if (cache.size < 1) return notFound;
+		const keys = Array.from(cache);
+		return cache.get(keys[Math.floor(Math.random() * keys.length)]);
+	}
+}
+
+export default {
+	reply, replyEmbed,
+	softErr, handleCmdError,
+	cmdLoadingMsg, bufToImgurURL,
+	arrToCsv, csvToArr,
+	putIfAbsent, getMedia,
+};

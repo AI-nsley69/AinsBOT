@@ -1,7 +1,10 @@
 import { MessageEmbed } from 'discord.js';
-import pkg from 'axios';
-const { get } = pkg;
 import { Command, ReqArg } from '../../modules/commandClass.js';
+
+const cache = {
+	icon: new Map(),
+	gif: new Map(),
+};
 
 export default new Command()
 	.setDescription('Hug a user!')
@@ -17,15 +20,16 @@ export default new Command()
 		if (!member) {return ctx.err(ctx, 'Awh.. got no one to hug? ):');}
 		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t hug yourself silly!');}
 		// Fetch the media
-		const hug = await get('https://some-random-api.ml/animu/hug');
-		const icon = await get('https://some-random-api.ml/img/red_panda');
+		const hug = await bot.utils.getMedia(bot, 'https://some-random-api.ml/animu/hug', cache.gif);
+		const icon = await bot.utils.getMedia(bot, 'https://some-random-api.ml/img/red_panda', cache.icon);
 		// Embed to send
 		const embed = new MessageEmbed()
 			.setTitle(`${member.user.tag} received a hug from ${ctx.getAuthor().tag}!`)
-			.setThumbnail(icon.data.link)
+			.setThumbnail(icon)
 			.setColor(bot.consts.Colors.INFO)
-			.setImage(hug.data.link)
+			.setImage(hug)
 			.setTimestamp();
+		console.log(hug);
 		// Edit message to include the new embed
 		ctx.embed([embed]);
 	});

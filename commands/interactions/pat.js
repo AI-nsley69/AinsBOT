@@ -1,8 +1,10 @@
 import { MessageEmbed } from 'discord.js';
-import pkg from 'axios';
-const { get } = pkg;
 import { Command, ReqArg } from '../../modules/commandClass.js';
 
+const cache = {
+	gif: new Map(),
+	icon: new Map(),
+};
 
 export default new Command()
 	.setDescription('Pat a user!')
@@ -18,8 +20,8 @@ export default new Command()
 		if (!member) {return ctx.err(ctx, 'Awh.. got no one to pat? ):');}
 		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t pat yourself silly!');}
 		// Fetch from api
-		const pat = await get('https://some-random-api.ml/animu/pat');
-		const icon = await get('https://some-random-api.ml/img/koala');
+		const pat = await bot.utils.getMedia(bot, 'https://some-random-api.ml/animu/pat', cache.gif);
+		const icon = await bot.utils.getMedia(bot, 'https://some-random-api.ml/img/koala', cache.icon);
 		// Create embed
 		const embed = new MessageEmbed()
 			.setTitle(`${ctx.getAuthor().tag} gave ${member.user.tag} a pat!`)

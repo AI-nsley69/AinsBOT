@@ -1,8 +1,7 @@
 import { MessageEmbed } from 'discord.js';
-import pkg from 'axios';
-const { get } = pkg;
 import { Command, ReqArg } from '../../modules/commandClass.js';
 
+const cache = new Map();
 
 export default new Command()
 	.setDescription('Kiss a user!')
@@ -18,12 +17,12 @@ export default new Command()
 		if (!member) {return ctx.err(ctx, 'Awh.. got no one to kiss? ):');}
 		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t kiss yourself silly!');}
 		// Fetch the media
-		const kiss = await get('https://api.otakugifs.xyz/gif?reaction=kiss&format=gif');
+		const kiss = await bot.utils.getMedia(bot, 'https://api.otakugifs.xyz/gif?reaction=kiss&format=gif', cache);
 		// Embed to send
 		const embed = new MessageEmbed()
 			.setTitle(`${member.user.tag} got kissed by ${ctx.getAuthor().tag}!`)
 			.setColor(bot.consts.Colors.INFO)
-			.setImage(kiss.data.url)
+			.setImage(kiss)
 			.setTimestamp();
 		// Edit message to include the new embed
 		ctx.embed([embed]);
