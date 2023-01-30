@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
 import { Command, OptArg } from '../../modules/commandClass.js';
-
+import { Colors } from '../../modules/constants.js';
 
 function apiFetch(url, mapper) {
 	return (http) => {
@@ -71,7 +71,7 @@ async function animalEmbed(bot, ctx, animalInfo) {
 		})
 		.setImage(animalInfo.image)
 		.setURL(animalInfo.image)
-		.setColor(bot.consts.Colors.SUCCESS);
+		.setColor(Colors.SUCCESS);
 
 	animalInfo.fact ? embed.setFooter({ text: animalInfo.fact }) : embed.setTimestamp();
 	// Edit to add the new embed

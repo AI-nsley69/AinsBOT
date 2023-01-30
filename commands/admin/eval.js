@@ -1,4 +1,6 @@
 import { MessageEmbed } from 'discord.js';
+import { replyEmbed } from '../../modules/utils.js';
+import { Colors } from '../../modules/constants.js';
 
 const description = 'evaluate code';
 const usage = '[code]';
@@ -10,7 +12,7 @@ async function run(bot, message, args) {
 		// Set up embed
 		const embed = new MessageEmbed()
 			.setTitle('🖥️ Eval response!')
-			.setColor(bot.consts.Colors.SUCCESS)
+			.setColor(Colors.SUCCESS)
 			.setAuthor({
 				name: message.author.tag,
 				iconURL: message.author.displayAvatarURL(),
@@ -18,13 +20,13 @@ async function run(bot, message, args) {
 			.setDescription('```' + output + '```')
 			.setTimestamp();
 		// Reply with the embed
-		bot.utils.replyEmbed(bot, message, [embed]);
+		replyEmbed(bot, message, [embed]);
 	}
 	catch (err) {
 		// Error embed
 		const embed = new MessageEmbed()
 			.setTitle('❌ Eval failed!')
-			.setColor(bot.consts.Colors.ERR)
+			.setColor(Colors.ERR)
 			.setAuthor({
 				name: message.author.tag,
 				iconURL: message.author.displayAvatarURL(),
@@ -32,7 +34,7 @@ async function run(bot, message, args) {
 			.setDescription('```' + err + '```')
 			.setTimestamp();
 
-		bot.utils.replyEmbed(bot, message, [embed]);
+		replyEmbed(bot, message, [embed]);
 	}
 }
 

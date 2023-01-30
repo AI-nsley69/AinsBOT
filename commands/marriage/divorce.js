@@ -1,5 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { Command } from '../../modules/commandClass.js';
+import { Colors } from '../../modules/constants.js';
 
 
 export default new Command()
@@ -16,7 +17,7 @@ export default new Command()
 
 		const embed = new MessageEmbed()
 			.setDescription(`${ctx.getAuthor()} has divorced ${spouse}!`)
-			.setColor(bot.consts.Colors.INFO)
+			.setColor(Colors.INFO)
 			.setTimestamp();
 
 		ctx.embed([embed]);

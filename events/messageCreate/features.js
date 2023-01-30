@@ -5,6 +5,8 @@ import pkg from 'axios';
 const { get } = pkg;
 import { shorten } from 'shefin-tinyurl';
 
+import { replyEmbed } from '../../modules/utils.js';
+
 // Hardcoded Values
 const hardValues = {
 	// Hardcoded emotes
@@ -127,7 +129,7 @@ async function previewMessage(bot, message) {
 		});
 	}
 
-	bot.utils.replyEmbed(bot, message, [embed]);
+	replyEmbed(bot, message, [embed]);
 }
 
 async function previewReddit(bot, message) {

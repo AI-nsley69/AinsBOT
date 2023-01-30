@@ -2,6 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import pkg from 'axios';
 const { get } = pkg;
 import { Command, OptArg } from '../../modules/commandClass.js';
+import { Colors } from '../../modules/constants.js';
 
 const params = new URLSearchParams([['sort', 'hot'], ['limit', '30']]);
 
@@ -30,7 +31,7 @@ export default new Command()
 					name: ctx.getAuthor().tag,
 					iconURL: ctx.getAuthor().displayAvatarURL(),
 				})
-				.setColor(bot.consts.Colors.INFO);
+				.setColor(Colors.INFO);
 
 			ctx.embed([embed]);
 			return;
@@ -62,7 +63,7 @@ export default new Command()
 		const embed = new MessageEmbed()
 			.setTitle(`Incoming ${subreddit} content!`)
 			.setURL(post.data.url)
-			.setColor(bot.consts.Colors.REDDIT)
+			.setColor(Colors.REDDIT)
 			.setImage(media)
 			.setAuthor({
 				name: ctx.getAuthor().tag,

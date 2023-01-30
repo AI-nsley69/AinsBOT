@@ -1,5 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { Command, ReqArg } from '../../modules/commandClass.js';
+import { getMedia } from '../../modules/utils.js';
+import { Colors } from '../../modules/constants.js';
 
 const cache = new Map();
 
@@ -17,11 +19,11 @@ export default new Command()
 		if (!member) {return ctx.err(ctx, 'Awh.. got no one to kiss? ):');}
 		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t kiss yourself silly!');}
 		// Fetch the media
-		const kiss = await bot.utils.getMedia(bot, 'https://api.otakugifs.xyz/gif?reaction=kiss&format=gif', cache);
+		const kiss = await getMedia(bot, 'https://api.otakugifs.xyz/gif?reaction=kiss&format=gif', cache);
 		// Embed to send
 		const embed = new MessageEmbed()
 			.setTitle(`${member.user.tag} got kissed by ${ctx.getAuthor().tag}!`)
-			.setColor(bot.consts.Colors.INFO)
+			.setColor(Colors.INFO)
 			.setImage(kiss)
 			.setTimestamp();
 		// Edit message to include the new embed

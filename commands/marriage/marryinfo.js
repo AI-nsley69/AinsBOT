@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { Command, OptArg } from '../../modules/commandClass.js';
-
+import { Colors } from '../../modules/constants.js';
 
 export default new Command()
 	.setDescription('Get info about a marriage')
@@ -26,7 +26,7 @@ export default new Command()
 
 		const embed = new MessageEmbed()
 			.setTitle(`${user.username}'s marriage! 💍`)
-			.setColor(bot.consts.Colors.INFO)
+			.setColor(Colors.INFO)
 			.setAuthor({
 				name: user.tag,
 				iconURL: user.displayAvatarURL(),

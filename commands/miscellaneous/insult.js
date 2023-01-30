@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import pkg from 'axios';
 const { get } = pkg;
 import { Command } from '../../modules/commandClass.js';
-
+import { Colors } from '../../modules/constants.js';
 
 export default new Command()
 	.setDescription('Get a random insult!')
@@ -12,7 +12,7 @@ export default new Command()
 		// Create the message embed
 		const embed = new MessageEmbed()
 			.setTitle('An insult:tm:')
-			.setColor(bot.consts.Colors.INFO)
+			.setColor(Colors.INFO)
 			.setDescription(insult);
 
 		ctx.embed([embed]);

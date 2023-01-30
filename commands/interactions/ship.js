@@ -12,12 +12,7 @@ export default new Command()
 	.setGuild(true)
 	.setRun(async (bot, ctx) => {
 		if (member.user === ctx.getAuthor()) {
-			return bot.utils.softErr(
-				bot,
-				message,
-				'Hey now! There\'s only one of you.',
-				loadingMsg,
-			);
+			return ctx.err('Hey now! There\'s only one of you.');
 		}
 
 		const percentage = generateNumber(ctx.getAuthor().id, ctx.getArgs().user.id);

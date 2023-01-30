@@ -1,5 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { Command, ReqArg } from '../../modules/commandClass.js';
+import { getMedia } from '../../modules/utils.js';
+import { Colors } from '../../modules/constants.js';
 
 const cache = {
 	gif: new Map(),
@@ -20,15 +22,19 @@ export default new Command()
 		if (!member) {return ctx.err(ctx, 'Awh.. got no one to pat? ):');}
 		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t pat yourself silly!');}
 		// Fetch from api
-		const pat = await bot.utils.getMedia(bot, 'https://some-random-api.ml/animu/pat', cache.gif);
-		const icon = await bot.utils.getMedia(bot, 'https://some-random-api.ml/img/koala', cache.icon);
-		// Create embed
-		const embed = new MessageEmbed()
-			.setTitle(`${ctx.getAuthor().tag} gave ${member.user.tag} a pat!`)
-			.setThumbnail(icon.data.link)
-			.setColor(bot.consts.Colors.INFO)
-			.setImage(pat.data.link)
-			.setTimestamp();
+		const media = [];
+		media.push(getMedia(bot, 'https://some-random-api.ml/animu/pat', cache.gif));
+		media.push(getMedia(bot, 'https://some-random-api.ml/img/koala', cache.icon));
+		Promise.all(media).then(res => {
+			const [ pat, icon ] = res;
+			// Create embed
+			const embed = new MessageEmbed()
+				.setTitle(`${ctx.getAuthor().tag} gave ${member.user.tag} a pat!`)
+				.setThumbnail(icon)
+				.setColor(Colors.INFO)
+				.setImage(pat)
+				.setTimestamp();
 
-		ctx.embed([embed]);
+			ctx.embed([embed]);
+		});
 	});

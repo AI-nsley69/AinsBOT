@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { Command } from '../../modules/commandClass.js';
 import { OptArg } from '../../modules/commandClass.js';
+import { Colors } from '../../modules/constants.js';
 
 export default new Command()
 	.setDescription('Limit the bot to a specific channel!')
@@ -25,7 +26,7 @@ export default new Command()
 		if (!(ctx.getArgs().reset || ctx.getArgs().channel)) {
 		// const configChannel = await message.guild.channels.fetch(channel[0].dataValues.bot_channel);
 			const embed = new MessageEmbed()
-				.setColor(bot.consts.Colors.INFO)
+				.setColor(Colors.INFO)
 				.setDescription(`Current config: ${channel[0].dataValues.bot_channel}`);
 
 			ctx.embed({ embeds: [embed] });
@@ -40,7 +41,7 @@ export default new Command()
 			});
 			const embed = new MessageEmbed()
 				.setTitle('Success!')
-				.setColor(bot.consts.Colors.SUCCESS)
+				.setColor(Colors.SUCCESS)
 				.setDescription('Bot channel for this guild has been reset!');
 
 			ctx.embed({ embeds: [embed] });
@@ -55,7 +56,7 @@ export default new Command()
 				name: ctx.getAuthor().tag,
 				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
-			.setColor(bot.consts.Colors.SUCCESS)
+			.setColor(Colors.SUCCESS)
 			.setTimestamp();
 
 		ctx.embed({ embeds: [embed] });

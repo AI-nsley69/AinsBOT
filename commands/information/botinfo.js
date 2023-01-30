@@ -8,7 +8,7 @@ import pretty from 'pretty-ms';
 export default new Command()
 	.setDescription('Get information about the bot!')
 	.setRun(async (bot, ctx) => {
-		const mem = await _mem.info(), cpu = await _cpu.usage(), osName = await _os.oos(), osPlatform = await _os.platform(), cpuArch = _os.arch(), cpuModel = _cpu.model();
+		const mem = await _mem.info(), cpu = await _cpu.usage(), osName = _os.oos(), osPlatform = _os.platform(), cpuArch = _os.arch(), cpuModel = _cpu.model();
 		// , drive = await os.drive.info();
 		const embed = new MessageEmbed()
 			.setTitle('Bot information!')

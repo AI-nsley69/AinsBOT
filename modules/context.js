@@ -1,6 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import pkg from './constants.js';
-const { Colors } = pkg;
+import { Colors } from './constants.js';
 
 class Context {
 	constructor(author, channel, guild, src) {

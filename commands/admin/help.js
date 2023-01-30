@@ -1,4 +1,6 @@
 import { MessageEmbed } from 'discord.js';
+import { replyEmbed } from '../../modules/utils.js';
+import { Colors } from '../../modules/constants.js';
 
 const description = 'List all admin commands with their usages';
 const usage = '';
@@ -11,10 +13,10 @@ async function run(bot, message) {
 			iconURL: message.author.displayAvatarURL(),
 		})
 		.setDescription(cmds)
-		.setColor(bot.consts.Colors.INFO)
+		.setColor(Colors.INFO)
 		.setTimestamp();
 
-	bot.utils.replyEmbed(bot, message, [embed]);
+	replyEmbed(bot, message, [embed]);
 }
 
 export default { description, usage, run };

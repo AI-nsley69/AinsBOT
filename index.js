@@ -10,8 +10,6 @@ const { ImgurClient } = pkg;
 import fs from 'fs';
 
 import logger from './modules/logger.js';
-import utils from './modules/utils.js';
-import consts from './modules/constants.js';
 import { Cache } from './modules/cache.js';
 
 const time = performance.now();
@@ -34,10 +32,7 @@ client.login(process.env.token);
 
 const bot = {
 	client: client,
-	fs: fs,
 	logger: logger,
-	utils: utils,
-	consts: consts,
 	sequelize: new sequelize('database', 'user', 'password', {
 		host: 'localhost',
 		dialect: 'sqlite',
@@ -60,11 +55,11 @@ const types = {
 	'BOOL': sequelize.BOOLEAN,
 };
 
-const { features, commands, bot_channels, marriages } = JSON.parse(bot.fs.readFileSync('./tables.json'));
+const { features, commands, bot_channels, marriages } = JSON.parse(fs.readFileSync('./tables.json'));
 
 bot.config = JSON.parse(fs.readFileSync('./config.json'));
 
-bot.commandGroups = bot.fs
+bot.commandGroups = fs
 	.readdirSync('./commands/', { withFileTypes: true })
 	.filter((d) => d.isDirectory() && d.name !== 'admin')
 	.map((d) => d.name);
@@ -102,7 +97,7 @@ Promise.all(waits).then(() => {
 });
 
 async function loadFiles(fieldName, path, addGroup = false, group = '') {
-	const files = (await bot.fs.promises.readdir(path)).filter(f => f.endsWith('.js'));
+	const files = (await fs.promises.readdir(path)).filter(f => f.endsWith('.js'));
 	const promises = files.map(async f => {
 		const file = await import(`${path}/${f}`);
 		if (addGroup) file.default.group = group;

@@ -1,4 +1,5 @@
 import { TextContext } from '../../modules/context.js';
+import { csvToArr, softErr } from '../../modules/utils.js';
 import { argParser } from '../messageCreate/arguments.js';
 
 // Add cooldown for commands
@@ -37,7 +38,7 @@ async function isCommandEnabled(bot, message, command) {
 
 	if (!query || !query.disabled) return true;
 
-	const disabledCommands = bot.utils.csvToArr(query.disabled);
+	const disabledCommands = csvToArr(query.disabled);
 	return !disabledCommands.includes(command);
 }
 
@@ -85,7 +86,7 @@ async function commandHandler(bot, message) {
 
 		// Check if the message is from a guild, if wanted
 		if (commandInfo.guild && !message.guild) {
-			return bot.utils.softErr(ctx, 'This command is only available in guilds 🌧');
+			return ctx.err(ctx, 'This command is only available in guilds 🌧');
 		}
 
 		const ctxArgs = await argParser(bot, args, commandInfo.args).catch(err => {
@@ -133,7 +134,7 @@ async function adminCommandHandler(bot, message) {
 		if (!bot.adminCommands.has(command)) return;
 		// If the author is not in the array of admin ids, return a message letting them know they're not allowed to run this command
 		if (!bot.config.adminIds.includes(message.author.id)) {
-			bot.utils.softErr(bot, message, 'doas: Operation not permitted');
+			softErr(bot, message, 'doas: Operation not permitted');
 			bot.logger.warn(
 				bot,
 				`${message.author.tag} tried to run an admin command!`,
@@ -144,7 +145,7 @@ async function adminCommandHandler(bot, message) {
 		const commandInfo = bot.adminCommands.get(command);
 		// Run command
 		commandInfo.run(bot, message, args).catch((err) => {
-			bot.utils.softErr(bot, message, `${err}`);
+			softErr(bot, message, `${err}`);
 			bot.logger.err(bot, err);
 		});
 	}

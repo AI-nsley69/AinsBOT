@@ -1,3 +1,5 @@
+import { softErr } from '../../modules/utils.js';
+
 const description = 'Channel Passthrough';
 const usage = '[src] (dest)';
 async function run(bot, message, args) {
@@ -6,8 +8,8 @@ async function run(bot, message, args) {
 	const srcChannel = await bot.client.channels.fetch(source);
 	const destChannel = destination ? await bot.client.channels.fetch(destination) : message.channel;
 	// Check if channels exist
-	if (!srcChannel) {return bot.utils.softErr(bot, message, 'Invalid source channel!');}
-	if (!destChannel) {return bot.utils.softErr(bot, message, 'Invalid destination channel!');}
+	if (!srcChannel) {return softErr(bot, message, 'Invalid source channel!');}
+	if (!destChannel) {return softErr(bot, message, 'Invalid destination channel!');}
 	// If the passthrough already exists, remove it
 	const arr = bot.passthroughs.filter(obj => obj.src === srcChannel.id);
 	if (arr.length !== 0) {

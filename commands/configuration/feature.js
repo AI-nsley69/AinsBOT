@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { Command, OptArg } from '../../modules/commandClass.js';
-
+import { Colors } from '../../modules/constants.js';
 
 export default new Command()
 	.setDescription('Disable certain bot features')
@@ -93,7 +93,7 @@ export default new Command()
 					name: ctx.getAuthor().tag,
 					iconURL: ctx.getAuthor().displayAvatarURL(),
 				})
-				.setColor(bot.consts.Colors.INFO)
+				.setColor(Colors.INFO)
 				.setTimestamp();
 
 			ctx.embed([embed]);
@@ -108,7 +108,7 @@ async function sendEmbed(bot, ctx, feature, futureBoolean) {
 		.setTitle(`Updated ${feature}!`)
 		.setDescription(`Set to: \`${futureBoolean}\``)
 		.setColor(
-			!futureBoolean ? bot.consts.Colors.SOFT_ERR : bot.consts.Colors.SUCCESS,
+			!futureBoolean ? Colors.SOFT_ERR : Colors.SUCCESS,
 		)
 		.setAuthor({
 			name: ctx.getAuthor().tag,

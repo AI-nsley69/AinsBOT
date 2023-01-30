@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { Readable } from 'stream';
 import axios from 'axios';
+import { Colors, Text } from './constants.js';
 
 async function reply(bot, message, content) {
 	message
@@ -18,8 +19,8 @@ async function replyEmbed(bot, message, embeds) {
 }
 async function softErr(bot, message, err, loadingMsg = null) {
 	const embed = new MessageEmbed()
-		.setTitle(bot.consts.Text.SOFT_ERR_TITLE)
-		.setColor(bot.consts.Colors.SOFT_ERR)
+		.setTitle(Text.SOFT_ERR_TITLE)
+		.setColor(Colors.SOFT_ERR)
 		.setDescription(err)
 		.setAuthor({
 			name: message.author.tag,
@@ -29,7 +30,7 @@ async function softErr(bot, message, err, loadingMsg = null) {
 
 	loadingMsg
 		? loadingMsg.edit({ embeds: [embed] })
-		: bot.utils.replyEmbed(bot, message, [embed]);
+		: replyEmbed(bot, message, [embed]);
 }
 async function handleCmdError(bot, message, loadingMsg, err) {
 	// Make the error a string
@@ -37,7 +38,7 @@ async function handleCmdError(bot, message, loadingMsg, err) {
 	// Warn with the error
 	bot.logger.warn(bot, err);
 	// Soft error with the error
-	bot.utils.softErr(bot, message, err, loadingMsg);
+	softErr(bot, message, err, loadingMsg);
 }
 async function cmdLoadingMsg(bot, message) {
 	const embed = new MessageEmbed()
@@ -46,7 +47,7 @@ async function cmdLoadingMsg(bot, message) {
 		.setFooter({
 			text: 'Please be patient!',
 		})
-		.setColor(bot.consts.Colors.PROMPT)
+		.setColor(Colors.PROMPT)
 		.setAuthor({
 			name: message.author.tag,
 			iconURL: message.author.displayAvatarURL(),
@@ -99,7 +100,7 @@ async function getMedia(bot, url, cache) {
 	}
 }
 
-export default {
+export {
 	reply, replyEmbed,
 	softErr, handleCmdError,
 	cmdLoadingMsg, bufToImgurURL,

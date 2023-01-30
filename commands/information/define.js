@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import ud from 'relevant-urban';
 import { Command, OptArg } from '../../modules/commandClass.js';
+import { Colors } from '../../modules/constants.js';
 const { random } = ud;
 
 export default new Command()
@@ -35,7 +36,7 @@ export default new Command()
 					inline: false,
 				},
 			])
-			.setColor(bot.consts.Colors.INFO)
+			.setColor(Colors.INFO)
 			.setFooter({
 				text: `👍 ${def.thumbsUp} 👎 ${def.thumbsDown}`,
 			});

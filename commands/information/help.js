@@ -1,6 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 
 import { Command, OptArg } from '../../modules/commandClass.js';
+import { csvToArr } from '../../modules/utils.js';
+import { Colors } from '../../modules/constants.js';
 
 export default new Command()
 	.setDescription('List all commands in a group with their usage')
@@ -24,7 +26,7 @@ export default new Command()
 						(name) => name[0].toUpperCase() + name.substr(1),
 					).join('\n'),
 				)
-				.setColor(bot.consts.Colors.INFO)
+				.setColor(Colors.INFO)
 				.setFooter({
 					text: `Use ${bot.config.prefix}help <group> to learn about commands in the group!`,
 				});
@@ -41,7 +43,7 @@ export default new Command()
 				iconURL: ctx.getAuthor().displayAvatarURL(),
 			})
 			.setDescription(cmds)
-			.setColor(bot.consts.Colors.INFO)
+			.setColor(Colors.INFO)
 			.setTimestamp();
 
 		ctx.embed([embed]);
@@ -56,7 +58,7 @@ async function fetchCommands(bot, ctx, group) {
 					guildId: ctx.getGuild().id,
 				},
 			})
-			.then((q) => bot.utils.csvToArr(q[0].dataValues.disabled))
+			.then((q) => csvToArr(q[0].dataValues.disabled))
 		: [];
 
 	// Setup an array for all the commands, then append the info as needed and join each command to a string

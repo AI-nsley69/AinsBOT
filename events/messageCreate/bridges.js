@@ -1,4 +1,5 @@
 import { MessageEmbed } from 'discord.js';
+import { Colors } from '../../modules/constants.js';
 
 async function dmRelay(bot, message) {
 	// Only relay dms from non bots
@@ -63,7 +64,7 @@ async function channelPassthrough(bot, message) {
 				name: message.author.tag,
 				iconURL: message.author.displayAvatarURL(),
 			})
-			.setColor(bot.consts.Colors.INFO)
+			.setColor(Colors.INFO)
 			.setDescription(message.content);
 
 		if (message.guild) {
@@ -92,7 +93,7 @@ async function channelBridging(bot, message) {
 				name: message.author.tag,
 				iconURL: message.author.displayAvatarURL(),
 			})
-			.setColor(bot.consts.Colors.INFO)
+			.setColor(Colors.INFO)
 			.setDescription(message.content);
 
 		if (message.guild) {

@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { createCanvas } from 'canvas';
 import { Command, ReqArg } from '../../modules/commandClass.js';
+import { bufToImgurURL } from '../../modules/utils.js';
 
 export default new Command()
 	.setDescription('Get color of an image')
@@ -18,7 +19,7 @@ export default new Command()
 		// Create the image from the hexcode
 		const img = createImage(color);
 
-		const imgLink = await bot.utils.bufToImgurURL(bot, img);
+		const imgLink = await bufToImgurURL(bot, img);
 		// Send the color
 		const embed = new MessageEmbed()
 			.setTitle(`0x${color}`)

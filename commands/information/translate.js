@@ -2,6 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import translate from 'translate-google';
 import { Command, OptArg } from '../../modules/commandClass.js';
 import { TextContext } from '../../modules/context.js';
+import { Colors } from '../../modules/constants.js';
 
 export default new Command()
 	.setDescription('Translates a message to english')
@@ -26,7 +27,7 @@ export default new Command()
 		// Create an embed with the translated message
 		const embed = new MessageEmbed()
 			.setTitle('Google Translate!')
-			.setColor(bot.consts.Colors.TRANSLATE)
+			.setColor(Colors.TRANSLATE)
 			.setAuthor({
 				name: ctx.getAuthor().tag,
 				iconURL: ctx.getAuthor().displayAvatarURL(),

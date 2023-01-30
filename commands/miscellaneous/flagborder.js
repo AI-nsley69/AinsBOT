@@ -2,6 +2,8 @@ import { MessageEmbed } from 'discord.js';
 import pkg from 'axios';
 const { request } = pkg;
 import { Command, OptArg, ReqArg } from '../../modules/commandClass.js';
+import { bufToImgurURL } from '../../modules/utils.js';
+import { Colors } from '../../modules/constants.js';
 const validFlags = ['lgbt', 'pansexual', 'nonbinary', 'lesbian', 'transgender', 'bisexual'];
 
 
@@ -28,13 +30,13 @@ export default new Command()
 			responseEncoding: 'null',
 		});
 
-		const img = await bot.utils.bufToImgurURL(bot, newAvatar.data);
+		const img = await bufToImgurURL(bot, newAvatar.data);
 
 		const embed = new MessageEmbed()
 			.setTitle(`Profile pictured transformed into ${flag}`)
 			.setImage(img)
 			.setThumbnail(ctx.getAuthor().displayAvatarURL({ size: 256 }))
-			.setColor(bot.consts.Colors.SUCCESS)
+			.setColor(Colors.SUCCESS)
 			.setTimestamp();
 
 		ctx.embed([embed]);

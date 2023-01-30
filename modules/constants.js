@@ -16,4 +16,4 @@ const Text = {
 	SOFT_ERR_TITLE: 'Oh no! Something went wrong running this command',
 };
 
-export default { Colors, Text };
+export { Colors, Text };
