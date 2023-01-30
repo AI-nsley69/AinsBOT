@@ -21,8 +21,6 @@ export default new Command()
 		const { question } = ctx.getArgs();
 
 		const index = hash(question, ctx.getAuthor().id, response.length);
-		console.log(response.length);
-		console.log(index);
 		const [answer, color] = response[index];
 		// Create a new embed with the question, author, color, answer and then add a timestamp
 		const embed = new MessageEmbed()
