@@ -2,6 +2,7 @@
 import { MessageEmbed } from 'discord.js';
 import { Command } from '../../modules/commandClass.js';
 import { ReqArg } from '../../modules/commandClass.js';
+import { csvToArr, arrToCsv } from '../../modules/utils.js';
 
 export default new Command()
 	.setDescription('Disable/enable commands')
@@ -35,7 +36,7 @@ export default new Command()
 					guildId: ctx.getGuild().id,
 				},
 			})
-			.then((q) => bot.utils.csvToArr(q[0].dataValues.disabled));
+			.then((q) => csvToArr(q[0].dataValues.disabled));
 		// Show all commands available if no argument
 		if (!command) {
 		// Add all commands to an array
@@ -49,7 +50,7 @@ export default new Command()
 
 			const embed = new MessageEmbed()
 				.setTitle('Available command toggles!')
-				.setColor(bot.consts.Colors.INFO)
+				.setColor(Colors.INFO)
 				.addFields([
 					{
 						name: 'Enabled commands',
@@ -77,7 +78,7 @@ export default new Command()
 		if (futureBool) {query = query.filter((cmd) => cmd !== command);}
 		else {query.push(command);}
 
-		const csv = bot.utils.arrToCsv(query);
+		const csv = arrToCsv(query);
 		const newData = await bot.db.commands.update(
 			{ disabled: csv },
 			{
@@ -93,7 +94,7 @@ export default new Command()
 			.setTitle(`Updated ${command}`)
 			.setDescription(`Set to: \`${futureBool}\``)
 			.setColor(
-				futureBool ? bot.consts.Colors.SUCCESS : bot.consts.Colors.SOFT_ERR,
+				futureBool ? Colors.SUCCESS : Colors.SOFT_ERR,
 			)
 			.setAuthor({
 				name: ctx.getAuthor().tag,
