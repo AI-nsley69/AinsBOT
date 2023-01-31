@@ -12,9 +12,8 @@ export class Cache {
 	}
 
 	updateAt(name, data, ttl = TTL.default) {
-		this.getCache().put(name, data, ttl, (err) => {
-			this.bot.logger.err(err);
-		});
+		if (this.getCache().get(name)) return;
+		this.getCache().put(name, data, ttl);
 	}
 
 	async queryDb(table, key, query) {

@@ -6,10 +6,9 @@ import { OptArg, ReqArg } from '../../modules/commandClass.js';
 
 function * args(object) {
 	const objfields = Object.entries(object);
-	let i = -1;
-	i++;
-	if (i >= objfields.length) return;
-	yield objfields[i];
+	for (const value of objfields) {
+		yield value;
+	}
 }
 
 // eslint-disable-next-line no-unused-vars

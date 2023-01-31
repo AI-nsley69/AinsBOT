@@ -58,7 +58,7 @@ async function commandHandler(bot, message) {
 		.trim()
 		.split(/ +/);
 	const command = args.shift().toLowerCase();
-
+	const argsConcat = args.join(' ');
 	// Ignore if command doesn't exist, otherwise grab it in a constant
 	if (!bot.commands.has(command)) return;
 	const commandInfo = bot.commands.get(command);
@@ -106,8 +106,8 @@ async function commandHandler(bot, message) {
 
 	// Run the command and catch any error to not crash bot
 	bot.logger.verbose(
-		`${message.author.tag} ran ${command} command with ${
-			args.length > 0 ? args.join(' ') : 'no'
+		`${message.author.tag} ran ${command} with ${
+			argsConcat.length > 0 ? argsConcat : 'no'
 		} arguments!`,
 	);
 

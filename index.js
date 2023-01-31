@@ -1,12 +1,8 @@
 import { Client, Intents } from 'discord.js';
-// const { Client, Intents } = require('discord.js');
 import dotenv from 'dotenv';
-// const dotenv = require('dotenv');
 import sequelize from 'sequelize';
-// const sequelize = require('sequelize');
 import pkg from 'imgur';
 const { ImgurClient } = pkg;
-// const { ImgurClient } = require('imgur');
 import fs from 'fs';
 
 import { Logger } from './modules/logger.js';

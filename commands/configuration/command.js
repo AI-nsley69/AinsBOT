@@ -3,6 +3,7 @@ import { MessageEmbed } from 'discord.js';
 import { Command } from '../../modules/commandClass.js';
 import { ReqArg } from '../../modules/commandClass.js';
 import { csvToArr, arrToCsv } from '../../modules/utils.js';
+import { Colors } from '../../modules/constants.js';
 
 export default new Command()
 	.setDescription('Disable/enable commands')
