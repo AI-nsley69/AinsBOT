@@ -7,7 +7,7 @@ async function run(bot, message) {
 	if (message.author.bot) {return;}
 	const logError = err => bot.logger.err(err);
 	// Command handlers
-	commandHandler(bot, message).catch(logError);
+	commandHandler(bot, message);
 	adminCommandHandler(bot, message).catch(logError);
 	// Dm relay
 	dmRelay(bot, message).catch(logError);

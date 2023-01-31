@@ -8,7 +8,7 @@ const LogLevel = {
 };
 
 export class Logger {
-	conerructor(logLevel, logFile) {
+	constructor(logLevel, logFile) {
 		this.logLevel = logLevel.toUpperCase();
 		this.logFile = logFile;
 		this.date = new Date();
