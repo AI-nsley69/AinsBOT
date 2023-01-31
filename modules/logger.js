@@ -9,45 +9,58 @@ const LogLevel = {
 
 export class Logger {
 	constructor(logLevel, logFile) {
-		this.logLevel = logLevel;
-		this.logFile = logFile.toUpperCase();
-		this.time = new Date();
+		this.logLevel = logLevel.toUpperCase();
+		this.logFile = logFile;
+		this.date = new Date();
+		this.time = '';
 	}
 
 	updateTime() {
-		this.time = new Date();
+		this.date = new Date();
+		this.time = this.date.toTimeString().split(' ')[0];
 	}
 
 	sendToConsole(str, level) {
-		str = `(${chalk.magentaBright(this.time.toTimeString().split(' ')[0])}) [${chalk.yellow('LOG')}/${level}] ${str}`;
+		str = `(${chalk.magentaBright(this.time)}) [${chalk.yellow('LOG')}/${level}] ${str}`;
 		console.log(str);
 	}
 
 	saveToFile(str, level) {
-		str = `(${this.time.toTimeString().split(' ')[0]}) [${'LOG'}/${level}] ${str}`;
+		str = `(${this.time}) [${'LOG'}/${level}] ${str}`;
 		fs.appendFile(this.logFile, `${str}\n`, (err) => {
 			if (err) throw err;
 		});
 	}
 
-	async err(err) {
+	log(err, consoleLogLevel, fileLogLevel) {
 		this.updateTime();
-		this.sendToConsole(err, chalk.redBright(LogLevel.Err));
-		this.saveToFile(err, LogLevel.Err);
+		this.sendToConsole(err, consoleLogLevel);
+		this.saveToFile(err, fileLogLevel);
+	}
+
+	async err(err) {
+		this.log(
+			err,
+			chalk.redBright(LogLevel.Err),
+			LogLevel.Err,
+		);
 	}
 
 	async warn(err) {
 		if (this.logLevel !== LogLevel.Warn && this.logLevel !== LogLevel.Verbose) return;
-		this.updateTime();
-		this.sendToConsole(err, chalk.rgb(255, 139, 40)(LogLevel.Warn));
-		this.saveToFile(err, LogLevel.Warn);
-
+		this.log(
+			err,
+			chalk.rgb(255, 139, 40)(LogLevel.Warn),
+			LogLevel.Warn,
+		);
 	}
 
 	async verbose(err) {
 		if (this.logLevel !== LogLevel.Verbose) return;
-		this.updateTime();
-		this.sendToConsole(err, chalk.greenBright(LogLevel.Verbose));
-		this.saveToFile(err, LogLevel.Verbose);
+		this.log(
+			err,
+			chalk.greenBright(LogLevel.Verbose),
+			LogLevel.Verbose,
+		);
 	}
 }
