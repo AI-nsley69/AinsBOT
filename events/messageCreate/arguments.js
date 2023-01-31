@@ -84,7 +84,7 @@ async function convertArg(contentElement, type, bot) {
 		if (!channelFromCache) {
 			// eslint-disable-next-line no-unused-vars
 			returnVal = await bot.client.channels.fetch(channelIdTofetch).catch(err => {
-				bot.logger.warn(bot, 'Could not fetch channel');
+				bot.logger.warn('Could not fetch channel');
 			});
 		}
 		else {
@@ -104,7 +104,7 @@ async function convertArg(contentElement, type, bot) {
 		if (!userFromCache) {
 			// eslint-disable-next-line no-unused-vars
 			returnVal = await bot.client.users.fetch(idTofetch).catch(err => {
-				bot.logger.warn(bot, 'Could not fetch the user');
+				bot.logger.warn('Could not fetch the user');
 			});
 		}
 		else {

@@ -9,7 +9,7 @@ const { ImgurClient } = pkg;
 // const { ImgurClient } = require('imgur');
 import fs from 'fs';
 
-import logger from './modules/logger.js';
+import { Logger } from './modules/logger.js';
 import { Cache } from './modules/cache.js';
 
 const time = performance.now();
@@ -30,9 +30,12 @@ const client = new Client({
 dotenv.config();
 client.login(process.env.token);
 
+const config = JSON.parse(fs.readFileSync('./config.json'));
+
 const bot = {
 	client: client,
-	logger: logger,
+	config: config,
+	logger: new Logger(config.logLevel, 'latest.log'),
 	sequelize: new sequelize('database', 'user', 'password', {
 		host: 'localhost',
 		dialect: 'sqlite',
@@ -56,8 +59,6 @@ const types = {
 };
 
 const { features, commands, bot_channels, marriages } = JSON.parse(fs.readFileSync('./tables.json'));
-
-bot.config = JSON.parse(fs.readFileSync('./config.json'));
 
 bot.commandGroups = fs
 	.readdirSync('./commands/', { withFileTypes: true })

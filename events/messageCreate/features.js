@@ -66,7 +66,7 @@ async function getTiktok(bot, message) {
 	}
 	catch (err) {
 		const newLink = await shorten(videoUrl)
-			.catch((err) => bot.logger.err(bot, err));
+			.catch((err) => bot.logger.err(err));
 		msg.edit(`Requsted by ${message.author}\n${newLink}`);
 	}
 }
@@ -81,13 +81,13 @@ async function previewMessage(bot, message) {
 	// Create a constant for each information we need, then check if it works
 	const [fullUrl, guildId, channelId, messageId] = messageInfo;
 	const targetGuild = await bot.client.guilds.fetch(guildId).catch((err) => {
-		if (err.httpStatus !== 403) bot.logger.err(bot, err);
+		if (err.httpStatus !== 403) bot.logger.err(err);
 	});
 	if (!targetGuild) return;
 	const targetChannel = await targetGuild.channels
 		.fetch(channelId)
 		.catch((err) => {
-			if (err.httpStatus !== 403) bot.logger.err(bot, err);
+			if (err.httpStatus !== 403) bot.logger.err(err);
 		});
 	if (!targetChannel) return;
 	const targetMessage = await targetChannel.messages.fetch(messageId);

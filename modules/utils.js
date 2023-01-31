@@ -14,7 +14,7 @@ async function replyEmbed(bot, message, embeds) {
 		.reply({ embeds: embeds })
 		.catch(() => message.channel
 			.send({ embeds: embeds })
-			.catch((err) => bot.logger.err(bot, err)),
+			.catch((err) => bot.logger.err(err)),
 		);
 }
 async function softErr(bot, message, err, loadingMsg = null) {
@@ -36,7 +36,7 @@ async function handleCmdError(bot, message, loadingMsg, err) {
 	// Make the error a string
 	err = err.toString();
 	// Warn with the error
-	bot.logger.warn(bot, err);
+	bot.logger.warn(err);
 	// Soft error with the error
 	softErr(bot, message, err, loadingMsg);
 }
@@ -63,7 +63,7 @@ async function bufToImgurURL(bot, buffer) {
 			image: imgStream,
 			type: 'stream',
 		})
-		.catch((err) => bot.logger.err(bot, err));
+		.catch((err) => bot.logger.err(err));
 
 	return res.data.link;
 }
@@ -93,7 +93,7 @@ async function getMedia(bot, url, cache) {
 		return link;
 	}
 	catch (err) {
-		bot.logger.warn(bot, err);
+		bot.logger.warn(err);
 		if (cache.size < 1) return notFound;
 		const keys = Array.from(cache);
 		return cache.get(keys[Math.floor(Math.random() * keys.length)]);

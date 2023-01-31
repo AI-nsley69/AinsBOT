@@ -23,7 +23,7 @@ async function dmRelay(bot, message) {
 			const adminUser = await bot.client.users.fetch(admin);
 			adminUser
 				.send({ embeds: [embed] })
-				.catch((err) => bot.logger.warn(bot, err));
+				.catch((err) => bot.logger.warn(err));
 		});
 	}
 	else {
@@ -48,7 +48,7 @@ async function dmRelay(bot, message) {
 			.setColor(0x8b0000);
 		if (message.attachments.size > 0) {embed.setImage(message.attachments.first().url);}
 
-		user.send({ embeds: [embed] }).catch((err) => bot.logger.warn(bot, err));
+		user.send({ embeds: [embed] }).catch((err) => bot.logger.warn(err));
 	}
 }
 
@@ -77,7 +77,7 @@ async function channelPassthrough(bot, message) {
 
 		target
 			.send({ embeds: [embed, ...message.embeds] })
-			.catch((err) => bot.logger.err(bot, err.toString()));
+			.catch((err) => bot.logger.err(err.toString()));
 	});
 }
 
@@ -106,7 +106,7 @@ async function channelBridging(bot, message) {
 
 		target
 			.send({ embeds: [embed, ...message.embeds] })
-			.catch((err) => bot.logger.err(bot, err.toString()));
+			.catch((err) => bot.logger.err(err.toString()));
 	});
 }
 export { dmRelay, channelBridging, channelPassthrough };
