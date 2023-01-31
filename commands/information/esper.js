@@ -13,7 +13,9 @@ export default new Command()
 	.setRun(async (bot, ctx) => {
 		const esper = ctx.getArgs().esper.replace(' ', '-').toLowerCase();
 		// Check if we have an argument
-		if (!esper) {return ctx.err(ctx, 'Missing an esper!');}
+		if (!esper) {
+			return ctx.err('Missing an esper!');
+		}
 		// Get the esper through the api
 		const res = await get(`https://api.initegaming.repl.co/dislyte/esper/${esper}`);
 		// Take the data into the esperInfo object

@@ -7,6 +7,7 @@ class Context {
 		this._channel = channel;
 		this._guild = guild;
 		this._src = src;
+		this._cancelCd = false;
 	}
 
 	setArgs(args) {
@@ -29,13 +30,20 @@ class Context {
 		return this._guild;
 	}
 
-	err(ctx, err) {
+	cancelCooldown(bool = null) {
+		if (!bool) return this._cancelCd;
+		this._cancelCd = bool;
+		return this._cancelCd;
+	}
+
+	err(err, cancelCd = true) {
 		const embed = new MessageEmbed()
 			.setTitle('Oh no! Something went wrong running this command!')
 			.setDescription(err)
 			.setColor(Colors.SOFT_ERR);
 
-		ctx.embed([embed]);
+		this.cancelCooldown(cancelCd);
+		this.embed([embed]);
 	}
 }
 

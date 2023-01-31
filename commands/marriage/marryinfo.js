@@ -20,7 +20,7 @@ export default new Command()
 		});
 
 		if (!status[0]) {
-			return ctx.err(ctx, 'User is not married!');
+			return ctx.err('User is not married!');
 		}
 		const spouse = await bot.client.users.fetch(status[0].dataValues.spouseId);
 

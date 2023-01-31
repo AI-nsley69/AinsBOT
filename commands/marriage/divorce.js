@@ -10,7 +10,7 @@ export default new Command()
 	.setRun(async (bot, ctx) => {
 		const spouse = await getSpouse(bot, ctx.getAuthor().id);
 		if (!spouse) {
-			return ctx.err(ctx, 'You have no maiden 🙈');
+			return ctx.err('You have no maiden 🙈');
 		}
 
 		divorce(bot, ctx.getAuthor().id, spouse.id);

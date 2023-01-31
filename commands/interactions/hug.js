@@ -19,8 +19,8 @@ export default new Command()
 	.setRun(async (bot, ctx) => {
 	// Verify that we have a user to hug and if it is valid
 		const member = await ctx.getGuild().members.fetch(ctx.getArgs().user) || null;
-		if (!member) {return ctx.err(ctx, 'Awh.. got no one to hug? ):');}
-		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t hug yourself silly!');}
+		if (!member) {return ctx.err('Awh.. got no one to hug? ):');}
+		if (member.user.id === ctx.getAuthor().id) {return ctx.err('You can\'t hug yourself silly!');}
 		const media = [];
 		// Fetch the media
 		media.push(getMedia(bot, 'https://some-random-api.ml/animu/hug', cache.gif));

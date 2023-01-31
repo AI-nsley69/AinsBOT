@@ -74,14 +74,14 @@ async function commandHandler(bot, message) {
 
 	// Check if the command is enabled
 	if (!(await isCommandEnabled(bot, message, command))) {
-		return ctx.err(ctx, 'This command is not enabled in this guild! ❌');
+		return ctx.err('This command is not enabled in this guild! ❌');
 	}
 	// Check if the user has the required permission, if wanted
 	if (
 		commandInfo.permission &&
       !message.member.permissions.has(commandInfo.permission)
 	) {
-		return ctx.err(ctx, 'You do not have the permission to run this command! ❌');
+		return ctx.err('You do not have the permission to run this command! ❌');
 	}
 
 	// Check if bot has the required permissions for the command
@@ -89,16 +89,16 @@ async function commandHandler(bot, message) {
 		message.guild ? !message.guild.me.permissions.has(perm) : false;
 	});
 	if (missingPerms.length > 0) {
-		return ctx.err(ctx, `I am missing the needed commands to run this command ):\nPlease give me the following permissions:\`${missingPerms.join(', ')}\``);
+		return ctx.err(`I am missing the needed commands to run this command ):\nPlease give me the following permissions:\`${missingPerms.join(', ')}\``);
 	}
 
 	// Check if the message is from a guild, if wanted
 	if (commandInfo.guild && !message.guild) {
-		return ctx.err(ctx, 'This command is only available in guilds 🌧');
+		return ctx.err('This command is only available in guilds 🌧');
 	}
 
 	const ctxArgs = await argParser(bot, args, commandInfo.args).catch(err => {
-		ctx.err(ctx, err.toString());
+		ctx.err(err.toString());
 		bot.logger.verbose(err.toString());
 	});
 	if (!ctxArgs) return;
@@ -110,21 +110,22 @@ async function commandHandler(bot, message) {
 			argsConcat.length > 0 ? argsConcat : 'no'
 		} arguments!`,
 	);
+	try {
+		await ctx.getChannel().sendTyping();
 
-	await ctx.getChannel().sendTyping();
-
-	commandInfo.run(bot, ctx).catch((err) => {
-		bot.logger.err(err);
-		ctx.err(ctx, err.toString());
-	});
-
-	// Add user to cooldown if enabled
-	if (commandInfo.cooldown < 0) return;
-	cmdCooldown.add(`${message.author.id}-${command}`);
-	setTimeout(() => {
-		cmdCooldown.delete(`${message.author.id}-${command}`);
+		await commandInfo.run(bot, ctx);
+		// Add user to cooldown if enabled
+		if (commandInfo.cooldown < 1 || ctx.cancelCooldown()) return;
+		cmdCooldown.add(`${message.author.id}-${command}`);
+		setTimeout(() => {
+			cmdCooldown.delete(`${message.author.id}-${command}`);
 		// Cooldown is specified in seconds
-	}, commandInfo.cooldown * 1000);
+		}, commandInfo.cooldown * 1000);
+	}
+	catch (err) {
+		bot.logger.err(err);
+		ctx.err(err);
+	}
 }
 
 async function adminCommandHandler(bot, message) {
@@ -144,7 +145,7 @@ async function adminCommandHandler(bot, message) {
 	const ctx = new TextContext(message);
 	// If the author is not in the array of admin ids, return a message letting them know they're not allowed to run this command
 	if (!bot.config.adminIds.includes(message.author.id)) {
-		ctx.err(ctx, 'doas: Operation not permitted');
+		ctx.err('doas: Operation not permitted');
 		bot.logger.warn(
 			`${message.author.tag} tried to run an admin command!`,
 		);

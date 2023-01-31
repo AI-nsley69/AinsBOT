@@ -53,7 +53,7 @@ export default new Command()
 	.setCooldown(15)
 	.setRun(async (bot, ctx) => {
 		const api = animalApis[ctx.getArgs().api];
-		if (!api) {return ctx.err(ctx, '**Available animals**\ncapybara, cat, dog, firefox, fox');}
+		if (!api) {return ctx.err('**Available animals**\ncapybara, cat, dog, firefox, fox');}
 		// Create the embed
 		animalEmbed(bot, ctx, {
 			image: await api.fetchImage(axios),

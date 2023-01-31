@@ -19,7 +19,7 @@ export default new Command()
 	// Verify that we have a flag argument
 		// eslint-disable-next-line prefer-const
 		let { flag, user } = ctx.getArgs();
-		if (!validFlags.includes(flag)) {return ctx.err(ctx, `Please choose one of the available flags:\n${validFlags.join(', ')}`);}
+		if (!validFlags.includes(flag)) {return ctx.err(`Please choose one of the available flags:\n${validFlags.join(', ')}`);}
 		// Check if there's a mentioned user, else set it to the author
 		if (!user) {user = ctx.getAuthor();}
 		// Request the image as an array buffer without encoding

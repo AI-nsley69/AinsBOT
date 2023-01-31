@@ -19,8 +19,8 @@ export default new Command()
 	.setRun(async (bot, ctx) => {
 	// Verify user
 		const member = await ctx.getGuild().members.fetch(ctx.getArgs().user) || null;
-		if (!member) {return ctx.err(ctx, 'Awh.. got no one to pat? ):');}
-		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t pat yourself silly!');}
+		if (!member) {return ctx.err('Awh.. got no one to pat? ):');}
+		if (member.user.id === ctx.getAuthor().id) {return ctx.err('You can\'t pat yourself silly!');}
 		// Fetch from api
 		const media = [];
 		media.push(getMedia(bot, 'https://some-random-api.ml/animu/pat', cache.gif));

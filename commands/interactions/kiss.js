@@ -16,8 +16,8 @@ export default new Command()
 	.setRun(async (bot, ctx) => {
 	// Verify that we have a user to hug and if it is valid
 		const member = ctx.getGuild().members.fetch(ctx.getArgs().user) || null;
-		if (!member) {return ctx.err(ctx, 'Awh.. got no one to kiss? ):');}
-		if (member.user.id === ctx.getAuthor().id) {return ctx.err(ctx, 'You can\'t kiss yourself silly!');}
+		if (!member) {return ctx.err('Awh.. got no one to kiss? ):');}
+		if (member.user.id === ctx.getAuthor().id) {return ctx.err('You can\'t kiss yourself silly!');}
 		// Fetch the media
 		const kiss = await getMedia(bot, 'https://api.otakugifs.xyz/gif?reaction=kiss&format=gif', cache);
 		// Embed to send

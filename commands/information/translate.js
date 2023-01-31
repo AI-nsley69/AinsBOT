@@ -16,7 +16,7 @@ export default new Command()
 		if (ctx instanceof TextContext
 			&& ctx.getArgs().text.length < 1
 			&& !ctx._src.reference
-		) return ctx.err(ctx, 'Missing text/reply to translate!');
+		) return ctx.err('Missing text/reply to translate!');
 
 		// Get message object if it exists, otherwise make it null
 		const msg = ctx._src.reference ? (await ctx.getChannel().messages.fetch(ctx._src.reference.messageId)) : null;

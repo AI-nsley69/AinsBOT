@@ -20,7 +20,7 @@ export default new Command()
 	.setCooldown(5)
 	.setRun(async (bot, ctx) => {
 	// Check if the channel is nsfw
-		if (!ctx.getChannel().nsfw) {return ctx.err(ctx, 'This command is only available in NSFW channels! 😡');}
+		if (!ctx.getChannel().nsfw) {return ctx.err('This command is only available in NSFW channels! 😡');}
 		const { subreddit } = ctx.getArgs();
 		if (!subreddit) return ctx.message(`Supported subreddits: ${supported.join(', ')}`);
 		if (!supported.includes(subreddit)) {

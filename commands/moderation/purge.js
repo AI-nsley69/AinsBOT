@@ -15,7 +15,7 @@ export default new Command()
 		// Validate the amount
 		let amount = ctx.getArgs().amount;
 		amount = parseInt(amount, 10);
-		if (!amount || amount > 2000 || amount < 1) return ctx.err(ctx, 'Amount is not a number, or is more than 2000 or is less than 1.');
+		if (!amount || amount > 2000 || amount < 1) return ctx.err('Amount is not a number, or is more than 2000 or is less than 1.');
 		// Clear messages in bulk of 100
 		const rest = amount % 100;
 		amount -= rest;

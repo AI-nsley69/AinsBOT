@@ -14,7 +14,7 @@ export default new Command()
 	.setGuild(true)
 	.setCooldown(5)
 	.setRun(async (bot, ctx) => {
-		if (ctx.getArgs().user.id === ctx.getAuthor().id) return ctx.err(ctx, 'You can\'t cuddle yourself!');
+		if (ctx.getArgs().user.id === ctx.getAuthor().id) return ctx.err('You can\'t cuddle yourself!');
 		// Fetch the media
 		const cuddle = await getMedia(bot, 'https://api.otakugifs.xyz/gif?reaction=cuddle&format=gif', cache);
 		sendEmbed(bot, ctx, cuddle);

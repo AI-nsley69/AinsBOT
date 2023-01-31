@@ -20,13 +20,13 @@ export default new Command()
 	// eslint-disable-next-line prefer-const
 		const { action, command } = ctx.getArgs();
 		if (!(action === 'enable' || action === 'disable')) {
-			return ctx.err(ctx, 'Incorrect enable/disable argument');
+			return ctx.err('Incorrect enable/disable argument');
 		}
 		else if (!bot.commands.has(command)) {
-			return ctx.err(ctx, 'Missing target command');
+			return ctx.err('Missing target command');
 		}
 		else if (command === 'command' || command === 'feature') {
-			return ctx.err(ctx, 'You cannot toggle the command/feature command!');
+			return ctx.err('You cannot toggle the command/feature command!');
 		}
 		// Create boolean based on action
 		const futureBool = action === 'enable';
@@ -73,7 +73,7 @@ export default new Command()
 		}
 		// Soft error if already disabled.
 		if (query.includes(command) && !action) {
-			return ctx.err(ctx, `This command is already ${action}`);
+			return ctx.err(`This command is already ${action}`);
 		}
 		// Remove command if enabled, otherwise disable it
 		if (futureBool) {query = query.filter((cmd) => cmd !== command);}

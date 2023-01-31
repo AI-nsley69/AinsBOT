@@ -14,7 +14,7 @@ export default new Command()
 	// Simple validation of color
 		const color = await parseColor(ctx.getArgs().color);
 		if (!color) {
-			return ctx.err(ctx, 'Incorrect color, please use a valid hex code or rgb value!');
+			return ctx.err('Incorrect color, please use a valid hex code or rgb value!');
 		}
 		// Create the image from the hexcode
 		const img = createImage(color);

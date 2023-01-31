@@ -14,14 +14,14 @@ export default new Command()
 	.setGuild(true)
 	.setCooldown(10)
 	.setRun(async (bot, ctx) => {
-		if (!ctx.getArgs().reset && !ctx.getArgs().channel) return ctx.err(ctx, 'Missing a channel or reset argument!');
+		if (!ctx.getArgs().reset && !ctx.getArgs().channel) return ctx.err('Missing a channel or reset argument!');
 		const channel = await bot.db.botChannels.findAll({
 			where: {
 				guildId: ctx.getGuild().id,
 			},
 		});
 		// Check if it's not configured, and if so soft error
-		if (!channel[0] && (!ctx.getArgs().reset || ctx.getArgs().channel)) {return ctx.err(ctx, 'Bot channel is not configured in this guild!');}
+		if (!channel[0] && (!ctx.getArgs().reset || ctx.getArgs().channel)) {return ctx.err('Bot channel is not configured in this guild!');}
 		// If no command is given, give the current channel
 		if (!(ctx.getArgs().reset || ctx.getArgs().channel)) {
 		// const configChannel = await message.guild.channels.fetch(channel[0].dataValues.bot_channel);
