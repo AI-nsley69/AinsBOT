@@ -8,7 +8,7 @@ const LogLevel = {
 };
 
 export class Logger {
-	constructor(logLevel, logFile) {
+	conerructor(logLevel, logFile) {
 		this.logLevel = logLevel.toUpperCase();
 		this.logFile = logFile;
 		this.date = new Date();
@@ -20,14 +20,14 @@ export class Logger {
 		this.time = this.date.toTimeString().split(' ')[0];
 	}
 
-	sendToConsole(str, level) {
-		str = `(${chalk.magentaBright(this.time)}) [${chalk.yellow('LOG')}/${level}] ${str}`;
-		console.log(str);
+	sendToConsole(err, level) {
+		err = `(${chalk.magentaBright(this.time)}) [${chalk.yellow('LOG')}/${level}] ${err}`;
+		console.log(err);
 	}
 
-	saveToFile(str, level) {
-		str = `(${this.time}) [${'LOG'}/${level}] ${str}`;
-		fs.appendFile(this.logFile, `${str}\n`, (err) => {
+	saveToFile(err, level) {
+		err = `(${this.time}) [LOG}/${level}] ${err}`;
+		fs.appendFile(this.logFile, `${err}\n`, (err) => {
 			if (err) throw err;
 		});
 	}
