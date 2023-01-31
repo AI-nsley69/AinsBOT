@@ -1,10 +1,16 @@
 import chalk from 'chalk';
 import fs from 'fs';
 
+const LogLevel = {
+	Verbose: 'VERBOSE',
+	Warn: 'WARN',
+	Err: 'ERR',
+};
+
 export class Logger {
 	constructor(logLevel, logFile) {
 		this.logLevel = logLevel;
-		this.logFile = logFile;
+		this.logFile = logFile.toUpperCase();
 		this.time = new Date();
 	}
 
@@ -26,22 +32,22 @@ export class Logger {
 
 	async err(err) {
 		this.updateTime();
-		this.sendToConsole(err, chalk.redBright('err'));
-		this.saveToFile(err, 'ERR');
+		this.sendToConsole(err, chalk.redBright(LogLevel.Err));
+		this.saveToFile(err, LogLevel.Err);
 	}
 
 	async warn(err) {
-		if (this.logLevel !== 'warn' && this.logLevel !== 'verbose') return;
+		if (this.logLevel !== LogLevel.Warn && this.logLevel !== LogLevel.Verbose) return;
 		this.updateTime();
-		this.sendToConsole(err, chalk.rgb(255, 139, 40)('WARN'));
-		this.saveToFile(err, 'WARN');
+		this.sendToConsole(err, chalk.rgb(255, 139, 40)(LogLevel.Warn));
+		this.saveToFile(err, LogLevel.Warn);
 
 	}
 
 	async verbose(err) {
-		if (this.logLevel !== 'verbose') return;
+		if (this.logLevel !== LogLevel.Verbose) return;
 		this.updateTime();
-		this.sendToConsole(err, chalk.greenBright('VERBOSE'));
-		this.saveToFile(err, 'VERBOSE');
+		this.sendToConsole(err, chalk.greenBright(LogLevel.Verbose));
+		this.saveToFile(err, LogLevel.Verbose);
 	}
 }
