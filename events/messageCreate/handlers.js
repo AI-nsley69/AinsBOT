@@ -1,5 +1,5 @@
 import { TextContext } from '../../modules/context.js';
-import { csvToArr, softErr } from '../../modules/utils.js';
+import { csvToArr } from '../../modules/utils.js';
 import { argParser } from '../messageCreate/arguments.js';
 
 // Add cooldown for commands
@@ -151,9 +151,17 @@ async function adminCommandHandler(bot, message) {
 		);
 		return;
 	}
+
+	const ctxArgs = await argParser(bot, args, commandInfo.args).catch(err => {
+		ctx.err(err.toString());
+		bot.logger.verbose(err.toString());
+	});
+	if (!ctxArgs) return;
+	ctx.setArgs(ctxArgs);
+
 	// Run command
 	commandInfo.run(bot, ctx).catch((err) => {
-		softErr(bot, message, `${err}`);
+		ctx.err(`${err}`);
 		bot.logger.err(err);
 	});
 }

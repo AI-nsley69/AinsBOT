@@ -89,6 +89,7 @@ export class Bot {
 		await Promise.all(promises);
 
 		validateCommands(this, this.commands);
+		validateCommands(this, this.adminCommands);
 	}
 
 	async loadEvents() {
@@ -108,7 +109,7 @@ function validateCommands(bot, commands) {
 			bot.logger.err(
 				`Invalid command structure for the ${name} command. Please use the newcmd script to remake this command.`,
 			);
-			return;
+			continue;
 		}
 		if (!command.run) bot.logger.err(`Invalid run function for the ${name} command!`);
 	}

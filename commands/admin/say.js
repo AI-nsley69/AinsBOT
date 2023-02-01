@@ -1,8 +1,13 @@
-const description = 'Repeat all the arguments';
-const usage = '[string to repeat]';
-async function run(bot, message, args) {
-	message.delete().catch();
-	message.channel.send(args.join(' '));
-}
+import { Command, ReqArg } from '../../modules/commandClass.js';
+import { TextContext } from '../../modules/context.js';
 
-export default { description, usage, run };
+export default new Command()
+	.setDescription('Repeat all the arguments')
+	.setUsage('[string to repeat]')
+	.setArgs({
+		content: ReqArg.StringCoalescing,
+	})
+	.setRun(async (bot, ctx) => {
+		if (ctx instanceof TextContext) ctx.msg.delete().catch(err => bot.logger.warn(err));
+		ctx.respond(ctx.getArgs().content);
+	});

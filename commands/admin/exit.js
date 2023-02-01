@@ -1,9 +1,9 @@
-const description = 'Kill the bot';
-const usage = '';
-async function run(bot, message) {
-	console.log(`Bot shutdown by ${message.author.tag}`);
-	await message.channel.send('Shutting down..');
-	process.exit();
-}
+import { Command } from '../../modules/commandClass.js';
 
-export default { description, usage, run };
+export default new Command()
+	.setDescription('kill the bot')
+	.setRun(async (bot, ctx) => {
+		bot.logger.verbose(`Bot shutdown by ${ctx.getAuthor().tag}`);
+		await ctx.message('Shutting down..');
+		process.exit();
+	});

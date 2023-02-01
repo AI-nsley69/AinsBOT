@@ -1,25 +1,24 @@
 import { MessageEmbed } from 'discord.js';
-import { replyEmbed } from '../../modules/utils.js';
 import { Colors } from '../../modules/constants.js';
+import { Command } from '../../modules/commandClass.js';
 
-const description = 'List all admin commands with their usages';
-const usage = '';
-async function run(bot, message) {
-	const cmds = fetchAdminCommands(bot, message);
-	const embed = new MessageEmbed()
-		.setTitle('List of admin commands!')
-		.setAuthor({
-			name: message.author.tag,
-			iconURL: message.author.displayAvatarURL(),
-		})
-		.setDescription(cmds)
-		.setColor(Colors.INFO)
-		.setTimestamp();
 
-	replyEmbed(bot, message, [embed]);
-}
+export default new Command()
+	.setDescription('List all admin commands with their usages')
+	.setRun(async (bot, ctx) => {
+		const cmds = fetchAdminCommands(bot);
+		const embed = new MessageEmbed()
+			.setTitle('List of admin commands!')
+			.setAuthor({
+				name: ctx.getAuthor().tag,
+				iconURL: ctx.getAuthor().displayAvatarURL(),
+			})
+			.setDescription(cmds)
+			.setColor(Colors.INFO)
+			.setTimestamp();
 
-export default { description, usage, run };
+		ctx.embed([embed]);
+	});
 
 function fetchAdminCommands(bot) {
 	// Same as fetchCommands function
