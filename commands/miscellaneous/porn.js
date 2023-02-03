@@ -6,7 +6,25 @@ import { Colors } from '../../modules/constants.js';
 
 const params = new URLSearchParams([['sort', 'hot'], ['limit', '30']]);
 
-const supported = ['boobs', 'nsfw', 'milf', 'gonewild', 'camsluts', 'ass', 'holdthemoan', 'hentai', 'creampies', 'realgirls', 'facesitting', 'pronebone', 'rule34', 'adorableporn', 'cumsluts', 'ghostnipples', 'retroussetits', 'fortyfivefiftyfive', 'anal', 'ahegao', 'allthewaythrough', 'biggerthanyouthought', 'bdsm', 'bigdickgirl', 'bigtiddygothgf', 'blowjob', 'breeding', 'bukkake', 'buttplug', 'matingpress', 'choking', 'cock', 'cougars', 'cumflation', 'tittydrop', 'dildo', 'distension', 'doggy', 'ecchi', 'ersties', 'pegging', 'femdom', 'facesitting', 'fisting', 'flubtrash', 'freeuse', 'futanari', 'fishnetsgw', 'gloryholes', 'abandonedporn', 'grool', 'horny', 'hotdogging', 'godpussy', 'kinky', 'lesbians', 'pawg', 'paag', 'lewd', 'plowpose', 'milkingtable', 'theratio', 'thiccerthanyouthought', 'slimstacked', 'thickthighs', 'nanithefuck', 'notadildo'];
+const supported = [
+	'boobs', 'nsfw', 'milf', 'gonewild',
+	'camsluts', 'ass', 'holdthemoan', 'hentai',
+	'creampies', 'realgirls', 'facesitting', 'pronebone',
+	'rule34', 'adorableporn', 'cumsluts', 'ghostnipples',
+	'retroussetits', 'fortyfivefiftyfive', 'anal', 'ahegao',
+	'allthewaythrough', 'biggerthanyouthought', 'bdsm', 'bigdickgirl',
+	'bigtiddygothgf', 'blowjob', 'breeding', 'bukkake',
+	'buttplug', 'matingpress', 'choking', 'cock',
+	'cougars', 'cumflation', 'tittydrop', 'dildo',
+	'distension', 'doggy', 'ecchi', 'ersties',
+	'pegging', 'femdom', 'facesitting', 'fisting',
+	'flubtrash', 'freeuse', 'futanari', 'fishnetsgw',
+	'gloryholes', 'abandonedporn', 'grool', 'horny',
+	'hotdogging', 'godpussy', 'kinky', 'lesbians',
+	'pawg', 'paag', 'lewd', 'plowpose',
+	'milkingtable', 'theratio', 'thiccerthanyouthought', 'slimstacked',
+	'thickthighs', 'nanithefuck', 'notadildo',
+];
 
 
 // Please end my suffering, why do I do this to myself?
@@ -45,7 +63,7 @@ export default new Command()
 			rand += 1;
 			post = redditPayload[rand];
 		}
-
+		// No fucking clue what this does, but it fucken works
 		const media = post.data.url.includes('redgifs') ? await get(`https://api.redgifs.com/v1/gfycats/${post.data.url.split('/').slice(-1)[0]}`).then(r => r.data.gfyItem.content_urls.mp4.url) : post.data.url;
 		// Handle gifv & redgifs differently
 		if (media.includes('redgifs') || media.endsWith('.gifv')) {
