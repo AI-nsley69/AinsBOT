@@ -6,7 +6,7 @@ const { ImgurClient } = imgur;
 
 import { Cache } from './cache.js';
 import { Logger } from './logger.js';
-import { Command } from './commandClass.js';
+import { Command, ReqArg, OptArg } from './commandClass.js';
 
 export class Bot {
 	constructor(promises) {
@@ -105,13 +105,28 @@ export class Bot {
 
 function validateCommands(bot, commands) {
 	for (const [name, command] of commands) {
+		// Validate the command object
 		if (!(command instanceof Command)) {
 			bot.logger.err(
 				`Invalid command structure for the ${name} command. Please use the newcmd script to remake this command.`,
 			);
 			continue;
 		}
-		if (!command.run) bot.logger.err(`Invalid run function for the ${name} command!`);
+		// Validate the run function
+		if (!command.run) bot.logger.err(`Invalid run function for the ${name} command.`);
+		if (typeof command.description !== 'string') bot.logger.err(`Description for the ${name} command is not a string.`);
+		if (typeof command.usage !== 'string') bot.logger.err(`Usage for the ${name} command is not a string.`);
+		if (!(command.args instanceof Object)) {bot.logger.err(`Args for the ${name} command is not an object.`);}
+		else if (Object.keys(command.args).length > 0) {
+			const validArgs = Object.entries(ReqArg)
+				.map(a => a[1])
+				.concat(Object.entries(OptArg)
+					.map(a => a[1]),
+				);
+			for (const [, type] of Object.entries(command.args)) {
+				if (!validArgs.includes(type)) bot.logger.err(`${name} argument for ${command} is an invalid argument type!`);
+			}
+		}
 	}
 }
 
