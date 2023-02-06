@@ -17,16 +17,29 @@ export class Logger {
 
 	updateTime() {
 		this.date = new Date();
-		this.time = this.date.toTimeString().split(' ')[0];
+		this.dateString = this.date.toISOString().split('T')[0];
+		this.timeString = this.date.toTimeString().split(' ')[0];
 	}
 
 	sendToConsole(err, level) {
-		err = `(${chalk.magentaBright(this.time)}) [${chalk.yellow('LOG')}/${level}] ${err}`;
+		err = getString(
+			chalk.cyanBright(this.dateString),
+			chalk.magentaBright(this.timeString),
+			chalk.yellowBright('LOG'),
+			level,
+			err,
+		);
 		console.log(err);
 	}
 
 	saveToFile(err, level) {
-		err = `(${this.time}) [LOG}/${level}] ${err}`;
+		err = getString(
+			this.dateString,
+			this.timeString,
+			'LOG',
+			level,
+			err,
+		);
 		fs.appendFile(this.logFile, `${err}\n`, (err) => {
 			if (err) throw err;
 		});
@@ -63,4 +76,8 @@ export class Logger {
 			LogLevel.Verbose,
 		);
 	}
+}
+
+function getString(date, time, brand, level, error) {
+	return `(${date}) ${time} [${brand}/${level}]: ${error}`;
 }
