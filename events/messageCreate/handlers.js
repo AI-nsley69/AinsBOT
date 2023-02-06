@@ -59,41 +59,38 @@ async function commandHandler(bot, message) {
 		.split(/ +/);
 	const command = args.shift().toLowerCase();
 	const argsConcat = args.join(' ');
-	// Ignore if command doesn't exist, otherwise grab it in a constant
-	if (!bot.commands.has(command)) return;
+
+	const isValidCommand = bot.commands.has(command);
+	if (!isValidCommand) return;
+
 	const commandInfo = bot.commands.get(command);
+	const isUserOnCooldown = cmdCooldown.has(`${message.author.id}-${command}`);
+	if (isUserOnCooldown) {return message.react('⏳');}
 
-	// Check if user has cooldown on said command
-	if (cmdCooldown.has(`${message.author.id}-${command}`)) {return message.react('⏳');}
-
-	// Setup context for the command
 	const ctx = new TextContext(message);
 
-	// Check if the command is ran in the bot channel
 	if (!(await isBotChannel(bot, message))) return;
 
-	// Check if the command is enabled
 	if (!(await isCommandEnabled(bot, message, command))) {
 		return ctx.err('This command is not enabled in this guild! ❌');
 	}
-	// Check if the user has the required permission, if wanted
-	if (
-		commandInfo.permission &&
-      !message.member.permissions.has(commandInfo.permission)
-	) {
+
+	const hasRequiredPermission = !(commandInfo.permission && !message.member.permissions.has(commandInfo.permission));
+	if (!hasRequiredPermission) {
 		return ctx.err('You do not have the permission to run this command! ❌');
 	}
 
-	// Check if bot has the required permissions for the command
 	const missingPerms = commandInfo.botPermissions.filter((perm) => {
 		message.guild ? !message.guild.me.permissions.has(perm) : false;
 	});
-	if (missingPerms.length > 0) {
+
+	const isBotMissingPerms = missingPerms.length > 0;
+	if (isBotMissingPerms) {
 		return ctx.err(`I am missing the needed commands to run this command ):\nPlease give me the following permissions:\`${missingPerms.join(', ')}\``);
 	}
 
-	// Check if the message is from a guild, if wanted
-	if (commandInfo.guild && !message.guild) {
+	const canRunInContext = !(commandInfo.guild && !message.guild);
+	if (!canRunInContext) {
 		return ctx.err('This command is only available in guilds 🌧');
 	}
 
@@ -101,25 +98,26 @@ async function commandHandler(bot, message) {
 		ctx.err(err.toString());
 		bot.logger.verbose(err.toString());
 	});
+
 	if (!ctxArgs) return;
 	ctx.setArgs(ctxArgs);
 
-	// Run the command and catch any error to not crash bot
 	bot.logger.verbose(
 		`${message.author.tag} ran ${command} with ${
 			argsConcat.length > 0 ? argsConcat : 'no'
 		} arguments!`,
 	);
+
 	try {
 		await ctx.getChannel().sendTyping();
 
 		await commandInfo.run(bot, ctx);
-		// Add user to cooldown if enabled
-		if (commandInfo.cooldown < 1 || ctx.cancelCooldown()) return;
+		const shouldSetCooldown = commandInfo.cooldown > 0 && !ctx.cancelCooldown();
+		if (!shouldSetCooldown) return;
+
 		cmdCooldown.add(`${message.author.id}-${command}`);
 		setTimeout(() => {
 			cmdCooldown.delete(`${message.author.id}-${command}`);
-		// Cooldown is specified in seconds
 		}, commandInfo.cooldown * 1000);
 	}
 	catch (err) {
