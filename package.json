@@ -20,7 +20,7 @@
   "homepage": "https://github.com/AI-nsley69/AinsBOT",
   "type": "module",
   "dependencies": {
-    "axios": "^0.26.0",
+    "axios": "^1.6.3",
     "canvas": "^2.9.3",
     "chalk": "^5.2.0",
     "discord.js": "^13.6.0",
