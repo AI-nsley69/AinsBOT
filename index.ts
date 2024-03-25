@@ -1,5 +1,5 @@
 import { Bot } from 'discordjs-handler';
 
-const bot = new Bot();
+const bot = await Bot.getInstance();
 
-const instance = await bot.getInstance();
+await bot.load();
