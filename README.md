@@ -1,6 +1,15 @@
-# AinsBOT
-Edit the config files as needed, copy .env.example to .env and then install deps with:
+# ainsbot
+
+To install dependencies:
+
+```bash
+bun install
 ```
-yarn install
+
+To run:
+
+```bash
+bun run index.ts
 ```
-then you can run the bot with
+
+This project was created using `bun init` in bun v1.0.35. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
